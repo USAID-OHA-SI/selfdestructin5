@@ -58,43 +58,29 @@ gis_vc_sfc <- list.files(
 
 # MER Data Munge ---------------------------------------------------------------------------------
 
-
-# Global dataset
-#double check to make sure there is no duplicate data
-#MAY need to update with Q2
-#check panorama to check on like guatemala and other countries that don't have PEDS data
-
-cntry <- briefer_ou %>%
+cntry <- briefer %>%
+  rename(countryname = countryname) #Not sure if this is what I need to do?
   filter(fiscal_year %in% c("2021","2020", "2019"),
-         indicator == "TX_CURR",
+         indicator %in% c("HTS_TST", "HTS_TST_POS", "PrEP_NEW", "TX_CURR", "TX_NEW", "VMMC_CIRC"),
          standardizeddisaggregate == "Age/Sex/HIVStatus",
          !fundingagency %in% c("Dedup"),
          !primepartner %in% c("TBD")) %>%
-  filter(!trendsfine %in% c("15-19","20-24","25-29",
-                            "30-34","35-39","40-49","50+")) %>%
   glamr::clean_agency() %>%
-  group_by(fiscal_year, operatingunit, snu1, countryname,
-           snu1uid, primepartner, fundingagency) %>%
-  summarise(across(starts_with("targ"), sum, na.rm = TRUE)) %>%
+  group_by(fiscal_year, countryname) %>%
+  summarise_at(vars(targets:cumulative),sum,na.rm=TRUE) %>%
   ungroup() %>%
-  reshape_msd(clean = TRUE) %>%
-  select(-period_type) %>%
-  group_by(operatingunit) %>%
-  mutate(country_val = sum(val, na.rm = TRUE)) %>%
+  select(-c(qtr1:qtr4)) %>%
+  #reshape_msd(clean = TRUE) %>%
+  group_by(countryname, fundingagency) %>%
+  mutate(APR = (cumulative/targets)) %>%
   ungroup() %>%
-  group_by(operatingunit, primepartner, fundingagency) %>%
-  mutate(primepartner_val = sum(val, na.rm = TRUE)) %>%
-  ungroup() %>%
-  group_by(operatingunit, snu1, snu1uid, #countryname,
-           primepartner, fundingagency) %>%
-  summarise(val = sum(val, na.rm = TRUE),
-            share = val / first(country_val),
-            primeshare = primepartner_val/first(country_val)) %>%
-  ungroup() %>%
-  mutate(primepartner = paste0(primepartner, " (", round(primeshare*100, 2),  "%",")"))
+  mutate(primepartner = paste0(#fundingagency, "-",
+    primepartner))
+  
+  
+  
+  
 
 
 
-#counting mechs
-cntry_peds %>% filter(operatingunit == "Kenya", fundingagency == "CDC") %>% count(primepartner, mech_code, mech_name) %>% arrange(primepartner) %>% prinf()
 
