@@ -51,8 +51,7 @@ briefer <- cntry_ou %>%
         #"Age/Sex/ARVDispense/HIVStatus", "PregnantOrBreastfeeding/HIVStatus",
         #"KeyPop/HIVStatus", "Age Aggregated/Sex/HIVStatus", "Modality/Age Aggregated/Sex/Result", "Age/Sex",
          #"KeyPopAbr", "TechFollowUp>14days/Sex", "Technique/Sex", "TechFollowUp/Sex"),
-         !fundingagency %in% c("Dedup"),
-         !primepartner %in% c("TBD")) %>%
+         !fundingagency %in% c("Dedup")) %>%
   glamr::clean_agency() %>%
   group_by(fiscal_year, indicator, fundingagency) %>%
   summarise_at(vars(targets:cumulative),sum,na.rm=TRUE) %>%
