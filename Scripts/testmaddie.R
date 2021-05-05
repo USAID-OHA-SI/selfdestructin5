@@ -55,11 +55,11 @@ briefer <- cntry_ou %>%
          !fundingagency %in% c("Dedup"),
          !primepartner %in% c("TBD")) %>%
   glamr::clean_agency() %>%
-  group_by(fiscal_year, indicator, operatingunit, fundingagency) %>%
+  group_by(fiscal_year, indicator, fundingagency) %>%
   summarise_at(vars(targets:cumulative),sum,na.rm=TRUE) %>%
   ungroup() %>%
   select(-c(qtr1:qtr4)) %>%
-  group_by(operatingunit, fundingagency) %>%
+  group_by(fiscal_year, indicator, fundingagency) %>%
   mutate(
     achievement = (cumulative/targets)) %>%
   ungroup()
@@ -73,6 +73,40 @@ briefer <- cntry_ou %>%
     
     #GT!!!!!!!!
     
+as_tibble(briefer)
+
+# Make a display table with the `islands_tbl`
+# table; put a heading just above the column labels
+
+briefer_tbl <-
+  tibble(
+    Indicator = briefer,
+    fiscal_year = briefer,
+    Achievement = briefer,
+    Fundingagency = briefer
+  ) %>%
+  arrange(desc(achievement))
+
+# Display the table
+briefer_tbl
+
+gt_tbl <- 
+  gt_tbl %>%
+  tab_header(
+    title = "Large Landmasses of the World",
+    subtitle = "The top ten largest are presented"
+  )
+
+# Show the gt Table
+gt_tbl
+
+# Use markdown for the heading's `title` and `subtitle` to
+# add bold and italicized characters
+gt(islands_tbl[1:2,]) %>%
+  tab_header(
+    title = md("**Large Landmasses of the World**"),
+    subtitle = md("The *top two* largest are presented")
+  )
   
   
 
