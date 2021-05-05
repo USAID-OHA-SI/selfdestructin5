@@ -33,36 +33,32 @@ load_secrets()
 
 # MER Site level import --------------------------------------------------------------------
 
-cntry_ou <- list.files(path = si_path(type="path_msd"),
-                        pattern = "Structured_.*_OU_IM.*_20210319_v2_1.zip",
-                        full.names = TRUE) %>%
-  sort() %>%
-  last() %>%
-  read_msd()
+cntry_ou <-  si_path() %>% 
+  return_latest("OU_IM") %>% 
+  read_rds()   
+
 
 
 # MER Data Munge ---------------------------------------------------------------------------------
 
+
 briefer <- cntry_ou %>%
   #rename(countryname = countryname) #Not sure if this is what I need to do?
-  filter(fiscal_year %in% c("2021","2020", "2019"),
+  filter(fiscal_year %in% c(2021, 2020, 2019),
          indicator %in% c("HTS_TST", "HTS_TST_POS", "PrEP_NEW", "TX_CURR", "TX_NEW", "VMMC_CIRC"),
          standardizeddisaggregate %in% c("Total Numerator"),
         #"Age/Sex/HIVStatus", "Modality/Age/Sex/Result", "KeyPop/Result", 
         #"Age/Sex/ARVDispense/HIVStatus", "PregnantOrBreastfeeding/HIVStatus",
         #"KeyPop/HIVStatus", "Age Aggregated/Sex/HIVStatus", "Modality/Age Aggregated/Sex/Result", "Age/Sex",
          #"KeyPopAbr", "TechFollowUp>14days/Sex", "Technique/Sex", "TechFollowUp/Sex"),
-         !fundingagency %in% c("Dedup"),
-         !primepartner %in% c("TBD")) %>%
+         !fundingagency %in% c("Dedup")) %>%
   glamr::clean_agency() %>%
-  group_by(fiscal_year, indicator, fundingagency) %>%
+  group_by(fiscal_year, countrynamename, indicator, fundingagency) %>%
   summarise_at(vars(targets:cumulative),sum,na.rm=TRUE) %>%
   ungroup() %>%
   select(-c(qtr1:qtr4)) %>%
-  group_by(fiscal_year, indicator, fundingagency) %>%
   mutate(
-    achievement = (cumulative/targets)) %>%
-  ungroup()
+    achievement = (cumulative/targets))
 #need to group anything not CDC and USAID into Other
   
   
@@ -72,10 +68,46 @@ briefer <- cntry_ou %>%
   #   print(disagg)
     
     #GT!!!!!!!!
+
+#clean clean up FY
+briefer <- briefer %>%
+    mutate(fiscal_year = glue("FY{str_sub(fiscal_year, start = 3)}"))
+
+#reshape
+  briefer <- briefer %>% 
+    rename(results = cumulative) %>% 
+    rename_with(.cols = c(targets, results, achievement), str_to_sentence) %>% 
+    pivot_wider(names_from = fiscal_year,
+                # names_sep = " ",
+                names_glue = "{fiscal_year}<br>{.value}",
+                values_from = c(Targets, Results, Achievement)
+                ) 
+
+## TO DO
+  #reorder indicators (order string variables in R)
+  #reorder columns
+  #reorder agency
+  
+## Table
+  #select 1 counry
+  cntry_sel <- "Tanzania"
+  
+  
+  table_data <- briefer %>% 
+    filter(cntry_sel)
+  
+#TO DO Table
+  #add commas & percents
+  #conditional format with color FY19+FY20 (Q4)
+  #conditional format with color FY21 (current year, quarter)
+    ICPIutilities::identifypd(cntry_ou)
+  #convert all the font to Source Sans Pro
+  #headers and agencies to bold
+  
     
 as_tibble(briefer)
 
-# Make a display table with the `islands_tbl`
+m# Make a display table with the `islands_tbl`
 # table; put a heading just above the column labels
 
 briefer_tbl <-
