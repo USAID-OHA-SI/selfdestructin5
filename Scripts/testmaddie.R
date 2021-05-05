@@ -53,14 +53,12 @@ briefer <- cntry_ou %>%
          #"KeyPopAbr", "TechFollowUp>14days/Sex", "Technique/Sex", "TechFollowUp/Sex"),
          !fundingagency %in% c("Dedup")) %>%
   glamr::clean_agency() %>%
-  group_by(fiscal_year, indicator, fundingagency) %>%
+  group_by(fiscal_year, countryname, indicator, fundingagency) %>%
   summarise_at(vars(targets:cumulative),sum,na.rm=TRUE) %>%
   ungroup() %>%
   select(-c(qtr1:qtr4)) %>%
-  group_by(fiscal_year, indicator, fundingagency) %>%
   mutate(
-    achievement = (cumulative/targets)) %>%
-  ungroup()
+    achievement = (cumulative/targets))
 #need to group anything not CDC and USAID into Other
   
   
