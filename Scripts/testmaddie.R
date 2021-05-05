@@ -83,6 +83,27 @@ briefer <- briefer %>%
                 values_from = c(Targets, Results, Achievement)
                 ) 
 
+## TO DO
+  #reorder indicators (order string variables in R)
+  #reorder columns
+  #reorder agency
+  
+## Table
+  #select 1 counry
+  cntry_sel <- "Tanzania"
+  
+  
+  table_data <- briefer %>% 
+    filter(cntry_sel)
+  
+#TO DO Table
+  #add commas & percents
+  #conditional format with color FY19+FY20 (Q4)
+  #conditional format with color FY21 (current year, quarter)
+    ICPIutilities::identifypd(cntry_ou)
+  #convert all the font to Source Sans Pro
+  #headers and agencies to bold
+  
     
 as_tibble(briefer)
 
