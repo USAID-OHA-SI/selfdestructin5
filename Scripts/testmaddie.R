@@ -53,7 +53,7 @@ briefer <- cntry_ou %>%
          #"KeyPopAbr", "TechFollowUp>14days/Sex", "Technique/Sex", "TechFollowUp/Sex"),
          !fundingagency %in% c("Dedup")) %>%
   glamr::clean_agency() %>%
-  group_by(fiscal_year, countryname, indicator, fundingagency) %>%
+  group_by(fiscal_year, countrynamename, indicator, fundingagency) %>%
   summarise_at(vars(targets:cumulative),sum,na.rm=TRUE) %>%
   ungroup() %>%
   select(-c(qtr1:qtr4)) %>%
@@ -68,10 +68,25 @@ briefer <- cntry_ou %>%
   #   print(disagg)
     
     #GT!!!!!!!!
+
+#clean clean up FY
+briefer <- briefer %>%
+    mutate(fiscal_year = glue("FY{str_sub(fiscal_year, start = 3)}"))
+
+#reshape
+  briefer <- briefer %>% 
+    rename(results = cumulative) %>% 
+    rename_with(.cols = c(targets, results, achievement), str_to_sentence) %>% 
+    pivot_wider(names_from = fiscal_year,
+                # names_sep = " ",
+                names_glue = "{fiscal_year}<br>{.value}",
+                values_from = c(Targets, Results, Achievement)
+                ) 
+
     
 as_tibble(briefer)
 
-# Make a display table with the `islands_tbl`
+m# Make a display table with the `islands_tbl`
 # table; put a heading just above the column labels
 
 briefer_tbl <-
