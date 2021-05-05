@@ -33,19 +33,18 @@ load_secrets()
 
 # MER Site level import --------------------------------------------------------------------
 
-cntry_ou <- list.files(path = si_path(type="path_msd"),
-                        pattern = "Structured_.*_OU_IM.*_20210319_v2_1.zip",
-                        full.names = TRUE) %>%
-  sort() %>%
-  last() %>%
-  read_msd()
+cntry_ou <-  si_path() %>% 
+  return_latest("OU_IM") %>% 
+  read_rds()   
+
 
 
 # MER Data Munge ---------------------------------------------------------------------------------
 
+
 briefer <- cntry_ou %>%
   #rename(countryname = countryname) #Not sure if this is what I need to do?
-  filter(fiscal_year %in% c("2021","2020", "2019"),
+  filter(fiscal_year %in% c(2021, 2020, 2019),
          indicator %in% c("HTS_TST", "HTS_TST_POS", "PrEP_NEW", "TX_CURR", "TX_NEW", "VMMC_CIRC"),
          standardizeddisaggregate %in% c("Total Numerator"),
         #"Age/Sex/HIVStatus", "Modality/Age/Sex/Result", "KeyPop/Result", 
