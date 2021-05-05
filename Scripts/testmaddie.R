@@ -6,8 +6,6 @@ library(glamr)
 
 si_setup()
 
-install.packages("gt")
-
 
 library(extrafont)
 library(tidyverse)
@@ -42,22 +40,6 @@ cntry_ou <- list.files(path = si_path(type="path_msd"),
   last() %>%
   read_msd()
 
-# GEO DATA ------------------------------------------------------------
-
-gis_vc_sfc <- return_latest(
-  si_path(type="path_vector"),
-  pattern = "Vc.*.shp$",
-  recursive = T, full.names = T) %>%
-  set_names(basename(.) %>% str_remove(".shp")) %>%
-  map(read_sf)
-#OR
-gis_vc_sfc <- list.files(
-  si_path(type="path_vector"),
-  pattern = "Vc.*.shp$",
-  recursive = T, full.names = T) %>%
-  set_names(basename(.) %>% str_remove(".shp")) %>%
-  map(read_sf)
-
 
 # MER Data Munge ---------------------------------------------------------------------------------
 
@@ -65,10 +47,11 @@ briefer <- cntry_ou %>%
   #rename(countryname = countryname) #Not sure if this is what I need to do?
   filter(fiscal_year %in% c("2021","2020", "2019"),
          indicator %in% c("HTS_TST", "HTS_TST_POS", "PrEP_NEW", "TX_CURR", "TX_NEW", "VMMC_CIRC"),
-         standardizeddisaggregate %in% c("Age/Sex/HIVStatus", "Modality/Age/Sex/Result", 
-         "KeyPop/Result", "Age/Sex/ARVDispense/HIVStatus", "Total Numerator", "PregnantOrBreastfeeding/HIVStatus",
-         "KeyPop/HIVStatus", "Age Aggregated/Sex/HIVStatus", "Modality/Age Aggregated/Sex/Result", "Age/Sex",
-         "KeyPopAbr", "TechFollowUp>14days/Sex", "Technique/Sex", "TechFollowUp/Sex"),
+         standardizeddisaggregate %in% c("Total Numerator"),
+        #"Age/Sex/HIVStatus", "Modality/Age/Sex/Result", "KeyPop/Result", 
+        #"Age/Sex/ARVDispense/HIVStatus", "PregnantOrBreastfeeding/HIVStatus",
+        #"KeyPop/HIVStatus", "Age Aggregated/Sex/HIVStatus", "Modality/Age Aggregated/Sex/Result", "Age/Sex",
+         #"KeyPopAbr", "TechFollowUp>14days/Sex", "Technique/Sex", "TechFollowUp/Sex"),
          !fundingagency %in% c("Dedup"),
          !primepartner %in% c("TBD")) %>%
   glamr::clean_agency() %>%
@@ -77,42 +60,19 @@ briefer <- cntry_ou %>%
   ungroup() %>%
   select(-c(qtr1:qtr4)) %>%
   group_by(operatingunit, fundingagency) %>%
-  mutate(achievement = (cumulative/targets)) %>%
-  ungroup() %>%
-  mutate(primepartner = paste0(#fundingagency, "-",
-    primepartner))
+  mutate(
+    achievement = (cumulative/targets)) %>%
+  ungroup()
+#need to group anything not CDC and USAID into Other
   
   
-  disagg<-briefer %>%
-       filter(indicator %in% c("HTS_TST", "HTS_TST_POS", "PrEP_NEW", "TX_CURR", "TX_NEW", "VMMC_CIRC")) %>%
-       distinct(standardizeddisaggregate)
-  
-    
-    print(disagg)
+  #disagg<-briefer %>%
+  #   filter(indicator %in% c("HTS_TST", "HTS_TST_POS", "PrEP_NEW", "TX_CURR", "TX_NEW", "VMMC_CIRC")) %>%
+  #   distinct(standardizeddisaggregate)
+  #   print(disagg)
     
     #GT!!!!!!!!
     
-    
-
-    # Make a display table with the `islands_tbl`
-    # table; put a heading just above the column labels
-    gt_tbl <- 
-    gt_tbl %>%
-    tab_header(
-      title = "Large Landmasses of the World",
-      subtitle = "The top ten largest are presented"
-    )
-  
-  # Show the gt Table
-  gt_tbl
-  
-  # Use markdown for the heading's `title` and `subtitle` to
-  # add bold and italicized characters
-  gt(islands_tbl[1:2,]) %>%
-    tab_header(
-      title = md("**Large Landmasses of the World**"),
-      subtitle = md("The *top two* largest are presented")
-    )
   
   
 
