@@ -60,7 +60,7 @@ briefer <- cntry_ou %>%
 
   #?across
   
-  
+
 
 #clean clean up FY
 briefer <- briefer %>%
@@ -79,6 +79,7 @@ briefer <- briefer %>%
                 values_from = c(Targets, Results, Achievement)
                 )
 
+  
 #what is a better way to do this
  briefer <- briefer[, c("countryname", "indicator", "fundingagency", 
                         "FY19<br>Results", "FY19<br>Targets", "FY19<br>Achievement",
@@ -89,7 +90,8 @@ briefer <- briefer %>%
 
 ## TO DO
   #reorder indicators (order string variables in R) - DONE
-  #reorder columns #reorder columns:DONE
+  #reorder agency - done
+ #reorder columns #reorder columns - done
  # note for myself (please ignore):
  # df <- df %>%
  #   dplyr::relocate(`FY20 Total`, .before = `FY21 Targets`) %>% 
@@ -104,16 +106,15 @@ briefer <- briefer %>%
  #                                  "PrEP_NEW")) %>% 
  # arrange(indicator)
   
-  #reorder agency - done
-  
+ 
 ## Table
   #select 1 country
-#Need help with this
-  # cntry_sel <- "Tanzania"
-  # 
-  # 
-  # table_data <- briefer %>% 
-  #   filter(cntry_sel)
+#Need help with this - i just ended up filtering in the cleaning step but would still like to know how to do this
+  cntry_sel <- "Tanzania"
+
+
+  table_data <- briefer %>%
+    filter(cntry_sel)
   
   
 #TO DO Table
@@ -122,11 +123,12 @@ briefer <- briefer %>%
   #conditional format with color FY21 (current year, quarter) - help
     ICPIutilities::identifypd(cntry_ou)
   #convert all the font to Source Sans Pro - definitely help
-  #headers and agencies to bold
+  #headers and agencies to bold - Help
   
     #gt
     #need to fix: sourcesanspro
     #HOW do i get fy21 to not override - try combining the two lines
+    #need to understand the brackets
     
     
     briefer %>%
@@ -145,29 +147,37 @@ briefer <- briefer %>%
       tab_style(
         style = cell_borders(
           sides = "right",
-          weight = px(1.5),
+          weight = px(1),
         ),
         locations = cells_body(
           columns = everything(),
           rows = everything()
         )) %>%
-      tab_style(style = cell_fill(color = usaid_lightgrey),      ## defining the what (the 4th value of the pal object)
-                locations = cells_body(                 ## telling it where (ie, the body of a cell)
+      # tab_style(
+      #   style = cells_data(
+      #     weight = 40, #help - maybe not cells data
+      #   ),
+      #   locations = cells_data(
+      #     columns = everything(),
+      #     rows = everything()
+      #   )) %>%
+      tab_style(style = cell_fill(color = usaid_lightgrey),      
+                locations = cells_body(                 
                   columns = vars(`FY19<br>Achievement`, `FY20<br>Achievement`, 
-                                 `FY21<br>Achievement`)))   %>%   ## which col this refers to (note `vars()`)
+                                 `FY21<br>Achievement`)))   %>%   
       #rows = `FY20<br>Achievement` >= 1.1)) %>%   ## the argument
       tab_style(style = cell_fill(color = usaid_red),
                 locations = cells_body(
-                  columns = vars(`FY21<br>Achievement`),
-                  rows =`FY21<br>Achievement` <= 20)) %>% 
+                  columns = vars(`FY21<br>Achievement`,`FY20<br>Achievement`),
+                  rows =`FY21<br>Achievement` <= 20 & `FY20<br>Achievement` < 80)) %>%  #not & but something else
       tab_header(title = "TANZANIA PERFORMANCE IN FY21 Q1") %>%
       tab_source_note("Source: DATIM MSD FY21Q1 2020-03-19")    
     
     
     
     
-    
-    
+  
+  # ----------------------
     
     
 # IGNORE
@@ -232,10 +242,9 @@ briefer <- briefer %>%
       #   decimals = 0
       # )
     
-    #OLD CODE I TOOK OUT/I DONT KNOW WHAT PAL[1] IS
-    # tab_style(style = cell_fill(color = pal[1]),
-    #           locations = cells_body(
-    #             columns = vars(`FY20 Achievement`),
+    # tab_style(style = cell_fill(color = pal[1]), ## defining the what (the 4th value of the pal object)
+    #           locations = cells_body(           ## telling it where (ie, the body of a cell)
+    #             columns = vars(`FY20 Achievement`), ## which col this refers to (note `vars()`)
     #             rows = `FY20 Achieved` < .75)) %>% 
     
     
