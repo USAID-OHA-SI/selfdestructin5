@@ -26,6 +26,7 @@ library(tidytext)
 library(ggflags)
 library(glue)
 library(gt)
+library(tidyselect)
 
 # MER Data
 
@@ -44,19 +45,17 @@ cntry_ou <-  si_path() %>%
 
 briefer <- cntry_ou %>%
   filter(fiscal_year %in% c(2021, 2020, 2019),
-         countryname == "Tanzania",
+         countrynamename == "Tanzania",
          indicator %in% c("HTS_TST", "HTS_TST_POS", "PrEP_NEW", "TX_CURR", "TX_NEW", "VMMC_CIRC"),
          standardizeddisaggregate %in% c("Total Numerator"),
          !fundingagency %in% c("Dedup")) %>%
   glamr::clean_agency() %>%
-  group_by(fiscal_year, countryname, indicator, fundingagency) %>%
+  group_by(fiscal_year, countrynamename, indicator, fundingagency) %>%
   summarise_at(vars(targets:cumulative),sum,na.rm=TRUE) %>%
   ungroup() %>%
   select(-c(qtr1:qtr4)) %>%
   mutate(
-    achievement = (cumulative/targets), 
-    across(c(cumulative, targets), comma),
-    across(c(achievement), percent, .1))
+    achievement = (cumulative/targets))
 
   #?across
   
@@ -74,18 +73,16 @@ briefer <- briefer %>%
     rename_with(.cols = c(targets, results, achievement), str_to_sentence) %>% 
     pivot_wider(names_from = fiscal_year,
                 # names_sep = " ",
-                names_glue = "{fiscal_year}<br>{.value}",
+                names_glue = "{fiscal_year}\n{.value}",
                 #names_sort = TRUE,
                 values_from = c(Targets, Results, Achievement)
                 )
 
   
 #what is a better way to do this
- briefer <- briefer[, c("countryname", "indicator", "fundingagency", 
-                        "FY19<br>Results", "FY19<br>Targets", "FY19<br>Achievement",
-                        "FY20<br>Results", "FY20<br>Targets", "FY20<br>Achievement",
-                        "FY21<br>Results", "FY21<br>Targets", "FY21<br>Achievement")]
-    
+ briefer <- briefer %>% 
+      select(countrynamename, indicator, fundingagency, ends_with("Achievement"),
+             ends_with("Results"), everything())
  
 
 ## TO DO
@@ -114,7 +111,7 @@ briefer <- briefer %>%
 
 
   table_data <- briefer %>%
-    filter(cntry_sel)
+    filter(countrynamename == cntry_sel)
   
   
 #TO DO Table
@@ -131,15 +128,34 @@ briefer <- briefer %>%
     #need to understand the brackets
     
     
-    briefer %>%
+    gt_tbl <- briefer %>%
       gt(groupname_col = "fundingagency",
          rowname_col = "indicator") %>% 
       row_group_order(
         groups = c("USAID", "CDC", "DOD")
       ) %>%
+      cols_hide(vars(countrynamename)) %>% 
       # tab_options(
       #   table.font.names = "Source Sans Pro"
       # ) %>% 
+      tab_spanner(label = md("**Achievement**"), 
+                  columns = matches("Achievement")) %>%  
+      tab_spanner(label = md("**Results**"), 
+                  columns = matches("Results")) %>%  
+      tab_spanner(label = md("**Targets**"), 
+                  columns = matches("Targets")) %>% 
+      cols_label("FY19\nAchievement" = "FY19",
+                 "FY20\nAchievement" = "FY20",
+                 "FY21\nAchievement" = "FY21",
+                 "FY19\nResults" = "FY19",
+                 "FY20\nResults" = "FY20",
+                 "FY21\nResults" = "FY21",
+                 "FY19\nTargets" = "FY19",
+                 "FY20\nTargets" = "FY20",
+                 "FY21\nTargets" = "FY21")
+    
+    
+    gt_tbl <- gt_tbl %>% 
       cols_width(
         vars(indicator) ~ px(140),
         everything() ~ px(80)
@@ -152,7 +168,7 @@ briefer <- briefer %>%
         locations = cells_body(
           columns = everything(),
           rows = everything()
-        )) %>%
+        ))
       # tab_style(
       #   style = cells_data(
       #     weight = 40, #help - maybe not cells data
@@ -161,15 +177,20 @@ briefer <- briefer %>%
       #     columns = everything(),
       #     rows = everything()
       #   )) %>%
-      tab_style(style = cell_fill(color = usaid_lightgrey),      
-                locations = cells_body(                 
-                  columns = vars(`FY19<br>Achievement`, `FY20<br>Achievement`, 
-                                 `FY21<br>Achievement`)))   %>%   
-      #rows = `FY20<br>Achievement` >= 1.1)) %>%   ## the argument
-      tab_style(style = cell_fill(color = usaid_red),
+    
+    
+      gt_tbl %>% 
+      # tab_style(style = cell_fill(color = usaid_lightgrey),      
+      #           locations = cells_body(                 
+      #             columns = matches("Ach")))   %>%   
+      tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.55)),
                 locations = cells_body(
-                  columns = vars(`FY21<br>Achievement`,`FY20<br>Achievement`),
-                  rows =`FY21<br>Achievement` <= 20 & `FY20<br>Achievement` < 80)) %>%  #not & but something else
+                  columns = vars(`FY20\nAchievement`),
+                  rows = `FY20\nAchievement` < .75)) 
+              
+
+      
+      
       tab_header(title = "TANZANIA PERFORMANCE IN FY21 Q1") %>%
       tab_source_note("Source: DATIM MSD FY21Q1 2020-03-19")    
     
