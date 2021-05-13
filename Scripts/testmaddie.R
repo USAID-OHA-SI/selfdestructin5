@@ -81,40 +81,46 @@ briefer <- briefer %>%
                 )
 
 
-  
-
-
- briefer <- briefer[, c("countryname", "indicator", "fundingagency", "FY19<br>Results",
-                        "FY19<br>Targets", "FY19<br>Achievement",
+ briefer <- briefer[, c("countryname", "indicator", "fundingagency", 
+                        "FY19<br>Results", "FY19<br>Targets", "FY19<br>Achievement",
                         "FY20<br>Results", "FY20<br>Targets", "FY20<br>Achievement",
-                        "FY20<br>Results", "FY20<br>Targets", "FY20<br>Achievement")]
+                        "FY21<br>Results", "FY21<br>Targets", "FY21<br>Achievement")]
     
 #briefer <- briefer %>% pivot_longer(cols = fundingagency,
                                     #values_to = "indicator")
  
 
 ## TO DO
-  #reorder indicators (order string variables in R)
-  #reorder columns #reorder columns:
-  #FIGURE OUT AN EASIER WAY TO DO THIS
-  #FY19 Targets FY19 Results FY19 Achievement
-  #FY20 Targets FY20 Results FY20 Achievement
-  #FY21 Targets FY21 Results FY21 Achievement
+  #reorder indicators (order string variables in R) - DONE
+  #reorder columns #reorder columns:DONE
+ # Alternative:
+ # df <- df %>%
+ #   dplyr::relocate(`FY20 Total`, .before = `FY21 Targets`) %>% 
+ #   dplyr::relocate(`FY20 Achieved`, .before = `FY21 Targets`) %>%
+ #   dplyr::relocate(`Fy20 Targets`, .after = `FY20 Total`) %>% 
+ #   mutate(indicator = fct_relevel(indicator, "HTS_TST",
+ #                                  "HTS_TST_POS",
+ #                                  "TX_NEW",
+ #                                  "TX_CURR",
+ #                                  "TX_NET_NEW",
+ #                                  "VMMC_CIRC",
+ #                                  "PrEP_NEW")) %>% 
+ # arrange(indicator)
   
-  #reorder agency - STILL NEED TO DO THIS 
+  #reorder agency - NEED TO REORDER THEM
   
 ## Table
   #select 1 country
-#first i need to figure out how to choose one , then I think i can use a tibble to transform
-  cntry_sel <- "Tanzania"
-  
-  
-  table_data <- briefer %>% 
-    filter(cntry_sel)
+#WHAT am I doing wrong here
+  # cntry_sel <- "Tanzania"
+  # 
+  # 
+  # table_data <- briefer %>% 
+  #   filter(cntry_sel)
   
   
 #TO DO Table
-  #add commas & percents
+  #add commas & percents - DONE
   #conditional format with color FY19+FY20 (Q4)
   #conditional format with color FY21 (current year, quarter)
     ICPIutilities::identifypd(cntry_ou)
@@ -122,42 +128,90 @@ briefer <- briefer %>%
   #headers and agencies to bold
   
     
-as_tibble(briefer)
+# as_tibble(briefer)
+# 
+# m# Make a display table with the `islands_tbl`
+# # table; put a heading just above the column labels
+# 
+# briefer_tbl <-
+#   tibble(
+#     Indicator = briefer,
+#     fiscal_year = briefer,
+#     Achievement = briefer,
+#     Fundingagency = briefer
+#   ) %>%
+#   arrange(desc(achievement))
+# 
+# # Display the table
+# briefer_tbl
+# 
+# gt_tbl <- 
+#   gt_tbl %>%
+#   tab_header(
+#     title = "Large Landmasses of the World",
+#     subtitle = "The top ten largest are presented"
+#   )
+# 
+# # Show the gt Table
+# gt_tbl
+# 
+# # Use markdown for the heading's `title` and `subtitle` to
+# # add bold and italicized characters
+# gt(islands_tbl[1:2,]) %>%
+#   tab_header(
+#     title = md("**Large Landmasses of the World**"),
+#     subtitle = md("The *top two* largest are presented")
+#   )
+#   
+#   
+# 
+# reformat_apr_col <- function(df, apr, rslt, tgt, var) {
+#   df %>% 
+#     mutate("{{ var }}" := paste(percent({{apr}}, 1), 
+#                                 comma({{rslt}}, accuracy = 1, scale = 1e-3, suffix = "K"), 
+#                                 comma({{tgt}}, accuracy = 1, scale = 1e-3, suffix = "K")))
+# }
 
-m# Make a display table with the `islands_tbl`
-# table; put a heading just above the column labels
 
-briefer_tbl <-
-  tibble(
-    Indicator = briefer,
-    fiscal_year = briefer,
-    Achievement = briefer,
-    Fundingagency = briefer
-  ) %>%
-  arrange(desc(achievement))
-
-# Display the table
-briefer_tbl
-
-gt_tbl <- 
-  gt_tbl %>%
-  tab_header(
-    title = "Large Landmasses of the World",
-    subtitle = "The top ten largest are presented"
-  )
-
-# Show the gt Table
-gt_tbl
-
-# Use markdown for the heading's `title` and `subtitle` to
-# add bold and italicized characters
-gt(islands_tbl[1:2,]) %>%
-  tab_header(
-    title = md("**Large Landmasses of the World**"),
-    subtitle = md("The *top two* largest are presented")
-  )
-  
-  
-
-
-
+#gt
+  #need to fix: sourcesanspro
+    
+    
+    briefer %>%
+    gt(groupname_col = "fundingagency",
+       rowname_col = "indicator") %>% 
+      tab_options(
+        table.font.names = "Source Sans Pro"
+      ) %>% 
+      cols_width(
+        vars(indicator) ~ px(140),
+        everything() ~ px(80)
+      )%>% 
+      tab_style(
+        style = cell_borders(
+          sides = "right",
+          weight = px(1.5),
+        ),
+        locations = cells_body(
+          columns = everything(),
+          rows = everything()
+        ))
+      # fmt_number(
+      #   columns = vars(
+      #     `FY20 Q1`,
+      #     `FY20 Q2`,
+      #     `FY20 Q3`,
+      #     `FY20 Q4`,
+      #     `FY20 Total`,
+      #     `Fy20 Targets`,
+      #     `FY21 Targets`),
+      #   decimals = 0
+      # ) %>% 
+      # fmt_percent(
+      #   columns = vars(`FY20 Achieved`),
+      #   decimals = 0
+      # )
+    
+    
+    
+    
