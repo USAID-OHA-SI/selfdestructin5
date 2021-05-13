@@ -45,12 +45,12 @@ cntry_ou <-  si_path() %>%
 
 briefer <- cntry_ou %>%
   filter(fiscal_year %in% c(2021, 2020, 2019),
-         countrynamename == "Tanzania",
+         countryname == "Tanzania",
          indicator %in% c("HTS_TST", "HTS_TST_POS", "PrEP_NEW", "TX_CURR", "TX_NEW", "VMMC_CIRC"),
          standardizeddisaggregate %in% c("Total Numerator"),
          !fundingagency %in% c("Dedup")) %>%
   glamr::clean_agency() %>%
-  group_by(fiscal_year, countrynamename, indicator, fundingagency) %>%
+  group_by(fiscal_year, countryname, indicator, fundingagency) %>%
   summarise_at(vars(targets:cumulative),sum,na.rm=TRUE) %>%
   ungroup() %>%
   select(-c(qtr1:qtr4)) %>%
@@ -81,7 +81,7 @@ briefer <- briefer %>%
   
 #what is a better way to do this
  briefer <- briefer %>% 
-      select(countrynamename, indicator, fundingagency, ends_with("Achievement"),
+      select(countryname, indicator, fundingagency, ends_with("Achievement"),
              ends_with("Results"), everything())
  
 
@@ -111,14 +111,14 @@ briefer <- briefer %>%
 
 
   table_data <- briefer %>%
-    filter(countrynamename == cntry_sel)
+    filter(countryname == cntry_sel)
   
   
 #TO DO Table
   #add commas & percents - done
   #conditional format with color FY19+FY20 (Q4) = help
   #conditional format with color FY21 (current year, quarter) - help
-    ICPIutilities::identifypd(cntry_ou)
+    ICPIutilities::identifypd(cntry_ou) #oh now i see
   #convert all the font to Source Sans Pro - definitely help
   #headers and agencies to bold - Help
   
@@ -134,7 +134,7 @@ briefer <- briefer %>%
       row_group_order(
         groups = c("USAID", "CDC", "DOD")
       ) %>%
-      cols_hide(vars(countrynamename)) %>% 
+      cols_hide(vars(countryname)) %>% 
       # tab_options(
       #   table.font.names = "Source Sans Pro"
       # ) %>% 
@@ -183,20 +183,21 @@ briefer <- briefer %>%
       # tab_style(style = cell_fill(color = usaid_lightgrey),      
       #           locations = cells_body(                 
       #             columns = matches("Ach")))   %>%   
-      tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.55)),
+      tab_style(style = list(cell_fill(color = old_rose, alpha = 0.55)),
                 locations = cells_body(
                   columns = vars(`FY20\nAchievement`),
-                  rows = `FY20\nAchievement` < .75)) 
-              
-
-      
-      
+                  rows = `FY20\nAchievement` < .75)) %>%
+        tab_style(style = list(cell_fill(color = burnt_sienna, alpha = 0.55)),
+                  locations = cells_body(
+                    columns = vars(`FY21\nAchievement`),
+                    rows = `FY20\nAchievement` < .15)) %>%
       tab_header(title = "TANZANIA PERFORMANCE IN FY21 Q1") %>%
-      tab_source_note("Source: DATIM MSD FY21Q1 2020-03-19")    
-    
-    
-    
-    
+      tab_source_note("Source: DATIM MSD FY21Q1 2020-03-19") %>%   
+      fmt_percent(
+        columns = vars(`FY19\nAchievement`, `FY20\nAchievement`, `FY21\nAchievement`),
+        decimals = 0
+      )
+
   
   # ----------------------
     
