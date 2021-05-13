@@ -180,17 +180,22 @@ briefer <- briefer %>%
     
     
       gt_tbl %>% 
-      # tab_style(style = cell_fill(color = usaid_lightgrey),      
-      #           locations = cells_body(                 
-      #             columns = matches("Ach")))   %>%   
-      tab_style(style = list(cell_fill(color = old_rose, alpha = 0.55)),
+      tab_style(style = cell_fill(color = usaid_lightgrey),
+                locations = cells_body(
+                  columns = matches("Ach"))) %>%
+                  #,cell_text(weight = "bold"))   %>%
+      tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.55)),
                 locations = cells_body(
                   columns = vars(`FY20\nAchievement`),
-                  rows = `FY20\nAchievement` < .75)) %>%
-        tab_style(style = list(cell_fill(color = burnt_sienna, alpha = 0.55)),
+                  rows = `FY20\nAchievement` < .75) & indicator == "TX_CURR") %>%
+      tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.55)),
+                locations = cells_body(
+                  columns = vars(`FY20\nAchievement`),
+                  rows = `FY20\nAchievement` < .25) & indicator != "TX_CURR") %>%
+        tab_style(style = list(cell_fill(color = old_rose, alpha = 0.55)),
                   locations = cells_body(
                     columns = vars(`FY21\nAchievement`),
-                    rows = `FY20\nAchievement` < .15)) %>%
+                    rows = `FY21\nAchievement` < .15)) %>%
       tab_header(title = "TANZANIA PERFORMANCE IN FY21 Q1") %>%
       tab_source_note("Source: DATIM MSD FY21Q1 2020-03-19") %>%   
       fmt_percent(
@@ -198,7 +203,21 @@ briefer <- briefer %>%
         decimals = 0
       )
 
-  
+
+      devtools::install_github("USAID-OHA-SI/glitr")
+      
+      
+      gt_tbl %>% 
+        tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.55)),
+                  locations = cells_body(
+                    columns = vars(`FY20\nAchievement`),
+                    rows = `FY20\nAchievement` < .75) & indicator == "TX_CURR) %>%
+      tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.55)),
+                locations = cells_body(
+                  columns = vars(`FY20\nAchievement`),
+                  rows = `FY20\nAchievement` < .25) & indicator != "TX_CURR) 
+      
+      
   # ----------------------
     
     
