@@ -59,7 +59,6 @@ briefer <- cntry_ou %>%
     across(c(achievement), percent, .1))
 
   #?across
-  #across(c(achievement), ~ percent(.)/100))
   
   
 
@@ -80,20 +79,18 @@ briefer <- briefer %>%
                 values_from = c(Targets, Results, Achievement)
                 )
 
-
+#what is a better way to do this
  briefer <- briefer[, c("countryname", "indicator", "fundingagency", 
                         "FY19<br>Results", "FY19<br>Targets", "FY19<br>Achievement",
                         "FY20<br>Results", "FY20<br>Targets", "FY20<br>Achievement",
                         "FY21<br>Results", "FY21<br>Targets", "FY21<br>Achievement")]
     
-#briefer <- briefer %>% pivot_longer(cols = fundingagency,
-                                    #values_to = "indicator")
  
 
 ## TO DO
   #reorder indicators (order string variables in R) - DONE
   #reorder columns #reorder columns:DONE
- # Alternative:
+ # note for myself (please ignore):
  # df <- df %>%
  #   dplyr::relocate(`FY20 Total`, .before = `FY21 Targets`) %>% 
  #   dplyr::relocate(`FY20 Achieved`, .before = `FY21 Targets`) %>%
@@ -107,11 +104,11 @@ briefer <- briefer %>%
  #                                  "PrEP_NEW")) %>% 
  # arrange(indicator)
   
-  #reorder agency - NEED TO REORDER THEM
+  #reorder agency - done
   
 ## Table
   #select 1 country
-#WHAT am I doing wrong here
+#Need help with this
   # cntry_sel <- "Tanzania"
   # 
   # 
@@ -120,15 +117,60 @@ briefer <- briefer %>%
   
   
 #TO DO Table
-  #add commas & percents - DONE
-  #conditional format with color FY19+FY20 (Q4)
-  #conditional format with color FY21 (current year, quarter)
+  #add commas & percents - done
+  #conditional format with color FY19+FY20 (Q4) = help
+  #conditional format with color FY21 (current year, quarter) - help
     ICPIutilities::identifypd(cntry_ou)
-  #convert all the font to Source Sans Pro
+  #convert all the font to Source Sans Pro - definitely help
   #headers and agencies to bold
   
+    #gt
+    #need to fix: sourcesanspro
+    #HOW do i get fy21 to not override - try combining the two lines
     
-# as_tibble(briefer)
+    
+    briefer %>%
+      gt(groupname_col = "fundingagency",
+         rowname_col = "indicator") %>% 
+      row_group_order(
+        groups = c("USAID", "CDC", "DOD")
+      ) %>%
+      # tab_options(
+      #   table.font.names = "Source Sans Pro"
+      # ) %>% 
+      cols_width(
+        vars(indicator) ~ px(140),
+        everything() ~ px(80)
+      )%>% 
+      tab_style(
+        style = cell_borders(
+          sides = "right",
+          weight = px(1.5),
+        ),
+        locations = cells_body(
+          columns = everything(),
+          rows = everything()
+        )) %>%
+      tab_style(style = cell_fill(color = usaid_lightgrey),      ## defining the what (the 4th value of the pal object)
+                locations = cells_body(                 ## telling it where (ie, the body of a cell)
+                  columns = vars(`FY19<br>Achievement`, `FY20<br>Achievement`, 
+                                 `FY21<br>Achievement`)))   %>%   ## which col this refers to (note `vars()`)
+      #rows = `FY20<br>Achievement` >= 1.1)) %>%   ## the argument
+      tab_style(style = cell_fill(color = usaid_red),
+                locations = cells_body(
+                  columns = vars(`FY21<br>Achievement`),
+                  rows =`FY21<br>Achievement` <= 20)) %>% 
+      tab_header(title = "TANZANIA PERFORMANCE IN FY21 Q1") %>%
+      tab_source_note("Source: DATIM MSD FY21Q1 2020-03-19")    
+    
+    
+    
+    
+    
+    
+    
+    
+# IGNORE
 # 
 # m# Make a display table with the `islands_tbl`
 # # table; put a heading just above the column labels
@@ -173,29 +215,7 @@ briefer <- briefer %>%
 # }
 
 
-#gt
-  #need to fix: sourcesanspro
-    
-    
-    briefer %>%
-    gt(groupname_col = "fundingagency",
-       rowname_col = "indicator") %>% 
-      tab_options(
-        table.font.names = "Source Sans Pro"
-      ) %>% 
-      cols_width(
-        vars(indicator) ~ px(140),
-        everything() ~ px(80)
-      )%>% 
-      tab_style(
-        style = cell_borders(
-          sides = "right",
-          weight = px(1.5),
-        ),
-        locations = cells_body(
-          columns = everything(),
-          rows = everything()
-        ))
+#GT code for myself - to be ignored
       # fmt_number(
       #   columns = vars(
       #     `FY20 Q1`,
@@ -212,6 +232,10 @@ briefer <- briefer %>%
       #   decimals = 0
       # )
     
-    
+    #OLD CODE I TOOK OUT/I DONT KNOW WHAT PAL[1] IS
+    # tab_style(style = cell_fill(color = pal[1]),
+    #           locations = cells_body(
+    #             columns = vars(`FY20 Achievement`),
+    #             rows = `FY20 Achieved` < .75)) %>% 
     
     
