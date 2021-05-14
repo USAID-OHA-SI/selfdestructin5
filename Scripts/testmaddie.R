@@ -5,6 +5,14 @@
 library(glamr)
 
 si_setup()
+install.packages("glitr")
+
+
+install.packages("usethis")
+library(usethis)
+library(devtools)
+
+#devtools::install_github("USAID-OHA-SI/glitr")
 
 
 library(extrafont)
@@ -27,6 +35,7 @@ library(ggflags)
 library(glue)
 library(gt)
 library(tidyselect)
+library(devtools)
 
 # MER Data
 
@@ -129,8 +138,7 @@ briefer <- briefer %>%
     
     
     gt_tbl <- briefer %>%
-      gt(groupname_col = "fundingagency",
-         rowname_col = "indicator") %>% 
+      gt(groupname_col = "fundingagency") %>% 
       row_group_order(
         groups = c("USAID", "CDC", "DOD")
       ) %>%
@@ -178,21 +186,27 @@ briefer <- briefer %>%
       #     rows = everything()
       #   )) %>%
     
+    #get rid of indicator at top
+    
+    
     
       gt_tbl %>% 
       tab_style(style = cell_fill(color = usaid_lightgrey),
                 locations = cells_body(
                   columns = matches("Ach"))) %>%
-                  #,cell_text(weight = "bold"))   %>%
+        tab_style(style = cell_text(weight = "bold"),
+                  locations = cells_body(
+                    columns = everything(),
+                    rows = everything())) %>%
       tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.55)),
                 locations = cells_body(
                   columns = vars(`FY20\nAchievement`),
-                  rows = `FY20\nAchievement` < .75) & indicator == "TX_CURR") %>%
+                  rows = `FY20\nAchievement` < .75 & indicator == "TX_CURR")) %>%
       tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.55)),
                 locations = cells_body(
                   columns = vars(`FY20\nAchievement`),
-                  rows = `FY20\nAchievement` < .25) & indicator != "TX_CURR") %>%
-        tab_style(style = list(cell_fill(color = old_rose, alpha = 0.55)),
+                  rows = `FY20\nAchievement` < .25 & indicator != "TX_CURR")) %>%
+        tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.55)),
                   locations = cells_body(
                     columns = vars(`FY21\nAchievement`),
                     rows = `FY21\nAchievement` < .15)) %>%
@@ -202,21 +216,6 @@ briefer <- briefer %>%
         columns = vars(`FY19\nAchievement`, `FY20\nAchievement`, `FY21\nAchievement`),
         decimals = 0
       )
-
-
-      devtools::install_github("USAID-OHA-SI/glitr")
-      
-      
-      gt_tbl %>% 
-        tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.55)),
-                  locations = cells_body(
-                    columns = vars(`FY20\nAchievement`),
-                    rows = `FY20\nAchievement` < .75) & indicator == "TX_CURR) %>%
-      tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.55)),
-                locations = cells_body(
-                  columns = vars(`FY20\nAchievement`),
-                  rows = `FY20\nAchievement` < .25) & indicator != "TX_CURR) 
-      
       
   # ----------------------
     
