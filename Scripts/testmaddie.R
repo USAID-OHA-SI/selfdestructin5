@@ -98,20 +98,7 @@ briefer <- briefer %>%
   #reorder indicators (order string variables in R) - DONE
   #reorder agency - done
  #reorder columns #reorder columns - done
- # note for myself (please ignore):
- # df <- df %>%
- #   dplyr::relocate(`FY20 Total`, .before = `FY21 Targets`) %>% 
- #   dplyr::relocate(`FY20 Achieved`, .before = `FY21 Targets`) %>%
- #   dplyr::relocate(`Fy20 Targets`, .after = `FY20 Total`) %>% 
- #   mutate(indicator = fct_relevel(indicator, "HTS_TST",
- #                                  "HTS_TST_POS",
- #                                  "TX_NEW",
- #                                  "TX_CURR",
- #                                  "TX_NET_NEW",
- #                                  "VMMC_CIRC",
- #                                  "PrEP_NEW")) %>% 
- # arrange(indicator)
-  
+
  
 ## Table
   #select 1 country
@@ -194,10 +181,13 @@ briefer <- briefer %>%
       tab_style(style = cell_fill(color = usaid_lightgrey),
                 locations = cells_body(
                   columns = matches("Ach"))) %>%
-        tab_style(style = cell_text(weight = "bold"),
+      tab_style(style = cell_text(weight = "bold"),
                   locations = cells_body(
                     columns = everything(),
                     rows = everything())) %>%
+        tab_style(style = cell_text(weight = "bold"),
+                  locations = cells_title(
+                    groups = c("title"))) %>%
       tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.55)),
                 locations = cells_body(
                   columns = vars(`FY20\nAchievement`),
@@ -206,7 +196,7 @@ briefer <- briefer %>%
                 locations = cells_body(
                   columns = vars(`FY20\nAchievement`),
                   rows = `FY20\nAchievement` < .25 & indicator != "TX_CURR")) %>%
-        tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.55)),
+      tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.55)),
                   locations = cells_body(
                     columns = vars(`FY21\nAchievement`),
                     rows = `FY21\nAchievement` < .15)) %>%
@@ -215,7 +205,10 @@ briefer <- briefer %>%
       fmt_percent(
         columns = vars(`FY19\nAchievement`, `FY20\nAchievement`, `FY21\nAchievement`),
         decimals = 0
-      )
+      ) %>%
+        fmt_number(columns = vars(`FY19\nResults`, `FY20\nResults`, `FY21\nResults`,
+                                  `FY19\nTargets`, `FY20\nTargets`, `FY21\nTargets`),
+          sep_mark = "," )
       
   # ----------------------
     
@@ -287,4 +280,19 @@ briefer <- briefer %>%
     #             columns = vars(`FY20 Achievement`), ## which col this refers to (note `vars()`)
     #             rows = `FY20 Achieved` < .75)) %>% 
     
-    
+    #old stuff
+      #reordering column names
+      # note for myself (please ignore):
+      # df <- df %>%
+      #   dplyr::relocate(`FY20 Total`, .before = `FY21 Targets`) %>% 
+      #   dplyr::relocate(`FY20 Achieved`, .before = `FY21 Targets`) %>%
+      #   dplyr::relocate(`Fy20 Targets`, .after = `FY20 Total`) %>% 
+      #   mutate(indicator = fct_relevel(indicator, "HTS_TST",
+      #                                  "HTS_TST_POS",
+      #                                  "TX_NEW",
+      #                                  "TX_CURR",
+      #                                  "TX_NET_NEW",
+      #                                  "VMMC_CIRC",
+      #                                  "PrEP_NEW")) %>% 
+      # arrange(indicator)
+      
