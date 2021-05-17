@@ -2,18 +2,17 @@
 #Mission Director Briefers
 #04-30-21
 
-library(glamr)
-
-si_setup()
-install.packages("glitr")
-
-
-install.packages("usethis")
-library(usethis)
-library(devtools)
+# library(glamr)
+# 
+# si_setup()
+# install.packages("glitr")
 
 #devtools::install_github("USAID-OHA-SI/glitr")
 
+folderpath <- "~/Source_Sans_Pro"
+font_import(folderpath)
+
+si_path()
 
 library(extrafont)
 library(tidyverse)
@@ -36,6 +35,7 @@ library(glue)
 library(gt)
 library(tidyselect)
 library(devtools)
+library(usethis)
 
 # MER Data
 
@@ -155,6 +155,8 @@ briefer <- briefer %>%
         vars(indicator) ~ px(140),
         everything() ~ px(80)
       )%>% 
+      tab_options(
+        table.font.names = "Source Sans Pro") %>%
       tab_style(
         style = cell_borders(
           sides = "right",
@@ -209,6 +211,13 @@ briefer <- briefer %>%
         fmt_number(columns = vars(`FY19\nResults`, `FY20\nResults`, `FY21\nResults`,
                                   `FY19\nTargets`, `FY20\nTargets`, `FY21\nTargets`),
           sep_mark = "," )
+      
+      
+  # here()
+  # install.packages('webshot')
+  # library(webshot)
+      gtsave(gt_tbl, here("briefer_TZA_table.pdf"))
+      gtsave(gt_tbl, here("briefer_TZA_table.png"))
       
   # ----------------------
     
