@@ -12,6 +12,8 @@
 folderpath <- "~/Source_Sans_Pro"
 font_import(folderpath)
 
+folderpath
+
 si_path()
 
 library(extrafont)
@@ -25,8 +27,6 @@ library(patchwork)
 library(ICPIutilities)
 library(glamr)
 library(janitor)
-library(rnaturalearth)
-library(rnaturalearthhires)
 library(ggtext)
 library(ggrepel)
 library(tidytext)
@@ -36,6 +36,13 @@ library(gt)
 library(tidyselect)
 library(devtools)
 library(usethis)
+
+
+
+
+
+
+
 
 # MER Data
 
@@ -87,8 +94,7 @@ briefer <- briefer %>%
                 values_from = c(Targets, Results, Achievement)
                 )
 
-  
-#what is a better way to do this
+  #reordering
  briefer <- briefer %>% 
       select(countryname, indicator, fundingagency, ends_with("Achievement"),
              ends_with("Results"), everything())
@@ -130,9 +136,6 @@ briefer <- briefer %>%
         groups = c("USAID", "CDC", "DOD")
       ) %>%
       cols_hide(vars(countryname)) %>% 
-      # tab_options(
-      #   table.font.names = "Source Sans Pro"
-      # ) %>% 
       tab_spanner(label = md("**Achievement**"), 
                   columns = matches("Achievement")) %>%  
       tab_spanner(label = md("**Results**"), 
@@ -155,10 +158,8 @@ briefer <- briefer %>%
         vars(indicator) ~ px(140),
         everything() ~ px(80)
       )%>% 
-      tab_options(
-        table.font.names = "Source Sans Pro") %>%
-      tab_style(
-        style = cell_borders(
+        tab_style(
+          style = cell_borders(
           sides = "right",
           weight = px(1),
         ),
@@ -208,18 +209,21 @@ briefer <- briefer %>%
         columns = vars(`FY19\nAchievement`, `FY20\nAchievement`, `FY21\nAchievement`),
         decimals = 0
       ) %>%
+        tab_options(
+          table.font.names = "Source Sans Pro"
+        ) %>% 
         fmt_number(columns = vars(`FY19\nResults`, `FY20\nResults`, `FY21\nResults`,
                                   `FY19\nTargets`, `FY20\nTargets`, `FY21\nTargets`),
-          sep_mark = "," )
+                   drop_trailing_zeros = TRUE, sep_mark = "," )
       
       
   # here()
   # install.packages('webshot')
-  # library(webshot)
+  library(webshot)
       gtsave(gt_tbl, here("briefer_TZA_table.pdf"))
       gtsave(gt_tbl, here("briefer_TZA_table.png"))
       
-  # ----------------------
+      # ----------------------
     
     
 # IGNORE
