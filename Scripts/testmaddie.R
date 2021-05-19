@@ -180,7 +180,7 @@ briefer <- briefer %>%
     
     
     
-      gt_tbl %>% 
+      gt_tbl <- gt_tbl %>% 
       tab_style(style = cell_fill(color = usaid_lightgrey),
                 locations = cells_body(
                   columns = matches("Ach"))) %>%
@@ -209,12 +209,14 @@ briefer <- briefer %>%
         columns = vars(`FY19\nAchievement`, `FY20\nAchievement`, `FY21\nAchievement`),
         decimals = 0
       ) %>%
-        tab_options(
-          table.font.names = "Source Sans Pro"
-        ) %>% 
         fmt_number(columns = vars(`FY19\nResults`, `FY20\nResults`, `FY21\nResults`,
                                   `FY19\nTargets`, `FY20\nTargets`, `FY21\nTargets`),
                    drop_trailing_zeros = TRUE, sep_mark = "," )
+     #hmmmm......... 
+      gt_tbl %>% 
+        tab_options(
+          table.font.names = "Source Sans Pro"
+        )
       
       
   # here()
