@@ -3,18 +3,13 @@
 #04-30-21
 
 # library(glamr)
-# 
 # si_setup()
 # install.packages("glitr")
-
 #devtools::install_github("USAID-OHA-SI/glitr")
-
-folderpath <- "~/Source_Sans_Pro"
-font_import(folderpath)
-
-folderpath
-
-si_path()
+#folderpath <- "~/Source_Sans_Pro"
+#font_import(folderpath)
+#folderpath
+#si_path()
 
 library(extrafont)
 library(tidyverse)
@@ -61,7 +56,7 @@ cntry_ou <-  si_path() %>%
 
 briefer <- cntry_ou %>%
   filter(fiscal_year %in% c(2021, 2020, 2019),
-         countryname == "Tanzania",
+         #countryname == "Tanzania",
          indicator %in% c("HTS_TST", "HTS_TST_POS", "PrEP_NEW", "TX_CURR", "TX_NEW", "VMMC_CIRC"),
          standardizeddisaggregate %in% c("Total Numerator"),
          !fundingagency %in% c("Dedup")) %>%
@@ -102,13 +97,11 @@ briefer <- briefer %>%
 
 ## TO DO
   #reorder indicators (order string variables in R) - DONE
-  #reorder agency - done
- #reorder columns #reorder columns - done
+
 
  
 ## Table
   #select 1 country
-#Need help with this - i just ended up filtering in the cleaning step but would still like to know how to do this
   cntry_sel <- "Tanzania"
 
 
@@ -117,17 +110,14 @@ briefer <- briefer %>%
   
   
 #TO DO Table
-  #add commas & percents - done
   #conditional format with color FY19+FY20 (Q4) = help
   #conditional format with color FY21 (current year, quarter) - help
     ICPIutilities::identifypd(cntry_ou) #oh now i see
   #convert all the font to Source Sans Pro - definitely help
-  #headers and agencies to bold - Help
-  
-    #gt
-    #need to fix: sourcesanspro
-    #HOW do i get fy21 to not override - try combining the two lines
-    #need to understand the brackets
+  #headers and agencies to bold
+    #HOW do i get fy21 to not override 
+    #get rid of indicator at top
+
     
     
     gt_tbl <- briefer %>%
@@ -150,23 +140,20 @@ briefer <- briefer %>%
                  "FY21\nResults" = "FY21",
                  "FY19\nTargets" = "FY19",
                  "FY20\nTargets" = "FY20",
-                 "FY21\nTargets" = "FY21")
-    
-    
-    gt_tbl <- gt_tbl %>% 
+                 "FY21\nTargets" = "FY21") %>% 
       cols_width(
         vars(indicator) ~ px(140),
         everything() ~ px(80)
-      )%>% 
-        tab_style(
-          style = cell_borders(
-          sides = "right",
-          weight = px(1),
-        ),
-        locations = cells_body(
-          columns = everything(),
-          rows = everything()
-        ))
+      ) %>% 
+        # tab_style(
+        #   style = cell_borders(
+        #   sides = "right",
+        #   weight = px(1),
+        # ),
+        # locations = cells_body(
+        #   columns = everything(),
+        #   rows = everything()
+        # ))
       # tab_style(
       #   style = cells_data(
       #     weight = 40, #help - maybe not cells data
@@ -175,19 +162,21 @@ briefer <- briefer %>%
       #     columns = everything(),
       #     rows = everything()
       #   )) %>%
-    
-    #get rid of indicator at top
-    
-    
-    
-      gt_tbl <- gt_tbl %>% 
-      tab_style(style = cell_fill(color = usaid_lightgrey),
+      tab_style(style = cell_fill(color = trolley_grey_light, alpha = 0.75),
                 locations = cells_body(
                   columns = matches("Ach"))) %>%
-      tab_style(style = cell_text(weight = "bold"),
-                  locations = cells_body(
-                    columns = everything(),
-                    rows = everything())) %>%
+      # tab_style(style = cell_text(weight = "bold"),
+      #             locations = cells_body(
+      #               columns = everything(),
+      #               rows = everything())) %>%
+      fmt_percent(
+        columns = matches("Ach"),
+        decimals = 0
+      ) %>%
+      fmt_number(
+        columns = matches("Tar|Res"),
+        decimals = 0
+      ) %>% 
         tab_style(style = cell_text(weight = "bold"),
                   locations = cells_title(
                     groups = c("title"))) %>%
@@ -204,17 +193,11 @@ briefer <- briefer %>%
                     columns = vars(`FY21\nAchievement`),
                     rows = `FY21\nAchievement` < .15)) %>%
       tab_header(title = "TANZANIA PERFORMANCE IN FY21 Q1") %>%
-      tab_source_note("Source: DATIM MSD FY21Q1 2020-03-19") %>%   
-      fmt_percent(
-        columns = vars(`FY19\nAchievement`, `FY20\nAchievement`, `FY21\nAchievement`),
-        decimals = 0
-      ) %>%
-        fmt_number(columns = vars(`FY19\nResults`, `FY20\nResults`, `FY21\nResults`,
-                                  `FY19\nTargets`, `FY20\nTargets`, `FY21\nTargets`),
-                   drop_trailing_zeros = TRUE, sep_mark = "," )
-     #hmmmm......... 
-      gt_tbl %>% 
-        tab_options(
+      tab_source_note("Source: DATIM MSD FY21Q1 2020-03-19")  %>% 
+        # fmt_number(columns = vars(`FY19\nResults`, `FY20\nResults`, `FY21\nResults`,
+        #                           `FY19\nTargets`, `FY20\nTargets`, `FY21\nTargets`),
+        #            drop_trailing_zeros = TRUE, sep_mark = "," )
+      tab_options(
           table.font.names = "Source Sans Pro"
         )
       
