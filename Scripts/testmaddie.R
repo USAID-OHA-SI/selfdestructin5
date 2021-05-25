@@ -11,6 +11,9 @@
 #folderpath
 #si_path()
 
+install.packages("devtools")
+devtools::install_github("ICPI/ICPIutilities")
+
 library(extrafont)
 library(tidyverse)
 library(sf)
