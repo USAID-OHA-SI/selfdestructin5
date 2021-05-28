@@ -38,10 +38,6 @@ library(usethis)
 
 
 
-
-
-
-
 # MER Data
 
 load_secrets()
@@ -180,6 +176,9 @@ briefer <- briefer %>%
         columns = matches("Tar|Res"),
         decimals = 0
       ) %>% 
+      tab_header(title = "TANZANIA PERFORMANCE IN FY21 Q1") %>%
+      tab_source_note("Source: DATIM MSD FY21Q1 2020-03-19")  %>%
+      
         tab_style(style = cell_text(weight = "bold"),
                   locations = cells_title(
                     groups = c("title"))) %>%
@@ -195,8 +194,6 @@ briefer <- briefer %>%
                   locations = cells_body(
                     columns = vars(`FY21\nAchievement`),
                     rows = `FY21\nAchievement` < .15)) %>%
-      tab_header(title = "TANZANIA PERFORMANCE IN FY21 Q1") %>%
-      tab_source_note("Source: DATIM MSD FY21Q1 2020-03-19")  %>% 
         # fmt_number(columns = vars(`FY19\nResults`, `FY20\nResults`, `FY21\nResults`,
         #                           `FY19\nTargets`, `FY20\nTargets`, `FY21\nTargets`),
         #            drop_trailing_zeros = TRUE, sep_mark = "," )
@@ -211,8 +208,74 @@ briefer <- briefer %>%
       gtsave(gt_tbl, here("briefer_TZA_table.pdf"))
       gtsave(gt_tbl, here("briefer_TZA_table.png"))
       
-      # ----------------------
+  # ----------------------
     
+      # Agency order throughout 
+      agency_order_shrt <- c("USAID", "CDC", "Other")
+      # Grab VLC, VLC and TX_CURR & TX_MMD data
+      agency_VLC <- 
+        #ou_im %>% 
+        country_ou %>% 
+        clean_agency() %>% 
+        mutate(agency = fct_lump(fundingagency, n = 2), 
+               agency = fct_relevel(agency, agency_order_shrt)) %>% 
+        filter(indicator %in% c("TX_CURR", "TX_PVLS"),
+               standardizeddisaggregate %in% c("Total Numerator", "Total Denominator")) %>% 
+        mutate(indicator = ifelse(numeratordenom == "D", paste0(indicator, "_D"), indicator)) %>%
+        group_by(fiscal_year, agency, indicator) %>% 
+        summarise(across(starts_with("qtr"), sum, na.rm = TRUE)) %>% 
+        ungroup() %>% 
+        reshape_msd() %>% 
+        pivot_wider(names_from = indicator,
+                    values_from = value) %>% 
+        arrange(agency, period) %>% 
+        mutate(VLC = TX_PVLS_D / lag(TX_CURR, 2, order_by = period),
+               VLS = TX_PVLS / TX_PVLS_D) %>%
+        mutate(fy = case_when(
+          period == "FY19Q4" ~ "FY19 Achievement",
+          period == "FY20Q4" ~ "FY20 Achievement",
+          period == "FY21Q1" ~ "FY21 Achievement",
+          TRUE ~ NA_character_
+        )) %>% 
+        filter(!is.na(fy)) %>% 
+        select(agency, VLC, VLS, fy) %>% 
+        pivot_longer(cols = c(VLC, VLS),
+                     names_to = "indicator", 
+                     values_to = "value") %>% 
+        pivot_wider(names_from = fy, values_from = value)
+      agency_mmd <- 
+        ou_im %>% 
+        clean_agency() %>% 
+        mutate(agency = fct_lump(fundingagency, n = 2), 
+               agency = fct_relevel(agency, agency_order_shrt)) %>% 
+        filter(indicator == "TX_CURR",
+               disaggregate == "Age/Sex/ARVDispense/HIVStatus",
+               otherdisaggregate %in% c("ARV Dispensing Quantity - 6 or more months", "ARV Dispensing Quantity - 3 to 5 months")) %>% 
+        group_by(fiscal_year, agency, indicator, otherdisaggregate) %>% 
+        summarise(across(starts_with("qtr"), sum, na.rm = TRUE)) %>% 
+        mutate(indicator = case_when(
+          str_detect(otherdisaggregate, "3 to 5") ~ "TX_MMD3+",
+          str_detect(otherdisaggregate, "6 or more") ~ "TX_MMD6+",
+          TRUE ~ NA_character_
+        )) %>% 
+        select(-otherdisaggregate) %>% 
+        reshape_msd() %>% 
+        mutate(fy = case_when(
+          period == "FY19Q4" ~ "FY19 Achievement",
+          period == "FY20Q4" ~ "FY20 Achievement",
+          period == "FY21Q1" ~ "FY21 Achievement",
+          TRUE ~ NA_character_
+        )) %>% 
+        filter(!is.na(fy)) %>% 
+        select(-period, -period_type) %>% 
+        pivot_wider(names_from = fy, values_from = value) 
+      
+      
+      
+      
+      
+      
+      
     
 # IGNORE
 # 
