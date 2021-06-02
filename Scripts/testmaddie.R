@@ -117,7 +117,7 @@ briefer <- briefer %>%
     #HOW do i get fy21 to not override 
     #get rid of indicator at top
 
-    
+    #turn this into a function
     
     gt_tbl <- briefer %>%
       gt(groupname_col = "fundingagency") %>% 
@@ -243,8 +243,9 @@ briefer <- briefer %>%
                      names_to = "indicator", 
                      values_to = "value") %>% 
         pivot_wider(names_from = fy, values_from = value)
+      
       agency_mmd <- 
-        ou_im %>% 
+        country_ou %>% 
         clean_agency() %>% 
         mutate(agency = fct_lump(fundingagency, n = 2), 
                agency = fct_relevel(agency, agency_order_shrt)) %>% 
@@ -270,8 +271,29 @@ briefer <- briefer %>%
         select(-period, -period_type) %>% 
         pivot_wider(names_from = fy, values_from = value) 
       
+     bind_rows(agency_VLC, agency_mmd)  
       
+     
+     
+     
+      ##function stuff
       
+      map_apr <- function(df_apr, ou) {
+        
+        print(ou)
+        
+        print(map)
+        
+        return(map)
+      }
+      
+      cntry_2_peds %>%
+        filter(!str_detect(operatingunit, " Region$"),
+               !is.na(APR)) %>%
+        distinct(operatingunit) %>%
+        pull() %>%
+        nth(25) %>%
+        map(.x, .f = ~map_apr(df_apr = cntry_2_peds, ou = .x))
       
       
       
