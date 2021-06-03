@@ -102,18 +102,18 @@ briefer <- briefer %>%
    #ou_im %>% 
    cntry_ou %>% 
    clean_agency() %>% 
-   mutate(agency = fct_lump(fundingagency, n = 2), 
-          agency = fct_relevel(agency, agency_order_shrt)) %>% 
+   mutate(fundingagency = fct_lump(fundingagency, n = 2), 
+          fundingagency = fct_relevel(fundingagency, agency_order_shrt)) %>% 
    filter(indicator %in% c("TX_CURR", "TX_PVLS"),
           standardizeddisaggregate %in% c("Total Numerator", "Total Denominator")) %>% 
    mutate(indicator = ifelse(numeratordenom == "D", paste0(indicator, "_D"), indicator)) %>%
-   group_by(fiscal_year, agency, indicator) %>% 
+   group_by(fiscal_year, fundingagency, indicator) %>% 
    summarise(across(starts_with("qtr"), sum, na.rm = TRUE)) %>% 
    ungroup() %>% 
    reshape_msd() %>% 
    pivot_wider(names_from = indicator,
                values_from = value) %>% 
-   arrange(agency, period) %>% 
+   arrange(fundingagency, period) %>% 
    mutate(VLC = TX_PVLS_D / lag(TX_CURR, 2, order_by = period),
           VLS = TX_PVLS / TX_PVLS_D) %>%
    mutate(fy = case_when(
@@ -123,7 +123,7 @@ briefer <- briefer %>%
      TRUE ~ NA_character_
    )) %>% 
    filter(!is.na(fy)) %>% 
-   select(agency, VLC, VLS, fy) %>% 
+   select(fundingagency, VLC, VLS, fy) %>% 
    pivot_longer(cols = c(VLC, VLS),
                 names_to = "indicator", 
                 values_to = "value") %>% 
@@ -132,12 +132,12 @@ briefer <- briefer %>%
  agency_mmd <- 
    cntry_ou %>% 
    clean_agency() %>% 
-   mutate(agency = fct_lump(fundingagency, n = 2), 
-          agency = fct_relevel(agency, agency_order_shrt)) %>% 
+   mutate(fundingagency = fct_lump(fundingagency, n = 2), 
+          fundingagency = fct_relevel(fundingagency, agency_order_shrt)) %>% 
    filter(indicator == "TX_CURR",
           disaggregate == "Age/Sex/ARVDispense/HIVStatus",
           otherdisaggregate %in% c("ARV Dispensing Quantity - 6 or more months", "ARV Dispensing Quantity - 3 to 5 months")) %>% 
-   group_by(fiscal_year, agency, indicator, otherdisaggregate) %>% 
+   group_by(fiscal_year, fundingagency, indicator, otherdisaggregate) %>% 
    summarise(across(starts_with("qtr"), sum, na.rm = TRUE)) %>% 
    mutate(indicator = case_when(
      str_detect(otherdisaggregate, "3 to 5") ~ "TX_MMD3+",
@@ -156,17 +156,19 @@ briefer <- briefer %>%
    select(-period, -period_type) %>% 
    pivot_wider(names_from = fy, values_from = value) 
  
- full_brief <- bind_rows(agency_VLC, agency_mmd, briefer)  
+ test1 <- bind_rows(agency_VLC, agency_mmd) 
+ 
+ test2 <- bind_rows(agency_VLC, agency_mmd, briefer)
 
 
  
 # ## Table
 #   #select 1 country
-#   cntry_sel <- "Tanzania"
+   cntry_sel <- "Tanzania"
 # 
 # 
-#   table_data <- briefer %>%
-#     filter(countryname == cntry_sel)
+  table_data <- test %>%
+    filter(countryname == cntry_sel)
   
   
 #TO DO Table
@@ -183,6 +185,12 @@ briefer <- briefer %>%
       
       df_brief <- df_brief %>% filter(countryname == ou)
       
+      # cntry_sel <- ou
+      # 
+      # df_brief %>%
+      # filter(ou == cntry_sel)
+      
+      #countryname = ou
       
       gt_tbl <- df_brief %>% #combined dfs
         gt(groupname_col = "fundingagency") %>% 
@@ -222,6 +230,7 @@ briefer <- briefer %>%
         ) %>% 
         tab_header(
           title = (paste0(ou, " | PERFORMANCE IN FY21 Q1"))) %>%
+         # title = ("TANZANIA | PERFORMANCE IN FY21 Q1")) %>%
         tab_source_note("Source: DATIM MSD FY21Q1 2020-03-19")  %>%
         
         tab_style(style = cell_text(weight = "bold"),
@@ -253,22 +262,21 @@ briefer <- briefer %>%
     }
     
 
-      
-     
-     
+  
       ##function stuff
-      
+      #error: all values provided in 'groups' must correspond to group indices
 
       
-      full_brief %>%
-        filter(!str_detect(countryname, " Region$"),
-              ) %>%
+test2 %>%
+        filter(
+          #!str_detect(countryname, " Region$"),
+               !is.na(`FY19 Achievement`)) %>%
         distinct(countryname) %>%
         pull() %>%
         nth(21) %>%
-        map(.x, .f = ~gt_table(df_brief = full_brief, ou = .x))
+        map(.x, .f = ~gt_table(df_brief = test2, ou = .x))
       
-      gtsave(gt_tbl, here("briefer_TZA_table.pdf"))
+      `gtsave(gt_tbl, here("briefer_TZA_table.pdf"))
       gtsave(gt_tbl, here("briefer_TZA_table.png"))
       
       
