@@ -100,7 +100,7 @@ briefer <- briefer %>%
  # Grab VLC, VLC and TX_CURR & TX_MMD data
  agency_VLC <- 
    #ou_im %>% 
-   country_ou %>% 
+   cntry_ou %>% 
    clean_agency() %>% 
    mutate(agency = fct_lump(fundingagency, n = 2), 
           agency = fct_relevel(agency, agency_order_shrt)) %>% 
@@ -130,7 +130,7 @@ briefer <- briefer %>%
    pivot_wider(names_from = fy, values_from = value)
  
  agency_mmd <- 
-   country_ou %>% 
+   cntry_ou %>% 
    clean_agency() %>% 
    mutate(agency = fct_lump(fundingagency, n = 2), 
           agency = fct_relevel(agency, agency_order_shrt)) %>% 
@@ -179,8 +179,12 @@ briefer <- briefer %>%
     
     gt_table <- function(df_brief, ou) {
       
+      print(ou)
       
-      gt_tbl <- full_brief %>% #combined dfs
+      df_brief <- df_brief %>% filter(countryname == ou)
+      
+      
+      gt_tbl <- df_brief %>% #combined dfs
         gt(groupname_col = "fundingagency") %>% 
         row_group_order(
           groups = c("USAID", "CDC", "DOD")
@@ -205,30 +209,9 @@ briefer <- briefer %>%
           vars(indicator) ~ px(140),
           everything() ~ px(80)
         ) %>% 
-        # tab_style(
-        #   style = cell_borders(
-        #   sides = "right",
-        #   weight = px(1),
-        # ),
-        # locations = cells_body(
-        #   columns = everything(),
-        #   rows = everything()
-        # ))
-        # tab_style(
-        #   style = cells_data(
-      #     weight = 40, #help - maybe not cells data
-      #   ),
-      #   locations = cells_data(
-      #     columns = everything(),
-      #     rows = everything()
-      #   )) %>%
       tab_style(style = cell_fill(color = trolley_grey_light, alpha = 0.75),
                 locations = cells_body(
                   columns = matches("Ach"))) %>%
-        # tab_style(style = cell_text(weight = "bold"),
-        #             locations = cells_body(
-        #               columns = everything(),
-        #               rows = everything())) %>%
         fmt_percent(
           columns = matches("Ach"),
           decimals = 0
@@ -237,7 +220,8 @@ briefer <- briefer %>%
           columns = matches("Tar|Res"),
           decimals = 0
         ) %>% 
-        tab_header(title = "TANZANIA PERFORMANCE IN FY21 Q1") %>%
+        tab_header(
+          title = (paste0(ou, " | PERFORMANCE IN FY21 Q1"))) %>%
         tab_source_note("Source: DATIM MSD FY21Q1 2020-03-19")  %>%
         
         tab_style(style = cell_text(weight = "bold"),
@@ -262,11 +246,10 @@ briefer <- briefer %>%
           table.font.names = "Source Sans Pro"
         )
       
-      print(ou)
       
-      print(map)
+      print(gt_tbl)
       
-      return(map)
+      return(gt_tbl)
     }
     
 
@@ -277,13 +260,13 @@ briefer <- briefer %>%
       
 
       
-      cntry_2_peds %>%
-        filter(!str_detect(operatingunit, " Region$"),
-               !is.na(APR)) %>%
-        distinct(operatingunit) %>%
+      full_brief %>%
+        filter(!str_detect(countryname, " Region$"),
+              ) %>%
+        distinct(countryname) %>%
         pull() %>%
-        nth(25) %>%
-        map(.x, .f = ~map_apr(df_apr = cntry_2_peds, ou = .x))
+        nth(21) %>%
+        map(.x, .f = ~gt_table(df_brief = full_brief, ou = .x))
       
       gtsave(gt_tbl, here("briefer_TZA_table.pdf"))
       gtsave(gt_tbl, here("briefer_TZA_table.png"))
