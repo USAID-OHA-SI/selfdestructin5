@@ -209,7 +209,13 @@
         title = glue::glue("{cntry} PERFORMACE SUMMARY")
       ) %>%
       opt_align_table_header(align = c("center")) %>% 
-      add_achv_colors()
+      add_achv_colors() %>% 
+      tab_source_note(
+        source_note = paste("Produced on ",Sys.Date(), "by SI Core Analytics Cluster using OU_IM_FY19-21_20210514i MSD")
+      ) %>% 
+      tab_options(
+        source_notes.font.size = 10
+      ) 
   }
     
     

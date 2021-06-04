@@ -131,7 +131,7 @@
       indicator == "TX_MMD3+" ~ "MMD 3+",
       indicator == "TX_MMD6+" ~ "MMD 6+",
       indicator == "VLC" ~ "Viral Load Coverage",
-      indicator == "VLS" ~ "Viral Load Suppression",
+      indicator == "VLS" ~ "Virally Suppressed",
     )) %>% 
     mutate(indicator = fct_relevel(indicator,
                                    "TX_CURR Adjusted",
@@ -139,7 +139,7 @@
                                    "MMD 3+",
                                    "MMD 6+",
                                    "Viral Load Coverage",
-                                   "Viral Load Suppression"),
+                                   "Virally Suppressed"),
            agency = fct_relevel(agency,
                                agency_order_long)) %>% 
     arrange(agency, indicator)
@@ -151,7 +151,7 @@
     gt(groupname_col = "agency") %>% 
     fmt_percent(
       columns = matches("results"),
-      rows = str_detect(indicator, "(Share|Coverage|Suppression)"),
+      rows = str_detect(indicator, "(Share|Coverage|Supp)"),
       decimal = 0
     ) %>% 
     fmt_number(
@@ -196,8 +196,20 @@
       locations = cells_row_groups()
     ) %>% 
     tab_options(
-    footnotes.font.size = 12
-    ) 
+    footnotes.font.size = 10,
+    source_notes.font.size = 10
+    ) %>% 
+    tab_header(
+      title = glue::glue("GLOBAL MULTI-MONTH DISPENSING AND VIRAL LOAD SUMMARY")
+    ) %>% 
+    tab_source_note(
+      source_note = "Viral Load Covererage = TX_PVLS_N / TX_CURR_2_period_lag"
+    ) %>% 
+    tab_source_note(
+      source_note = paste("Produced on ",Sys.Date(), "by SI Core Analytics Cluster using OU_IM_FY19-21_20210514i MSD")
+    )
+  
+  gtsave("Images/GLOBAL_FY21Q2_MMD_VL_MD.png")
   
   
   
