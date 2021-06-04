@@ -33,7 +33,19 @@
     return_latest("OU_IM_FY19-21_20210514") %>% 
     read_msd() %>% 
     filter(fiscal_year %in% c(2019, 2020, 2021))
-  
+
+
+# HELPER FUNCTIONS --------------------------------------------------------
+
+  # Helper to do a bit of repetitive munging
+  clean_and_aggregate <- function(df){
+    df %>% 
+      clean_agency() %>% 
+      mutate(agency = fct_lump(fundingagency, n = 2, other_level = "OTHER"),
+             agency = fct_relevel(agency, agency_order_long)) %>% 
+      group_by(fiscal_year, agency, indicator) %>% 
+      summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop")
+  }           
   
 # Functions to return key data frames needed to patch together tables
 # One of the challenges is that when doing the global calculations, 
@@ -51,11 +63,7 @@
              standardizeddisaggregate %in% c("Total Numerator"),
              fundingagency != "Dedup", 
              {{country_col}} %in% ou) %>% 
-      clean_agency() %>% 
-      mutate(agency = fct_lump(fundingagency, n = 2, other_level = "OTHER"),
-             agency = fct_relevel(agency, agency_order_long)) %>% 
-      group_by(fiscal_year, agency, indicator) %>% 
-      summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop") 
+      clean_and_aggregate(.)
     return(tx_curr_mmd)
   }
   tx_curr_base <- get_tx_curr_base(ou_im_vlc, operatingunit, "Botswana")
@@ -119,14 +127,15 @@
                    names_to = "indicator",
                    values_to = "results") %>% 
       spread(period, results) %>% 
-      select(agency, indicator, FY20results = FY20Q4, FY21results = FY21Q2) %>% 
+      select(agency, indicator, FY20results = FY20Q4, FY21Q1 = FY21Q1, FY21Q2) %>% 
       mutate(FY20APR = NA_real_,
              FY20targets = NA_integer_,
              FY21APR = NA_real_,
-             FY21targets = NA_integer_, .after = FY21results) %>% 
+             FY21targets = NA_integer_, .after = FY21Q2,
+             delta = FY21Q2 - FY21Q1) %>% 
       relocate(FY20APR, .after = indicator) %>% 
       relocate(FY20targets, .after = FY20results) %>% 
-      relocate(FY21results, .after = FY21APR) %>% 
+      relocate(FY21Q2, .after = FY21APR) %>% 
       filter(!indicator %in% c("TX_PVLS", "TX_PVLS_D", "TX_CURR_VLC")) %>% 
       mutate(indicator = case_when(
         indicator == "TX_CURR" ~ "TX_CURR",
@@ -161,18 +170,28 @@
       df %>% 
         gt(groupname_col = "agency") %>% 
         fmt_percent(
-          columns = matches("results"),
+          columns = matches("results|Q1|Q2|delta"),
           rows = str_detect(indicator, "(Share|Coverage|Supp)"),
           decimal = 0
         ) %>% 
         fmt_number(
-          columns = matches("results"),
+          columns = matches("results|Q1|Q2|delta"),
           rows = indicator %in% c("TX_CURR", "MMD 3+", "MMD 6+"),
           decimal = 0
         ) %>% 
         fmt_missing(
           columns = everything(),
           missing_text = "-"
+        ) %>% 
+        tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.25)),
+                  locations = cells_body(
+                    columns = c(delta),
+                    rows = delta <= -0.005)
+        ) %>% 
+        tab_style(style = list(cell_fill(color = genoa_light, alpha = 0.25)),
+                  locations = cells_body(
+                    columns = c(delta),
+                    rows = delta >= 0.005)
         ) %>% 
         cols_hide(
           columns = c(FY20APR, FY20targets, FY21APR, FY21targets)
@@ -193,13 +212,13 @@
           columns = contains("FY20")
         ) %>% 
         tab_spanner(
-          label = md("**FY21 Q2**"),
-          columns = contains("FY21")
+          label = md("**FY21**"),
+          columns = matches("FY21|delta")
         ) %>% 
         cols_label(
           indicator = "",
-          FY20results = "Results",
-          FY21results = "Results"
+          FY21Q1 = "Q1",
+          FY21Q2 = "Q2"
         ) %>% 
         opt_align_table_header(align = c("center")) %>% 
         tab_options(
@@ -250,9 +269,49 @@
   map(ou_list, ~get_md_vls_table(ou_im_vlc, operatingunit, .x) %>% 
         gtsave(file.path("Images/OU", paste0(.x, "_FY21Q2_MMD_VL_MD.png"))))    
   
+  # Distinct list of Countries in Regional OUS
+  
+  # TODO - Create a function that flags countries with TX_MMD (many do not report it)
+  # Asia
+  asia_cntry_list <- 
+    ou_im_vlc %>% 
+    filter(str_detect(operatingunit, "Asia Region")) %>% 
+    filter(!countryname %in% c("China", "Philippines")) %>% 
+    distinct(countryname) %>% 
+    pull()
+  
+  map(asia_cntry_list, ~get_md_vls_table(ou_im_vlc, countryname, .x) %>% 
+        gtsave(file.path("Images/Regional/Asia", paste0(.x, "_FY21Q2_MMD_VL_MD.png"))))
+  
+  # West Africa
+  westafr_cntry_list <- 
+    ou_im_vlc %>% 
+    filter(str_detect(operatingunit, "Africa Region")) %>% 
+    filter(!countryname %in% c("Sierra Leone")) %>% 
+    distinct(countryname) %>% 
+    pull()
+  
+  map(westafr_cntry_list, ~get_md_vls_table(ou_im_vlc, countryname, .x) %>% 
+        gtsave(file.path("Images/Regional/WAR", paste0(.x, "_FY21Q2_MMD_VL_MD.png"))))
+  
+  
+  # Western Hemisphere
+  # Omitting Guyana and Barbados due to no reporting in FY21
+  wh_cntry_list <- 
+    ou_im_vlc %>% 
+    filter(str_detect(operatingunit, "Western")) %>% 
+    filter(!countryname %in% c("Guyana", "Barbados", "Nicaragua", "Suriname")) %>% 
+    distinct(countryname) %>% 
+    pull()
+  
+  map(wh_cntry_list, ~get_md_vls_table(ou_im_vlc, countryname, .x) %>% 
+        gtsave(file.path("Images/Regional/WesternHemi", paste0(.x, "_FY21Q2_MMD_VL_MD.png"))))
+
   
 
-# MUNGE ============================================================================
+#  GENERATE GLOBAL TABLE -- SOUTH AFRICA FLAG -----------------------------
+
+
   
   #  Get the TX_CURR data needed for calculations
   #  Excluding South Africa
@@ -262,12 +321,7 @@
            standardizeddisaggregate %in% c("Total Numerator"),
            fundingagency != "Dedup", 
            operatingunit != "South Africa") %>% 
-           # operatingunit == {{ou}}) %>% 
-    clean_agency() %>% 
-    mutate(agency = fct_lump(fundingagency, n = 2, other_level = "OTHER"),
-           agency = fct_relevel(agency, agency_order_long)) %>% 
-    group_by(fiscal_year, agency, indicator) %>% 
-    summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop") %>% 
+    clean_and_aggregate(.) %>% 
     mutate(indicator = "TX_CURR_MMD")
   
   tx_curr_vls <-
@@ -275,12 +329,7 @@
     filter(indicator %in% c("TX_CURR"),
            standardizeddisaggregate %in% c("Total Numerator"),
            fundingagency != "Dedup") %>% 
-    # operatingunit == {{ou}}) %>% 
-    clean_agency() %>% 
-    mutate(agency = fct_lump(fundingagency, n = 2, other_level = "OTHER"),
-           agency = fct_relevel(agency, agency_order_long)) %>% 
-    group_by(fiscal_year, agency, indicator) %>% 
-    summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop") %>% 
+    clean_and_aggregate(.) %>% 
     mutate(indicator = "TX_CURR_VLC")
   
   
@@ -308,15 +357,9 @@
   
   # Calculate new TX_MMD3+ that contains both 3-6 and 6+ months of ART  
   # Pull in TX_CURR values from agency table
-  tx_mmds <- 
-    mmd_vlc %>% 
-    mutate(tx_mmd_group = if_else(indicator %in% c("TX_MMD3+", "TX_MMD6+"), 1, 0)) %>% 
-    filter(tx_mmd_group == 1) %>% 
-    group_by(fiscal_year, agency) %>% 
-    summarise(across(matches("tar|cumu|qtr"), sum, na.rm = T)) %>% 
-    ungroup() %>% 
-    mutate(indicator = "TX_MMD3+", .after = agency)
+  tx_mmds <- get_tx_mmds(mmd_vlc)
   
+
   mmd_vlc_tbl <- 
     mmd_vlc %>% 
     filter(!indicator %in% c("TX_MMD3+")) %>% 
@@ -334,14 +377,15 @@
                  names_to = "indicator",
                  values_to = "results") %>% 
     spread(period, results) %>% 
-    select(agency, indicator, FY20results = FY20Q4, FY21results = FY21Q2) %>% 
+    select(agency, indicator, FY20results = FY20Q4, FY21Q1, FY21Q2) %>% 
     mutate(FY20APR = NA_real_,
            FY20targets = NA_integer_,
            FY21APR = NA_real_,
-           FY21targets = NA_integer_, .after = FY21results) %>% 
+           FY21targets = NA_integer_, .after = FY21Q2,
+           delta = FY21Q2 - FY21Q1) %>% 
     relocate(FY20APR, .after = indicator) %>% 
     relocate(FY20targets, .after = FY20results) %>% 
-    relocate(FY21results, .after = FY21APR) %>% 
+    relocate(FY21Q2, .after = FY21APR) %>% 
     filter(!indicator %in% c("TX_PVLS", "TX_PVLS_D", "TX_CURR_VLC")) %>% 
     mutate(indicator = case_when(
       indicator == "TX_CURR_MMD" ~ "TX_CURR Adjusted",
@@ -363,23 +407,33 @@
     arrange(agency, indicator)
     
     
-
+  # PRoduce Table for Global
   
   mmd_vlc_tbl %>% 
     gt(groupname_col = "agency") %>% 
     fmt_percent(
-      columns = matches("results"),
+      columns = matches("results|Q1|Q2|delta"),
       rows = str_detect(indicator, "(Share|Coverage|Supp)"),
       decimal = 0
     ) %>% 
     fmt_number(
-      columns = matches("results"),
+      columns = matches("results|Q1|Q2|delta"),
       rows = indicator %in% c("TX_CURR Adjusted", "MMD 3+", "MMD 6+"),
       decimal = 0
     ) %>% 
     fmt_missing(
       columns = everything(),
       missing_text = "-"
+    ) %>% 
+    tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.25)),
+              locations = cells_body(
+                columns = c(delta),
+                rows = delta <= -0.005)
+    ) %>% 
+    tab_style(style = list(cell_fill(color = genoa_light, alpha = 0.25)),
+              locations = cells_body(
+                columns = c(delta),
+                rows = delta >= 0.005)
     ) %>% 
     cols_hide(
       columns = c(FY20APR, FY20targets, FY21APR, FY21targets)
@@ -400,51 +454,30 @@
       columns = contains("FY20")
     ) %>% 
     tab_spanner(
-      label = md("**FY21 Q2**"),
-      columns = contains("FY21")
+      label = md("**FY21**"),
+      columns = matches("FY21|delta")
     ) %>% 
     cols_label(
-        indicator = "",
-        FY20results = "Results",
-        FY21results = "Results"
+      indicator = "",
+      FY21Q1 = "Q1",
+      FY21Q2 = "Q2"
     ) %>% 
-  opt_align_table_header(align = c("center")) %>% 
-    tab_footnote(
-      footnote = "South Africa has no national MMD program and has been excluded from MMD coverage rates",
-      locations = cells_row_groups()
-    ) %>% 
+    opt_align_table_header(align = c("center")) %>% 
     tab_options(
-    footnotes.font.size = 10,
-    source_notes.font.size = 10
+      footnotes.font.size = 10,
+      source_notes.font.size = 10
     ) %>% 
     tab_header(
       title = glue::glue("GLOBAL MULTI-MONTH DISPENSING AND VIRAL LOAD SUMMARY")
+    ) %>% 
+    tab_footnote(
+      footnote =  "South Africa has no national MMD program and has been excluded from MMD coverage rates.",
+      location = cells_row_groups()
     ) %>% 
     tab_source_note(
       source_note = "Viral Load Covererage = TX_PVLS_N / TX_CURR_2_period_lag"
     ) %>% 
     tab_source_note(
       source_note = paste("Produced on ",Sys.Date(), "by SI Core Analytics Cluster using OU_IM_FY19-21_20210514i MSD")
-    )
-  
-  gtsave("Images/GLOBAL_FY21Q2_MMD_VL_MD.png")
-  
-  
-  
-  
-  
-  
-  
-  
-
-  
-  
-  
-  
-  
-# VIZ ============================================================================
-
-  #  
-
-# SPINDOWN ============================================================================
-
+    ) %>% 
+    gtsave("Images/Global/GLOBAL_FY21Q2_MMD_VL_MD.png")
