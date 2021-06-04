@@ -24,7 +24,6 @@
     library(fontawesome)
     
     
-  
   # Set paths  
     data   <- "Data"
     dataout <- "Dataout"
@@ -37,6 +36,13 @@
     datim   <- glamr::si_path("path_datim")  
       
     merdata <- si_path(type = "path_msd")
+    
+    # Create a new folder to house regional country tables
+    dir.create("Images/Global")
+    dir.create("Images/OU")
+    dir.create("Images/Regional")
+    folder_list <- c("Asia", "WAR", "WesternHemi",)
+    map(folder_list, ~dir.create(file.path("Images/Regional/", .x)))
     
     # What quarter are we in?
     qtr <- "2"
@@ -58,8 +64,8 @@
     agency_order_long <- c("USAID", "CDC", "OTHER", "DOD", "HRSA", "PRM", "AF", "PC")
   
     # call required functions
-    source("../add_achv_colors_tbl.R")
-    source("../MD_tables_reboot_funs.R")
+    source("Scripts/add_achv_colors_tbl.R")
+    source("Scripts/MD_tables_reboot_funs.R")
 
 # LOAD DATA ============================================================================  
 
@@ -76,14 +82,24 @@
   # agency cleaned with core indicators
   # Loop over operating units and create tables
     
-    get_ou_tbl <- function(df, ou) {
+
+# SHAPE BASE TABLE --------------------------------------------------------
+    # Shape the base dataframe from which the table is derived
+    #@description shape the msd to wide with key indicators  
+    #@param df - base msd from which all manipulations are done
+    #@param country_col either countryname or operating unit, depending on table desired
+    #@param ou countryname or operating unit
+    
+    shape_md_tbl <- function(df, country_col, ou) {
       
+      # Filter the data down to key indicators defined in indics object
+      # Collapsing down to the agency level
       ou_tbl <- 
         df %>% 
         filter(indicator %in% indics,
                standardizeddisaggregate %in% c("Total Numerator"),
                fundingagency != "Dedup",
-               operatingunit == {{ou}}) %>% 
+               {{country_col}} %in% ou) %>% 
         clean_agency() %>% 
         mutate(agency = fct_lump(fundingagency, n = 2, other_level = "OTHER"),
                agency = fct_relevel(agency, agency_order_long)) %>% 
@@ -114,7 +130,7 @@
         group_by(agency)
     
     # Old table layout
-      agency_tbl_old <- 
+      md_tbl_old <- 
         md_tbl %>% 
         filter(period %in% c("FY20Q4", "FY21Q2")) %>% 
         select(period, agency, indicator, targets, results = cumulative, APR) %>% 
@@ -126,24 +142,23 @@
         arrange(agency, indicator) %>% 
         select(agency, indicator, sort(tidyselect::peek_vars()))
     
-    return(agency_tbl_old)
+    return(md_tbl_old)
     }
     
+  # Test function above
+    shape_md_tbl(df = ou_im, country_col = operatingunit, ou = "Rwanda") %>% prinf()
     
-    # Get the cleaned OU name to use in title and table header
-    get_country_name <- function(ou){
-      country <- ou_im %>% 
-        filter(operatingunit == {{ou}}) %>% 
-        clean_countries(colname = 'operatingunit') %>% 
-        distinct(operatingunit) %>% 
-        pull() %>% 
-        str_to_upper()
-    }
+    
 
+# PRETTIFY COLUMN NAMES ---------------------------------------------------
+
+    #@description fix_col_names applies a clean formatting to column names
+    #@param md_tbl_old old formatted version of md tables
     # Fix column names
-    fix_col_names <-function(ou_tbl) {  
-      table_names <- 
-        head(ou_tbl, 1) %>% 
+    fix_col_names <-function(md_tbl_old) {  
+      
+      tbl_col_names <- 
+        head(md_tbl_old, 1) %>% 
         ungroup() %>% 
       mutate_all(as.character) %>% 
       pivot_longer(everything(), names_to = "column", values_to = "value") %>% 
@@ -152,16 +167,21 @@
              label = ifelse(label == "APR", "achievement", label)) %>% 
       deframe()
       
-      return(table_names)
+      return(tbl_col_names)
     }
+    
+    fix_col_names(shape_md_tbl(ou_im, operatingunit, "Zambia"))
     
     
 # BASE TABLE GENERATION ---------------------------------------------------
 
     # Customize GT table to reproduce results
-  ou_md_tbl <- function(agency_tbl_old, cntry, col_names) {
+    #@param - 
+  md_tbl <- function(md_tbl_old, tbl_col_names, ou) {
       
-    agency_tbl_old %>% 
+    cntry <-  str_to_upper(ou)
+    
+    md_tbl_old %>% 
       gt(groupname_col = "agency") %>% 
       # Format numbers
       fmt_percent(
@@ -187,7 +207,7 @@
         all_caps = TRUE,
         locations = c("row_group")
       ) %>% 
-      cols_label(.list = {{col_names}}) %>% 
+      cols_label(.list = {{tbl_col_names}}) %>% 
       tab_spanner(
         label = md("**FY19**"),
         columns = contains("FY19")
@@ -219,146 +239,93 @@
   }
     
     
-  # Wrapper around everything to pull it all together  
-  get_md_table <- function(df, ou) {
+# Test it all together
+    md_tbl_old <- shape_md_tbl(df = ou_im, country_col = operatingunit, ou = "Zambia")
+    tbl_col_names <- fix_col_names(md_tbl_old)
+    md_tbl(md_tbl_old, tbl_col_names, "Zambia")
     
-    # Grab name for use in table
-    cntry <- get_country_name(ou)
-    message(paste('Creating base MD table for', cntry))
+    
+  # Wrapper around everything to pull it all together  
+  get_md_table <- function(df, country_col, ou) {
+    
+    message(paste('Creating base MD table for', ou))
     
     # Reproduce MD table data frame
-    tbl <- get_ou_tbl(df, ou)
+    md_tbl_old <- shape_md_tbl(df, {{country_col}}, ou)
     
     # Column labels
-    col_names <- fix_col_names(tbl)
+    tbl_col_names <- fix_col_names(md_tbl_old)
     
     # Generate the table
-    ou_tbl <- ou_md_tbl(tbl, cntry, col_names) 
-    return(ou_tbl)
-    
+    md_ou_tbl <- md_tbl(md_tbl_old, tbl_col_names, ou) 
+    return(md_ou_tbl)
   }  
 
   # Test for a single OU  
-  get_md_table(ou_im, "Vietnam")
+  get_md_table(ou_im, country_col = countryname, "Burkina Faso")
 
-# BATCH GENERATE OU TABLES ------------------------------------------------
-
+# BATCH GENERATE TABLES ------------------------------------------------
+# Generating for the following folders
+# Global - TOTAL PEPFAR
+# OU - Operating Unit level
+# Regional - SNU1 Equivalent but for Regional Programs
+  
+  
   # Distinct list of OUS to loop over
   ou_list <- ou_im %>% 
     distinct(operatingunit) %>% 
     pull()
   
-  map(ou_list, ~get_md_table(ou_im, .x) %>% 
-        gtsave(file.path(images, paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
+  map(ou_list, ~get_md_table(ou_im, operatingunit, .x) %>% 
+        gtsave(file.path("Images/OU", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
+  
+  
+  # Distinct list of Countries in Regional OUS
+  
+  # Asia
+  asia_cntry_list <- 
+    ou_im %>% 
+    filter(str_detect(operatingunit, "Asia Region")) %>% 
+    distinct(countryname) %>% 
+    pull()
+  
+  map(asia_cntry_list, ~get_md_table(ou_im, countryname, .x) %>% 
+        gtsave(file.path("Images/Regional/Asia", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
 
-
+  # West Africa
+  westafr_cntry_list <- 
+    ou_im %>% 
+    filter(str_detect(operatingunit, "Africa Region")) %>% 
+    distinct(countryname) %>% 
+    pull()
+  
+  map(westafr_cntry_list, ~get_md_table(ou_im, countryname, .x) %>% 
+        gtsave(file.path("Images/Regional/WAR", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
+  
+  
+  # Western Hemisphere
+  # Omitting Guyana and Barbados due to no reporting in FY21
+  wh_cntry_list <- 
+    ou_im %>% 
+    filter(str_detect(operatingunit, "Western")) %>% 
+    filter(!countryname %in% c("Guyana", "Barbados")) %>% 
+    distinct(countryname) %>% 
+    pull()
+  
+  map(wh_cntry_list, ~get_md_table(ou_im, countryname, .x) %>% 
+        gtsave(file.path("Images/Regional/WesternHemi", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
+  
+  
   # Generate global numbers
+  # Change all operating units to be "Global" to generate
   return_global_tbl <- function() {
-    
-    all <- get_ou_tbl(ou_im %>% mutate(operatingunit = "Global"), "Global")
-    col_names <- fix_col_names(all)
-    ou_tbl <- ou_md_tbl(all, "PEPFAR GLOBAL", col_names)
+    all <- shape_md_tbl(ou_im %>% mutate(operatingunit = "Global"), operatingunit, "Global")
+    tbl_col_names <- fix_col_names(all)
+    ou_tbl <- md_tbl(all, tbl_col_names, "PEPFAR GLOBAL")
     return(ou_tbl)
   }
   
-  return_global_tbl() %>% 
-    gtsave("Images/GLOBAL_FY21Q2_KEY_INDICATORS_MD.png")
+  return_global_tbl()  %>% 
+    gtsave("Images/Global/GLOBAL_FY21Q2_KEY_INDICATORS_MD.png")
     
-    
-    
-
-# MUNGE TX_MDD and VLS + VLC DATA INTO TABLE OF SIMILAR PROPORTIONS -------
-  
-  # TX_MMD3+ is actually TX_MMD_3-5 + TX_MMD_6+  
-  
-  glbl_base <- get_ou_tbl(ou_im %>% mutate(operatingunit = "Global"), "Global") %>% 
-    filter(indicator == "TX_CURR")
-  
-  
-  tx_curr <- 
-  
-  
-  mmd_vlc <- 
-    ou_im %>% 
-    filter(indicator %in% c("TX_CURR", "TX_PVLS"),
-           disaggregate %in%  c("Age/Sex/ARVDispense/HIVStatus", "Total Numerator", "Total Denominator") | 
-             otherdisaggregate %in% c("ARV Dispensing Quantity - 6 or more months", "ARV Dispensing Quantity - 3 to 5 months"),
-           fundingagency != "Dedup") %>% 
-    clean_agency() %>% 
-    mutate(agency = fct_lump(fundingagency, n = 2), 
-           agency = fct_relevel(agency, agency_order_long),
-           indicator = ifelse(numeratordenom == "D", paste0(indicator, "_D"), indicator),
-           indicator = case_when(
-             str_detect(otherdisaggregate, "3 to 5") ~ "TX_MMD3+",
-             str_detect(otherdisaggregate, "6 or more") ~ "TX_MMD6+",
-             TRUE ~ indicator )
-    ) %>% 
-    filter(indicator != "TX_CURR") %>% 
-    group_by(fiscal_year, agency, indicator) %>% 
-    summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop") %>% 
-    ungroup() %>% 
-    arrange(agency, fiscal_year, indicator) 
-    
-  # Calculate new TX_MMD3+ that contains both 3-6 and 6+ months of ART  
-  # Pull in TX_CURR values from agency table
-  tx_mmds <- agency_mmd_vlc %>% 
-    mutate(tx_mmd_group = if_else(indicator %in% c("TX_MMD3+", "TX_MMD6+"), 1, 0)) %>% 
-    filter(tx_mmd_group == 1) %>% 
-    group_by(fiscal_year, agency) %>% 
-    summarise(across(matches("tar|cumu|qtr"), sum, na.rm = T)) %>% 
-    ungroup() %>% 
-    mutate(indicator = "TX_MMD3+", .after = agency)
-    
-  agency_tx_mmd <- 
-    agency_mmd_vlc %>% 
-    filter(!indicator %in% c("TX_MMD3+", "TX_PVLS", "TX_PVLS_D", "TX_CURR")) %>% 
-    bind_rows(tx_mmds)   
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
- 
-    
-
-    
-
-    
-
-  
-      
-      
-    # Calculate Viral Load Coverage and Viral Load Suppression sepately then join in to main data frame
-    viral_loads <- 
-      agency_mmd_vlc %>% 
-      filter(str_detect(indicator, "(TX_CURR|TX_PVLS)"))
-
-      
-      
-
-  
-  # Create APR values for TX_MMD and VLC and VLS using lags and ordering of data. First,
-  #
-  
-  
-  
-  
-  
-  md_tbl %>% filter(indicator %in% c("TX_CURR", "TX_MMD3+", "TX_MMD6+"))
-  
-  # Calcula
-    
-  
-
-  
-# VIZ ============================================================================
-
-  #  
-
-# SPINDOWN ============================================================================
 
