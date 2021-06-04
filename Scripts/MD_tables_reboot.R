@@ -180,6 +180,7 @@
   md_tbl <- function(md_tbl_old, tbl_col_names, ou) {
       
     cntry <-  str_to_upper(ou)
+    team <- "Core Analytics Cluster"
     
     md_tbl_old %>% 
       gt(groupname_col = "agency") %>% 
@@ -231,7 +232,7 @@
       opt_align_table_header(align = c("center")) %>% 
       add_achv_colors() %>% 
       tab_source_note(
-        source_note = paste("Produced on ",Sys.Date(), "by SI Core Analytics Cluster using OU_IM_FY19-21_20210514i MSD")
+        source_note = paste("Produced on ",Sys.Date(), "by the ", team, " using PEPFAR FY21Q2i MSD released on 2021-05-14")
       ) %>% 
       tab_options(
         source_notes.font.size = 10
