@@ -228,7 +228,7 @@
         )
       ) %>% 
       tab_header(
-        title = glue::glue("{cntry} PERFORMACE SUMMARY")
+        title = glue::glue("{cntry} PERFORMANCE SUMMARY")
       ) %>%
       opt_align_table_header(align = c("center")) %>% 
       add_achv_colors() %>% 

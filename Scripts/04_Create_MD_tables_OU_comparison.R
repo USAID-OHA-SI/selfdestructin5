@@ -131,7 +131,7 @@
         )
       ) %>% 
     tab_header(
-      title = glue::glue("FY21 Q2 USAID OU PERFORMACE SUMMARY")
+      title = glue::glue("FY21 Q2 USAID OU PERFORMANCE SUMMARY")
     ) %>%
     opt_align_table_header(align = c("center")) %>% 
     data_color(columns = 2:7, colors = pal, alpha = 0.50) %>% 
