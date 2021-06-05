@@ -36,16 +36,20 @@
 
 
 # HELPER FUNCTIONS --------------------------------------------------------
-
-  # Helper to do a bit of repetitive munging
-  clean_and_aggregate <- function(df){
+  #This has to change to TX_CURR for VLS/MMD TABLES
+  
+  clean_and_aggregate_tx <- function(df){
     df %>% 
+      filter(indicator %in% c("TX_CURR"),
+             standardizeddisaggregate %in% c("Total Numerator"),
+             fundingagency != "Dedup") %>% 
       clean_agency() %>% 
       mutate(agency = fct_lump(fundingagency, n = 2, other_level = "OTHER"),
              agency = fct_relevel(agency, agency_order_long)) %>% 
       group_by(fiscal_year, agency, indicator) %>% 
       summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop")
-  }           
+  }   
+  
   
 # Functions to return key data frames needed to patch together tables
 # One of the challenges is that when doing the global calculations, 
@@ -59,14 +63,12 @@
   get_tx_curr_base <- function(df, country_col, ou){
     tx_curr_mmd <-
       df %>% 
-      filter(indicator %in% c("TX_CURR"),
-             standardizeddisaggregate %in% c("Total Numerator"),
-             fundingagency != "Dedup", 
-             {{country_col}} %in% ou) %>% 
-      clean_and_aggregate(.)
+      filter({{country_col}} %in% ou) %>% 
+      clean_and_aggregate_tx(.)
     return(tx_curr_mmd)
   }
-  tx_curr_base <- get_tx_curr_base(ou_im_vlc, operatingunit, "Botswana")
+  
+  tx_curr_base <- get_tx_curr_base(ou_im_vlc, operatingunit, "Zambia")
   
   get_mmd_vlc_base <- function(df, country_col, ou){
     mmd_vlc <-
@@ -92,7 +94,7 @@
       arrange(agency, fiscal_year, indicator) 
     return(mmd_vlc)
   }
-  mmd_vlc <- get_mmd_vlc_base(ou_im_vlc, operatingunit, "Botswana")
+  mmd_vlc <- get_mmd_vlc_base(ou_im_vlc, operatingunit, "Zambia")
 
   # Calculate TX_MMD3+ (sums TX_MMD3 and TX_MMD6)
   get_tx_mmds <- function(df){
@@ -236,7 +238,7 @@
         ) 
   }  
   
-  make_md_vlc_tbl(md_vlc_df, "Botswana")
+  make_md_vlc_tbl(md_vlc_df, "Zambia")
   
   # Wrapper around everything to pull it all together  
   get_md_vls_table <- function(df, country_col, ou) {
@@ -252,11 +254,10 @@
     
     md_ou_vlc_tbl <- make_md_vlc_tbl(md_vlc_df, ou)
     return(md_ou_vlc_tbl)
-
   }  
   
   # Test it all
-  get_md_vls_table(ou_im_vlc, countryname, "Nigeria")
+  get_md_vls_table(ou_im_vlc, countryname, "Kazakhstan")
 
 
 # BATCH VLC/MMD TABLES ----------------------------------------------------
@@ -317,19 +318,13 @@
   #  Excluding South Africa
   tx_curr_mmd <-
     ou_im_vlc %>% 
-    filter(indicator %in% c("TX_CURR"),
-           standardizeddisaggregate %in% c("Total Numerator"),
-           fundingagency != "Dedup", 
-           operatingunit != "South Africa") %>% 
-    clean_and_aggregate(.) %>% 
+    filter(operatingunit != "South Africa") %>% 
+    clean_and_aggregate_tx(.) %>% 
     mutate(indicator = "TX_CURR_MMD")
   
   tx_curr_vls <-
     ou_im_vlc %>% 
-    filter(indicator %in% c("TX_CURR"),
-           standardizeddisaggregate %in% c("Total Numerator"),
-           fundingagency != "Dedup") %>% 
-    clean_and_aggregate(.) %>% 
+    clean_and_aggregate_tx(.) %>% 
     mutate(indicator = "TX_CURR_VLC")
   
   
@@ -479,5 +474,7 @@
     ) %>% 
     tab_source_note(
       source_note = paste("Produced on ",Sys.Date(), "by SI Core Analytics Cluster using OU_IM_FY19-21_20210514i MSD")
-    ) %>% 
+    ) 
+  
+  %>% 
     gtsave("Images/Global/GLOBAL_FY21Q2_MMD_VL_MD.png")

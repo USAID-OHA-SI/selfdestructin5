@@ -29,37 +29,32 @@
     dataout <- "Dataout"
     images  <- "Images"
     graphs  <- "Graphics"
-   
-    merdata <- glamr::si_path("path_msd")
-    rasdata <- glamr::si_path("path_raster")
-    shpdata <- glamr::si_path("path_vector")
-    datim   <- glamr::si_path("path_datim")  
       
     merdata <- si_path(type = "path_msd")
     
     # Create a new folder to house regional country tables
-    dir.create("Images/Global")
-    dir.create("Images/OU")
-    dir.create("Images/Regional")
-    folder_list <- c("Asia", "WAR", "WesternHemi",)
+    dir_list <- c("Global", "OU", "Regional")
+    map(dir_list, ~dir.create(file.path("Images/", .x)))
+    
+    folder_list <- c("Asia", "WAR", "WesternHemi")
     map(folder_list, ~dir.create(file.path("Images/Regional/", .x)))
     
     # What quarter are we in?
+    # TODO: INCORPORATE THIS INTO FLOW
     qtr <- "2"
     
+    # Key indicators for the base tables
     indics <- c("PrEP_NEW", "VMMC_CIRC", 
                 "HTS_TST", "HTS_TST_POS",
                 "TX_NEW", "TX_CURR")
-    
-    indics_mmd <- c("TX_CURR", "TX_PVLS")
     
     cumulative_indic <- c("PrEP_NEW", "VMMC_CIRC", 
                           "HTS_TST", "HTS_TST_POS")
     
     # Mechs that need to be filtered for whatever reason
-    mech_list <- c("OVC_SERV")
     
     # Agency order throughout
+    # Use the long order b/c of the varying nature of coverage by diff agencies
     agency_order_shrt <- c("USAID", "CDC", "OTHER")
     agency_order_long <- c("USAID", "CDC", "OTHER", "DOD", "HRSA", "PRM", "AF", "PC")
   
@@ -76,11 +71,23 @@
       filter(fiscal_year %in% c(2020, 2021))
     
 
-# MUNGE ============================================================================
-  
-  # Base Table  
-  # agency cleaned with core indicators
-  # Loop over operating units and create tables
+
+# HELPER FUNCTIONS --------------------------------------------------------
+
+  # Helper to do a bit of repetitive munging
+    clean_and_aggregate <- function(df){
+      df %>% 
+        filter(indicator %in% indics,
+               standardizeddisaggregate %in% c("Total Numerator"),
+               fundingagency != "Dedup") %>% 
+        clean_agency() %>% 
+        # Lump factors at 3 then apply long agency order b/c of varying nature
+        mutate(agency = fct_lump(fundingagency, n = 2, other_level = "OTHER"),
+               agency = fct_relevel(agency, agency_order_long)) %>% 
+        group_by(fiscal_year, agency, indicator) %>% 
+        summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop")
+    }           
+    
     
 
 # SHAPE BASE TABLE --------------------------------------------------------
@@ -96,15 +103,9 @@
       # Collapsing down to the agency level
       ou_tbl <- 
         df %>% 
-        filter(indicator %in% indics,
-               standardizeddisaggregate %in% c("Total Numerator"),
-               fundingagency != "Dedup",
-               {{country_col}} %in% ou) %>% 
-        clean_agency() %>% 
-        mutate(agency = fct_lump(fundingagency, n = 2, other_level = "OTHER"),
-               agency = fct_relevel(agency, agency_order_long)) %>% 
-        group_by(fiscal_year, agency, indicator) %>% 
-        summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop") 
+        filter({{country_col}} %in% ou) %>% 
+        clean_and_aggregate()
+
     
     # Clean up and add up down flags, these will be used in version 1.0   
       md_tbl <- 
@@ -146,7 +147,7 @@
     }
     
   # Test function above
-    shape_md_tbl(df = ou_im, country_col = operatingunit, ou = "Rwanda") %>% prinf()
+    shape_md_tbl(df = ou_im, country_col = operatingunit, ou = "Zambia") %>% prinf()
     
     
 
@@ -264,6 +265,7 @@
 
   # Test for a single OU  
   get_md_table(ou_im, country_col = countryname, "Burkina Faso")
+  get_md_table(ou_im, country_col = operatingunit, "Kenya")
 
 # BATCH GENERATE TABLES ------------------------------------------------
 # Generating for the following folders
@@ -282,7 +284,6 @@
   
   
   # Distinct list of Countries in Regional OUS
-  
   # Asia
   asia_cntry_list <- 
     ou_im %>% 

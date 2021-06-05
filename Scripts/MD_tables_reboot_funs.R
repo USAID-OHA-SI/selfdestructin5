@@ -78,6 +78,8 @@ get_qtr <- function(period){
       "<div style='line-height:10px'><span style='font-weight:regular;color:grey60k;font-variant:small-caps;font-size:14px'>{name}</div>
           <div><span style='font-weight:regular;color:grey60k;font-size:10px'>{results} /
           <span style ='font-weight:regular;color:grey60k;font-size:10px'>{target}</span></div>"
+  
+  
     )
   }
   
@@ -90,3 +92,75 @@ get_qtr <- function(period){
           <div><span style='font-weight:regular;color:grey90k;font-size:10px'>{name2}</span></div>"
     )
   }
+  
+  
+# Function to source only parts of a files
+# From https://stackoverflow.com/questions/12214963/source-only-part-of-a-file
+  
+  # Sources only certain parts of another r script. Useful pre-loading select chunks.
+  source_parts <- function(file, start, end, ...) {
+    file.lines <- scan(file, what=character(), skip=start-1, nlines=end-start+1, sep='\n')
+    file.lines.collapsed <- paste(file.lines, collapse='\n')
+    source(textConnection(file.lines.collapsed), ...)
+  }
+
+  
+  
+  
+
+# CREATE A CUSTOM COLOR PALETTE FOR TABLES --------------------------------
+  
+  pal <- function(x) {
+    f_low <- scales::col_numeric(
+      palette = c(old_rose, old_rose_light),
+      domain = c(0, 0.25)
+    )
+    f_med <- scales::col_numeric(
+      palette = c(burnt_sienna_light),
+      domain = c(0.25, 0.4)
+    )
+    f_ok <- scales::col_numeric(
+      palette = c(scooter_light),
+      domain = c(0.4, 0.6)
+    )
+    f_great <- scales::col_numeric(
+      palette = c(trolley_grey_light),
+      domain = c(0.6, 100)
+    )
+    case_when(
+      x >0 & x <0.25 ~ f_low(x),
+      x >= 0.25 & x < 0.4 ~ f_med(x),
+      x >= 0.40 & x < 0.6 ~ f_ok(x),
+      x >= 0.60 ~ f_great(x),
+      TRUE ~ "#ffffff"
+    )
+  }
+  
+  
+  pal_tx <- function(x) {
+    f_low <- scales::col_numeric(
+      palette = c(old_rose, old_rose_light),
+      domain = c(0, 0.75)
+    )
+    f_med <- scales::col_numeric(
+      palette = c(burnt_sienna_light),
+      domain = c(0.75, 0.9)
+    )
+    f_ok <- scales::col_numeric(
+      palette = c(scooter_light),
+      domain = c(0.9, 1.1)
+    )
+    f_great <- scales::col_numeric(
+      palette = c(trolley_grey_light),
+      domain = c(1.1, 100)
+    )
+    case_when(
+      x >0 & x <0.75 ~ f_low(x),
+      x >= 0.75 & x < 0.9 ~ f_med(x),
+      x >= 0.90 & x < 1.1 ~ f_ok(x),
+      x >= 1.1 ~ f_great(x),
+      TRUE ~ "#ffffff"
+    )
+  }
+  
+  
