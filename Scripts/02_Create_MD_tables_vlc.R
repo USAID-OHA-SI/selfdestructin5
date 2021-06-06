@@ -474,7 +474,5 @@
     ) %>% 
     tab_source_note(
       source_note = paste("Produced on ",Sys.Date(), "by SI Core Analytics Cluster using OU_IM_FY19-21_20210514i MSD")
-    ) 
-  
-  %>% 
+    )  %>% 
     gtsave("Images/Global/GLOBAL_FY21Q2_MMD_VL_MD.png")
