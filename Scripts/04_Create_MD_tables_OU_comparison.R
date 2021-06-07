@@ -134,8 +134,8 @@
       title = glue::glue("FY21 Q2 USAID OU PERFORMANCE SUMMARY")
     ) %>%
     opt_align_table_header(align = c("center")) %>% 
-    data_color(columns = 2:7, colors = pal, alpha = 0.50) %>% 
-    data_color(columns = 8, colors = pal_tx, alpha = 0.50) %>% 
+    data_color(columns = 2:8, colors = pal, alpha = 0.50) %>% 
+    data_color(columns = 9, colors = pal_tx, alpha = 0.50) %>% 
     tab_source_note(
       source_note = paste("Produced on ",Sys.Date(), "by the Core Analytics Cluster using PEPFAR FY21Q2i MSD released on 2021-05-14")
     ) %>% 
