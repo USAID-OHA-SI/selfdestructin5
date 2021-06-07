@@ -44,7 +44,7 @@
     qtr <- "2"
     
     # Key indicators for the base tables
-    indics <- c("PrEP_NEW", "VMMC_CIRC", 
+    indics <- c("PrEP_NEW", "OVC_SERV", "VMMC_CIRC", 
                 "HTS_TST", "HTS_TST_POS",
                 "TX_NEW", "TX_CURR")
     
@@ -236,7 +236,8 @@
         source_note = paste("Produced on ",Sys.Date(), "by the ", team, " using PEPFAR FY21Q2i MSD released on 2021-05-14")
       ) %>% 
       tab_options(
-        source_notes.font.size = 10
+        source_notes.font.size = 10,
+        table.font.size = 12
       ) 
   }
     

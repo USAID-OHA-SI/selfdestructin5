@@ -43,6 +43,22 @@ get_qtr <- function(period){
       "treatment",     "TX_CURR",                "Currently receiving antiretroviral therapy"
     ) 
   
+  
+  indic_def_all <- 
+    tibble::tribble(
+      ~indic_category,    ~indicator,                                           ~indicator_plain,
+      "prevention",    "PrEP_NEW", "Newly enrolled on antiretroviral pre-exposure prophylaxis",
+      "prevention",   "VMMC_CIRC",    "Voluntary medical male circumcision for hiv prevention",
+      "testing",     "HTS_TST",                  "Received HIV testing service and results",
+      "testing", "HTS_TST_POS",         "Received HIV testing service and positive results",
+      "treatment",      "TX_NEW",                  "Newly enrolled on antiretroviral therapy",
+      "treatment",     "TX_CURR",                "Currently receiving antiretroviral therapy",
+      "treatment",  "TX_MMD_Share", "Share of all antiretroviral therapy distributed as multi-month therapy",
+      "treatment",  "TX_MMD3+",   "Three months or more of multi-month antiretroviral therapy dispensed",
+      "treatment",  "TX_MMD6+",   "Six months or more of multi-month antiretroviral therapy dispensed",
+      "treatment",  "VLC",        "Percent of antiretroviral patients with a viral load result documented in past 12 months",
+      "treatment",  "VLS",        "Percent of antiretroviral patients with a suppressed viral load result documented in past 12 months"
+    ) 
 
 
 
