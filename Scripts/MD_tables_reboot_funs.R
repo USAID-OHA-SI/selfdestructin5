@@ -36,6 +36,7 @@ get_qtr <- function(period){
     tibble::tribble(
       ~indic_category,    ~indicator,                                           ~indicator_plain,
       "prevention",    "PrEP_NEW", "Newly enrolled on antiretroviral pre-exposure prophylaxis",
+      "prevention",   "OVC_SERV",  "Beneficiaries served by PEPFAR OVC program for children and families affected by HIV",
       "prevention",   "VMMC_CIRC",    "Voluntary medical male circumcision for hiv prevention",
       "testing",     "HTS_TST",                  "Received HIV testing service and results",
       "testing", "HTS_TST_POS",         "Received HIV testing service and positive results",
@@ -179,4 +180,9 @@ get_qtr <- function(period){
     )
   }
   
+  
+
+# EXPAND SEMI-ANNUAL-Indicators -------------------------------------------
+
+
   

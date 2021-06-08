@@ -44,8 +44,10 @@
              standardizeddisaggregate %in% c("Total Numerator"),
              fundingagency != "Dedup") %>% 
       clean_agency() %>% 
-      mutate(agency = fct_lump(fundingagency, n = 2, other_level = "OTHER"),
-             agency = fct_relevel(agency, agency_order_long)) %>% 
+      mutate(agency = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES"),
+             # Lump factors at 3 then apply long agency order b/c of varying nature
+             # mutate(agency = fct_lump(fundingagency, n = 2, other_level = "ALL OTHER AGENCIES"),
+             agency = fct_relevel(agency, agency_order_shrt)) %>% 
       group_by(fiscal_year, agency, indicator) %>% 
       summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop")
   }   
@@ -79,13 +81,15 @@
              fundingagency != "Dedup",
              {{country_col}} %in% ou) %>%
       clean_agency() %>%
-      mutate(agency = fct_lump(fundingagency, n = 2, other_level = "OTHER"),
-             agency = fct_relevel(agency, agency_order_long),
+      mutate(agency = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES"),
+             # Lump factors at 3 then apply long agency order b/c of varying nature
+             # mutate(agency = fct_lump(fundingagency, n = 2, other_level = "ALL OTHER AGENCIES"),
+             agency = fct_relevel(agency, agency_order_shrt), 
              indicator = ifelse(numeratordenom == "D", paste0(indicator, "_D"), indicator),
              indicator = case_when(
                str_detect(otherdisaggregate, "3 to 5") ~ "TX_MMD3+",
                str_detect(otherdisaggregate, "6 or more") ~ "TX_MMD6+",
-               TRUE ~ indicator )
+               TRUE ~ indicator)
       ) %>%
       filter(indicator != "TX_CURR") %>%
       group_by(fiscal_year, agency, indicator) %>%
@@ -139,27 +143,41 @@
       relocate(FY20targets, .after = FY20results) %>% 
       relocate(FY21Q2, .after = FY21APR) %>% 
       filter(!indicator %in% c("TX_PVLS", "TX_PVLS_D", "TX_CURR_VLC")) %>% 
-      mutate(indicator = case_when(
-        indicator == "TX_CURR" ~ "TX_CURR",
-        indicator == "TX_MMD3_SHARE" ~ "MMD 3+ Share",
-        indicator == "TX_MMD3+" ~ "MMD 3+",
-        indicator == "TX_MMD6+" ~ "MMD 6+",
-        indicator == "VLC" ~ "Viral Load Coverage",
-        indicator == "VLS" ~ "Virally Suppressed",
-      )) %>% 
+      # mutate(indicator = case_when(
+      #   indicator == "TX_CURR" ~ "TX_CURR",
+      #   indicator == "TX_MMD3_SHARE" ~ "MMD 3+ Share",
+      #   indicator == "TX_MMD3+" ~ "MMD 3+",
+      #   indicator == "TX_MMD6+" ~ "MMD 6+",
+      #   indicator == "VLC" ~ "Viral Load Coverage",
+      #   indicator == "VLS" ~ "Virally Suppressed",
+      # )) %>% 
       mutate(indicator = fct_relevel(indicator,
                                      "TX_CURR",
-                                     "MMD 3+ Share",
-                                     "MMD 3+",
-                                     "MMD 6+",
-                                     "Viral Load Coverage",
-                                     "Virally Suppressed"),
+                                     "TX_MMD3_SHARE",
+                                     "TX_MMD3+",
+                                     "TX_MMD6+",
+                                     "VLC",
+                                     "VLS"),
              agency = fct_relevel(agency,
-                                  agency_order_long)) %>% 
+                                  agency_order_shrt)) %>% 
       arrange(agency, indicator)
+    
+    # Bring in indicator names
+    mmd_vlc_tbl <- 
+      mmd_vlc_tbl %>% 
+      left_join(indic_def_tx) %>% 
+      select(-indic_category) %>% 
+    mutate(indicator2 = ifelse(agency == "USAID", paste(indicator, indicator_plain), paste(indicator))) %>% 
+    select(-indicator_plain) %>% 
+      relocate(indicator2, .after = agency)
+      
+    
   return(mmd_vlc_tbl)
   }
+  
   md_vlc_df <- shape_vlc_tbl(mmd_vlc, tx_mmds, tx_curr_base)
+  
+    
   
 
 # PRODUCE VLS and VLC TABLES ----------------------------------------------
@@ -171,16 +189,17 @@
       
       df %>% 
         gt(groupname_col = "agency") %>% 
-        fmt_percent(
-          columns = matches("results|Q1|Q2|delta"),
-          rows = str_detect(indicator, "(Share|Coverage|Supp)"),
-          decimal = 0
-        ) %>% 
         fmt_number(
           columns = matches("results|Q1|Q2|delta"),
-          rows = indicator %in% c("TX_CURR", "MMD 3+", "MMD 6+"),
+          rows = str_detect(indicator2, "(TX_CURR|TX_MMD3+|TX_MMD6)"),
           decimal = 0
         ) %>% 
+        fmt_percent(
+          columns = matches("results|Q1|Q2|delta"),
+          rows = str_detect(indicator2, "(TX_MMD3_SHARE|VLC|VLS)"),
+          decimal = 0
+        ) %>% 
+
         fmt_missing(
           columns = everything(),
           missing_text = "-"
@@ -218,9 +237,24 @@
           columns = matches("FY21|delta")
         ) %>% 
         cols_label(
-          indicator = "",
+          indicator2 = "",
           FY21Q1 = "Q1",
-          FY21Q2 = "Q2"
+          FY21Q2 = "Q2",
+          FY20results = "results"
+        ) %>% 
+        text_transform(
+          locations = cells_body(
+            columns = c(indicator2),
+            rows = (agency == "USAID")
+          ),
+          fn = function(x){
+            name <- word(x, 1)
+            name2 <- word(x, 2, -1)
+            glue::glue(
+              "<div style='line-height:10px'<span style='font-weight:regular;font-variant:small-caps;font-size:13px'>{name}</div>
+        <div><span style='font-weight:regular;font-size:11px'>{name2}</br></div>"
+            )
+          }
         ) %>% 
         opt_align_table_header(align = c("center")) %>% 
         tab_options(
@@ -235,7 +269,22 @@
         ) %>% 
         tab_source_note(
           source_note = paste("Produced on ",Sys.Date(), "by the ", team, " using PEPFAR FY21Q2i MSD released on 2021-05-14")
-        ) 
+        ) %>% 
+        cols_hide(indicator) %>% 
+        tab_style(
+          style = list(
+            cell_borders(
+              sides = "right",
+              color = "white",
+              weight = px(10)
+            )
+          ),
+          locations = list(
+            cells_body(
+              columns = c(FY20results)
+            )
+          )
+        )
   }  
   
   make_md_vlc_tbl(md_vlc_df, "Zambia")
@@ -257,7 +306,7 @@
   }  
   
   # Test it all
-  get_md_vls_table(ou_im_vlc, countryname, "Kazakhstan")
+  get_md_vls_table(ou_im_vlc, countryname, "Malawi")
 
 
 # BATCH VLC/MMD TABLES ----------------------------------------------------

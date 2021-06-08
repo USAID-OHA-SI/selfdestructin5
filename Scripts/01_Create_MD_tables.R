@@ -55,12 +55,41 @@
     
     # Agency order throughout
     # Use the long order b/c of the varying nature of coverage by diff agencies
-    agency_order_shrt <- c("USAID", "CDC", "OTHER")
+    agency_order_shrt <- c("USAID", "ALL OTHER AGENCIES")
     agency_order_long <- c("USAID", "CDC", "OTHER", "DOD", "HRSA", "PRM", "AF", "PC")
   
     # call required functions
     source("Scripts/add_achv_colors_tbl.R")
     source("Scripts/MD_tables_reboot_funs.R")
+    
+    
+    # Indicator Definitions
+    indic_def <- 
+      tibble::tribble(
+        ~indic_category,    ~indicator,                                           ~indicator_plain,
+        "prevention",    "PrEP_NEW", "Newly enrolled on antiretroviral pre-exposure prophylaxis",
+        "prevention",   "OVC_SERV",  "Beneficiaries of OVC programs for children/families affected by HIV",
+        "prevention",   "VMMC_CIRC",    "Voluntary medical male circumcision for hiv prevention",
+        "testing",     "HTS_TST",                  "Received HIV testing service and results",
+        "testing", "HTS_TST_POS",         "Received HIV testing service and positive results",
+        "treatment",      "TX_NEW",                  "Newly enrolled on antiretroviral therapy",
+        "treatment",     "TX_CURR",                "Currently receiving antiretroviral therapy"
+      )
+    
+    # Indicator definitions full
+    indic_def_tx <- 
+      tibble::tribble(
+        ~indic_category,    ~indicator,                                           ~indicator_plain,
+
+        "treatment",     "TX_CURR",                "Currently receiving antiretroviral therapy (ART)",
+        "treatment",  "TX_MMD3_SHARE", "Share of all ART dispensed as multi-month therapy",
+        "treatment",  "TX_MMD3+",   "Three months or more of ART treatment dispensed",
+        "treatment",  "TX_MMD6+",   "Six months or more of ART treatment dispensed",
+        "treatment",  "VLC",        "Percent of antiretroviral patients with a viral load result documented in past 12 months",
+        "treatment",  "VLS",        "Percent of antiretroviral patients with a suppressed viral load result documented in past 12 months"
+      ) 
+    
+    
 
 # LOAD DATA ============================================================================  
 
@@ -74,6 +103,7 @@
 
 # HELPER FUNCTIONS --------------------------------------------------------
 
+  # KEEP ONLY USAID AND ALL OTHER AGENCIES
   # Helper to do a bit of repetitive munging
     clean_and_aggregate <- function(df){
       df %>% 
@@ -81,9 +111,10 @@
                standardizeddisaggregate %in% c("Total Numerator"),
                fundingagency != "Dedup") %>% 
         clean_agency() %>% 
+        mutate(agency = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES"),
         # Lump factors at 3 then apply long agency order b/c of varying nature
-        mutate(agency = fct_lump(fundingagency, n = 2, other_level = "OTHER"),
-               agency = fct_relevel(agency, agency_order_long)) %>% 
+        # mutate(agency = fct_lump(fundingagency, n = 2, other_level = "ALL OTHER AGENCIES"),
+               agency = fct_relevel(agency, agency_order_shrt)) %>% 
         group_by(fiscal_year, agency, indicator) %>% 
         summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop")
     }           
@@ -140,16 +171,24 @@
                     names_glue = "{period}{.value}",
                     values_from = c(targets, results, APR),
                     names_sort = TRUE) %>% 
-        arrange(agency, indicator) %>% 
-        select(agency, indicator, sort(tidyselect::peek_vars()))
+        left_join(., indic_def) %>% 
+        ungroup() %>% 
+        mutate(indicator2 = ifelse(agency == "USAID", paste(indicator, indicator_plain), paste(indicator)),
+               indicator = fct_relevel(indicator, indics)) %>% 
+        arrange(agency, indicator)
     
+      md_tbl_old <- 
+        md_tbl_old %>% 
+        relocate(indicator2, .before = indicator) %>% 
+        select(-indic_category, -indicator_plain) %>% 
+        select(agency, indicator2, indicator, sort(tidyselect::peek_vars()))
+      
     return(md_tbl_old)
     }
     
   # Test function above
-    shape_md_tbl(df = ou_im, country_col = operatingunit, ou = "Zambia") %>% prinf()
-    
-    
+   tst <-  shape_md_tbl(df = ou_im, country_col = operatingunit, ou = "Zambia") %>% prinf()
+
 
 # PRETTIFY COLUMN NAMES ---------------------------------------------------
 
@@ -176,6 +215,9 @@
     
 # BASE TABLE GENERATION ---------------------------------------------------
 
+    
+    
+    
     # Customize GT table to reproduce results
     #@param - 
   md_tbl <- function(md_tbl_old, tbl_col_names, ou) {
@@ -185,6 +227,7 @@
     
     md_tbl_old %>% 
       gt(groupname_col = "agency") %>% 
+      cols_hide(indicator) %>% 
       # Format numbers
       fmt_percent(
         columns = contains("APR"), 
@@ -214,6 +257,20 @@
         label = md("**FY19**"),
         columns = contains("FY19")
       ) %>% 
+      text_transform(
+        locations = cells_body(
+          columns = c(indicator2),
+          rows = (agency == "USAID")
+        ),
+        fn = function(x){
+          name <- word(x, 1)
+          name2 <- word(x, 2, -1)
+          glue::glue(
+            "<div style='line-height:10px'<span style='font-weight:regular;font-variant:small-caps;font-size:13px'>{name}</div>
+        <div><span style='font-weight:regular;font-size:11px'>{name2}</br></div>"
+          )
+        }
+      ) %>%   
       tab_spanner(
         label = md("**FY20**"),
         columns = contains("FY20")
@@ -233,19 +290,27 @@
       opt_align_table_header(align = c("center")) %>% 
       add_achv_colors() %>% 
       tab_source_note(
-        source_note = paste("Produced on ",Sys.Date(), "by the ", team, " using PEPFAR FY21Q2i MSD released on 2021-05-14")
+        source_note = paste("Produced on ",Sys.Date(), "by the ", team, " using PEPFAR FY21Q2i MSD released on 2021-05-14",
+                            "\nAll other agencies based on aggregates excluding dedups.")
+      ) %>% 
+      tab_source_note(
+        source_note = md("*ALL OTHER AGENCIES* based on aggregates excluding dedups.")
       ) %>% 
       tab_options(
         source_notes.font.size = 10,
         table.font.size = 12
-      ) 
+      ) %>% 
+      cols_width(
+        indicator2 ~ px(340),
+      ) %>% 
+      tab_options(data_row.padding = px(7))
   }
     
     
 # Test it all together
-    md_tbl_old <- shape_md_tbl(df = ou_im, country_col = operatingunit, ou = "Zambia")
+    md_tbl_old <- shape_md_tbl(df = ou_im, country_col = operatingunit, ou = "Asia Region")
     tbl_col_names <- fix_col_names(md_tbl_old)
-    md_tbl(md_tbl_old, tbl_col_names, "Zambia")
+    md_tbl(md_tbl_old, tbl_col_names, "Asia Region")
     
     
   # Wrapper around everything to pull it all together  
@@ -328,7 +393,7 @@
     return(ou_tbl)
   }
   
-  return_global_tbl()  %>% 
+  return_global_tbl() %>% 
     gtsave("Images/Global/GLOBAL_FY21Q2_KEY_INDICATORS_MD.png")
     
 

@@ -41,7 +41,7 @@
     map(folder_list, ~dir.create(file.path("Images/Regional/", .x)))
   
   # Key indicators for the base tables
-    indics <- c("PrEP_NEW", "VMMC_CIRC", 
+    indics <- c("PrEP_NEW", "OVC_SERV", "VMMC_CIRC", 
                 "HTS_TST", "HTS_TST_POS",
                 "TX_NEW", "TX_CURR")
     
@@ -86,7 +86,11 @@
       ou_tbl %>% 
       reshape_msd("quarters", qtrs_keep_cumulative = TRUE) %>% 
       group_by(agency, indicator) %>% 
-      mutate(value_run = row_number(),
+      mutate(value_run = row_number()) %>% 
+      rename(pd = period) %>% 
+      ungroup() %>%   
+      complete(nesting(indicator, agency), value_run = full_seq(value_run, period = 1))
+    
              gap = targets - results_cumulative,
              gap_denom = (4 - (substr(period, 6, 6) %>% as.numeric)),
              gap_pace = gap_calc(gap, gap_denom),
@@ -106,6 +110,19 @@
   }  
   
   tmp <- shape_md_tbl(ou_im, operatingunit, "Zambia")
+  
+  # Balance panel
+
+    ou_im %>% 
+    filter(operatingunit %in% "Zambia") %>% 
+    clean_and_collapse() %>% 
+      reshape_msd("quarters", qtrs_keep_cumulative = TRUE) %>% 
+      group_by(agency, indicator) %>% 
+      mutate(value_run = row_number()) %>% 
+      rename(pd = period) %>% 
+      ungroup() %>%   
+      complete(nesting(indicator, agency), value_run = full_seq(value_run, period = 1)) %>% prinf()
+  
 
   # This will form the basis for the OU table
   bfr <- tmp %>% 
@@ -121,6 +138,13 @@
     mutate(indicator = fct_relevel(indicator, indics)) %>% 
     arrange(agency, indicator)
     
+  # Grab most recent value (pry needs a function())
+  bfr_qs <- 
+    tmp %>% 
+    select(indicator, agency, period,  results_cumulative) %>% 
+    pivot_wider(names_from = period,
+                values_from = results_cumulative) %>% 
+    select(indicator, agency, FY21Q2)
   
   # Function to create the sparklines
   spark_plot <- function(df){
@@ -175,9 +199,13 @@
   
 
   bfr %>%     
-    mutate(indicator = fct_relevel(indicator, indics),
+    # Fix the names using on the indictor names for USAID at top
+    mutate(indicator_plain = ifelse(agency == "USAID", paste0(indicator, "\n", str_wrap(indicator_plain, 40)), as.character(indicator))) %>% 
+      mutate(indicator = fct_relevel(indicator, indics),
            ggplot = NA) %>% 
     arrange(indicator) %>% 
+    relocate(indicator_plain, .before = everything()) %>% 
+    select(-indicator) %>% 
     gt(groupname_col = "agency") %>% 
     fmt_percent(columns = contains("APR"), 
                 decimals = 0) %>% 
@@ -190,17 +218,50 @@
         map(md_spark$plot, ggplot_image, height = px(15), aspect_ratio = 4)
       }
     ) 
+
+  
+  # Reformat 
+  reformat_apr_col <- function(df, apr, rslt, tgt, var) {
+    df %>% 
+      mutate("{{ var }}" := paste(percent({{apr}}, 1), 
+                                  comma({{rslt}}, accuracy = 1, scale = 1e-3, suffix = "K"), 
+                                  comma({{tgt}}, accuracy = 1, scale = 1e-3, suffix = "K")))
+  }
+  
+  reformat_fy_col <- function(df, newvar, curr_qtr, yoy_delta){
+    df %>% 
+      mutate("{{ newvar }}" := paste(comma({{curr_qtr}}, 1), percent({{yoy_delta}}, 1)))
+  }
   
   
-  md_spark[[6]][[9]] %>% 
-  mutate(indicator2 = fct_relevel(indicator2, indics)) %>% 
-    ggplot(aes(y = indicator2)) +
-    geom_col(aes(x = 1), fill = grey20k)+
-    geom_col(aes(x = apr, fill = scooter_light)) +
-    geom_vline(xintercept = c(.25, .5, .75), color = "white", size = 2) +
-    geom_vline(xintercept = c(1), color = grey60k, linetype = "dotted", size = 2) +
-    scale_fill_identity() +
-    si_style_void() +
-    theme(legend.position = "none")
   
   
+  
+  
+  tmp <- bfr %>% 
+    arrange(indicator) %>% 
+    reformat_apr_col(., APR_2021, cumulative_2021, targets_2021, APR_2021) %>% 
+    reformat_apr_col(., APR_2020, cumulative_2020, targets_2020, APR_2020) %>% 
+    left_join(bfr_qs) %>% 
+    reformat_fy_col(., FY21Q2, FY21Q2, q2q_comp_2021) %>% 
+    relocate(FY21Q2, .after = APR_2021) %>% View()
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+ 
