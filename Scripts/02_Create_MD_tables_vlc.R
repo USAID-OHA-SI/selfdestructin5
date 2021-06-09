@@ -23,6 +23,21 @@
     library(extrafont)
     
 
+# LOAD VARIABLES FULL NAMES -----------------------------------------------
+
+  # Indicator definitions full
+  indic_def_tx <- 
+    tibble::tribble(
+      ~indic_category,    ~indicator,                                           ~indicator_plain,
+      "treatment",  "TX_CURR",   "Currently receiving antiretroviral therapy (ART)",
+      "treatment",  "TX_MMD3_SHARE", "Share of all ART dispensed as multi-month therapy",
+      "treatment",  "TX_MMD3+",   "Three months or more of ART treatment dispensed",
+      "treatment",  "TX_MMD6+",   "Six months or more of ART treatment dispensed",
+      "treatment",  "VLC",        "Percent of antiretroviral patients with a viral load result documented in past 12 months",
+      "treatment",  "VLS",        "Percent of antiretroviral patients with a suppressed viral load result documented in past 12 months"
+    ) 
+
+
 # LOAD DATA ============================================================================  
 
   # Builds on ou_im data loaded in MD_tables_reboot, but need 2 month lag of tx_curr
@@ -238,9 +253,10 @@
         ) %>% 
         cols_label(
           indicator2 = "",
+          delta = "DELTA",
           FY21Q1 = "Q1",
           FY21Q2 = "Q2",
-          FY20results = "results"
+          FY20results = "RESULTS"
         ) %>% 
         text_transform(
           locations = cells_body(
@@ -268,7 +284,7 @@
           source_note = "Viral Load Covererage = TX_PVLS_N / TX_CURR_2_period_lag"
         ) %>% 
         tab_source_note(
-          source_note = paste("Produced on ",Sys.Date(), "by the ", team, " using PEPFAR FY21Q2i MSD released on 2021-05-14")
+          source_note = paste("Produced on ",Sys.Date(), "by the ", team, " using PEPFAR FY21Q2i MSD released on 2021-05-14.")
         ) %>% 
         cols_hide(indicator) %>% 
         tab_style(
@@ -284,7 +300,16 @@
               columns = c(FY20results)
             )
           )
-        )
+        ) %>% 
+        cols_width(
+          indicator2 ~ px(500),
+        ) %>% 
+        tab_options(data_row.padding = px(7)) %>% 
+        tab_style(
+          style = list("font-variant: small-caps;"),
+          locations = cells_column_labels(columns = everything()
+          )
+        ) 
   }  
   
   make_md_vlc_tbl(md_vlc_df, "Zambia")
@@ -361,6 +386,17 @@
 
 #  GENERATE GLOBAL TABLE -- SOUTH AFRICA FLAG -----------------------------
 
+  # Need separate labels for SA exclusion
+  indic_def_tx_sans_sa <- 
+    tibble::tribble(
+      ~indic_category,    ~indicator,                                           ~indicator_plain,
+      "treatment",  "TX_CURR",   "Currently receiving antiretroviral therapy (ART) excluding South Africa",
+      "treatment",  "TX_MMD3_SHARE", "Share of all ART dispensed as multi-month therapy",
+      "treatment",  "TX_MMD3+",   "Three months or more of ART treatment dispensed",
+      "treatment",  "TX_MMD6+",   "Six months or more of ART treatment dispensed",
+      "treatment",  "VLC",        "Percent of antiretroviral patients with a viral load result documented in past 12 months",
+      "treatment",  "VLS",        "Percent of antiretroviral patients with a suppressed viral load result documented in past 12 months"
+    ) 
 
   
   #  Get the TX_CURR data needed for calculations
@@ -385,8 +421,8 @@
              otherdisaggregate %in% c("ARV Dispensing Quantity - 6 or more months", "ARV Dispensing Quantity - 3 to 5 months"),
            fundingagency != "Dedup") %>%
     clean_agency() %>%
-    mutate(agency = fct_lump(fundingagency, n = 2, other_level = "OTHER"),
-           agency = fct_relevel(agency, agency_order_long),
+    mutate(agency = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES"),
+           agency = fct_relevel(agency, agency_order_shrt), 
            indicator = ifelse(numeratordenom == "D", paste0(indicator, "_D"), indicator),
            indicator = case_when(
              str_detect(otherdisaggregate, "3 to 5") ~ "TX_MMD3+",
@@ -419,7 +455,7 @@
            VLC = TX_PVLS_D / lag(TX_CURR_VLC, n = 2)) %>%
     pivot_longer(cols = -c(period, agency, period_type),
                  names_to = "indicator",
-                 values_to = "results") %>% 
+                 values_to = "results")%>% 
     spread(period, results) %>% 
     select(agency, indicator, FY20results = FY20Q4, FY21Q1, FY21Q2) %>% 
     mutate(FY20APR = NA_real_,
@@ -430,39 +466,44 @@
     relocate(FY20APR, .after = indicator) %>% 
     relocate(FY20targets, .after = FY20results) %>% 
     relocate(FY21Q2, .after = FY21APR) %>% 
-    filter(!indicator %in% c("TX_PVLS", "TX_PVLS_D", "TX_CURR_VLC")) %>% 
+    filter(!indicator %in% c("TX_PVLS", "TX_PVLS_D", "TX_CURR_VLC"))%>% 
     mutate(indicator = case_when(
-      indicator == "TX_CURR_MMD" ~ "TX_CURR Adjusted",
-      indicator == "TX_MMD3_SHARE" ~ "MMD 3+ Share",
-      indicator == "TX_MMD3+" ~ "MMD 3+",
-      indicator == "TX_MMD6+" ~ "MMD 6+",
-      indicator == "VLC" ~ "Viral Load Coverage",
-      indicator == "VLS" ~ "Virally Suppressed",
-    )) %>% 
+       indicator == "TX_CURR_MMD" ~ "TX_CURR",
+       TRUE ~ indicator)
+       ) %>% 
     mutate(indicator = fct_relevel(indicator,
-                                   "TX_CURR Adjusted",
-                                   "MMD 3+ Share",
-                                   "MMD 3+",
-                                   "MMD 6+",
-                                   "Viral Load Coverage",
-                                   "Virally Suppressed"),
-           agency = fct_relevel(agency,
-                               agency_order_long)) %>% 
-    arrange(agency, indicator)
-    
+                                   "TX_CURR",
+                                   "TX_MMD3_SHARE",
+                                   "TX_MMD3+",
+                                   "TX_MMD6+",
+                                   "VLC",
+                                   "VLS"),
+           agency = fct_relevel(agency, agency_order_shrt)) %>% 
+    arrange(agency, indicator) %>% 
+    left_join(indic_def_tx_sans_sa) %>% 
+    select(-indic_category) %>% 
+    mutate(indicator2 = ifelse(agency == "USAID", paste(indicator, indicator_plain), paste(indicator))) %>% 
+    select(-indicator_plain) %>% 
+    relocate(indicator2, .after = agency)
+  
+  
+
+# GLOBAL TX / MMD TABLE ---------------------------------------------------
+
     
   # PRoduce Table for Global
   
   mmd_vlc_tbl %>% 
     gt(groupname_col = "agency") %>% 
-    fmt_percent(
-      columns = matches("results|Q1|Q2|delta"),
-      rows = str_detect(indicator, "(Share|Coverage|Supp)"),
-      decimal = 0
-    ) %>% 
+    cols_hide(indicator) %>% 
     fmt_number(
       columns = matches("results|Q1|Q2|delta"),
-      rows = indicator %in% c("TX_CURR Adjusted", "MMD 3+", "MMD 6+"),
+      rows = str_detect(indicator2, "(TX_CURR|TX_MMD3+|TX_MMD6)"),
+      decimal = 0
+    ) %>% 
+    fmt_percent(
+      columns = matches("results|Q1|Q2|delta"),
+      rows = str_detect(indicator2, "(TX_MMD3_SHARE|VLC|VLS)"),
       decimal = 0
     ) %>% 
     fmt_missing(
@@ -502,9 +543,45 @@
       columns = matches("FY21|delta")
     ) %>% 
     cols_label(
+      indicator2 = "",
+      FY20results = "RESULTS",
       indicator = "",
       FY21Q1 = "Q1",
-      FY21Q2 = "Q2"
+      FY21Q2 = "Q2",
+      delta = "DELTA"
+    ) %>% 
+    opt_all_caps(
+      all_caps = TRUE,
+      locations = c("row_group")
+    ) %>%
+    text_transform(
+      locations = cells_body(
+        columns = c(indicator2),
+        rows = (agency == "USAID")
+      ),
+      fn = function(x){
+        name <- word(x, 1)
+        name2 <- word(x, 2, -1)
+        glue::glue(
+          "<div style='line-height:10px'<span style='font-weight:regular;font-variant:small-caps;font-size:13px'>{name}</div>
+        <div><span style='font-weight:regular;font-size:11px'>{name2}</br></div>"
+        )
+      }
+    ) %>% 
+    cols_hide(indicator) %>% 
+    tab_style(
+      style = list(
+        cell_borders(
+          sides = "right",
+          color = "white",
+          weight = px(10)
+        )
+      ),
+      locations = list(
+        cells_body(
+          columns = c(FY20results)
+        )
+      )
     ) %>% 
     opt_align_table_header(align = c("center")) %>% 
     tab_options(
@@ -519,9 +596,18 @@
       location = cells_row_groups()
     ) %>% 
     tab_source_note(
-      source_note = "Viral Load Covererage = TX_PVLS_N / TX_CURR_2_period_lag"
+      source_note = paste("Produced on ",Sys.Date(), "by SI Core Analytics Cluster using OU_IM_FY19-21_20210514i MSD.")
     ) %>% 
     tab_source_note(
-      source_note = paste("Produced on ",Sys.Date(), "by SI Core Analytics Cluster using OU_IM_FY19-21_20210514i MSD")
-    )  %>% 
+      source_note = md("Viral Load Covererage = TX_PVLS_N / TX_CURR_2_period_lag. *ALL OTHER AGENCIES* based on aggregates excluding de-duplication.")
+      )  %>% 
+    cols_width(
+      indicator2 ~ px(500),
+    ) %>% 
+    tab_options(data_row.padding = px(7)) %>% 
+    tab_style(
+      style = list("font-variant: small-caps;"),
+      locations = cells_column_labels(columns = everything()
+      )
+    ) %>% 
     gtsave("Images/Global/GLOBAL_FY21Q2_MMD_VL_MD.png")

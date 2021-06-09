@@ -32,18 +32,18 @@
       
     merdata <- si_path(type = "path_msd")
     
-    # Create a new folder to house regional country tables
+  # Create a new folder to house regional country tables
     dir_list <- c("Global", "OU", "Regional")
     map(dir_list, ~dir.create(file.path("Images/", .x)))
     
     folder_list <- c("Asia", "WAR", "WesternHemi")
     map(folder_list, ~dir.create(file.path("Images/Regional/", .x)))
     
-    # What quarter are we in?
-    # TODO: INCORPORATE THIS INTO FLOW
+  # What quarter are we in?
+  # TODO: INCORPORATE THIS INTO FLOW
     qtr <- "2"
     
-    # Key indicators for the base tables
+  # Key indicators for the base tables
     indics <- c("PrEP_NEW", "OVC_SERV", "VMMC_CIRC", 
                 "HTS_TST", "HTS_TST_POS",
                 "TX_NEW", "TX_CURR")
@@ -51,46 +51,31 @@
     cumulative_indic <- c("PrEP_NEW", "VMMC_CIRC", 
                           "HTS_TST", "HTS_TST_POS")
     
-    # Mechs that need to be filtered for whatever reason
+  # Mechs that need to be filtered for whatever reason
     
-    # Agency order throughout
-    # Use the long order b/c of the varying nature of coverage by diff agencies
+  # Agency order throughout
+  # Use the long order b/c of the varying nature of coverage by diff agencies
     agency_order_shrt <- c("USAID", "ALL OTHER AGENCIES")
     agency_order_long <- c("USAID", "CDC", "OTHER", "DOD", "HRSA", "PRM", "AF", "PC")
   
-    # call required functions
+  # call required functions
     source("Scripts/add_achv_colors_tbl.R")
     source("Scripts/MD_tables_reboot_funs.R")
     
     
-    # Indicator Definitions
+  # Indicator Definitions -- THESE MAY CHANGE DEPENENT ON INDICS above
     indic_def <- 
       tibble::tribble(
-        ~indic_category,    ~indicator,                                           ~indicator_plain,
-        "prevention",    "PrEP_NEW", "Newly enrolled on antiretroviral pre-exposure prophylaxis",
-        "prevention",   "OVC_SERV",  "Beneficiaries of OVC programs for children/families affected by HIV",
-        "prevention",   "VMMC_CIRC",    "Voluntary medical male circumcision for hiv prevention",
-        "testing",     "HTS_TST",                  "Received HIV testing service and results",
-        "testing", "HTS_TST_POS",         "Received HIV testing service and positive results",
-        "treatment",      "TX_NEW",                  "Newly enrolled on antiretroviral therapy",
-        "treatment",     "TX_CURR",                "Currently receiving antiretroviral therapy"
+        ~indic_category,    ~indicator,        ~indicator_plain,
+        "prevention",       "PrEP_NEW",       "Newly enrolled on antiretroviral pre-exposure prophylaxis",
+        "prevention",       "OVC_SERV",       "Beneficiaries of OVC programs for children/families affected by HIV",
+        "prevention",       "VMMC_CIRC",      "Voluntary medical male circumcision for HIV prevention",
+        "testing",          "HTS_TST",        "Received HIV testing service and results",
+        "testing",          "HTS_TST_POS",    "Received HIV testing service and positive results",
+        "treatment",        "TX_NEW",         "Newly enrolled on antiretroviral therapy",
+        "treatment",        "TX_CURR",        "Currently receiving antiretroviral therapy"
       )
     
-    # Indicator definitions full
-    indic_def_tx <- 
-      tibble::tribble(
-        ~indic_category,    ~indicator,                                           ~indicator_plain,
-
-        "treatment",     "TX_CURR",                "Currently receiving antiretroviral therapy (ART)",
-        "treatment",  "TX_MMD3_SHARE", "Share of all ART dispensed as multi-month therapy",
-        "treatment",  "TX_MMD3+",   "Three months or more of ART treatment dispensed",
-        "treatment",  "TX_MMD6+",   "Six months or more of ART treatment dispensed",
-        "treatment",  "VLC",        "Percent of antiretroviral patients with a viral load result documented in past 12 months",
-        "treatment",  "VLS",        "Percent of antiretroviral patients with a suppressed viral load result documented in past 12 months"
-      ) 
-    
-    
-
 # LOAD DATA ============================================================================  
 
     ou_im <- 
@@ -99,7 +84,6 @@
       read_msd() %>% 
       filter(fiscal_year %in% c(2020, 2021))
     
-
 
 # HELPER FUNCTIONS --------------------------------------------------------
 
@@ -187,14 +171,14 @@
     }
     
   # Test function above
-   tst <-  shape_md_tbl(df = ou_im, country_col = operatingunit, ou = "Zambia") %>% prinf()
+    tst <-  shape_md_tbl(df = ou_im, country_col = operatingunit, ou = "Zambia") %>% prinf()
 
 
 # PRETTIFY COLUMN NAMES ---------------------------------------------------
 
-    #@description fix_col_names applies a clean formatting to column names
-    #@param md_tbl_old old formatted version of md tables
-    # Fix column names
+  #@description fix_col_names applies a clean formatting to column names
+  #@param md_tbl_old old formatted version of md tables
+  # Fix column names
     fix_col_names <-function(md_tbl_old) {  
       
       tbl_col_names <- 
@@ -214,13 +198,10 @@
     
     
 # BASE TABLE GENERATION ---------------------------------------------------
-
     
     
-    
-    # Customize GT table to reproduce results
-    #@param - 
-  md_tbl <- function(md_tbl_old, tbl_col_names, ou) {
+  # Customize GT table to reproduce results
+    md_tbl <- function(md_tbl_old, tbl_col_names, ou) {
       
     cntry <-  str_to_upper(ou)
     team <- "Core Analytics Cluster"
@@ -257,7 +238,7 @@
         label = md("**FY19**"),
         columns = contains("FY19")
       ) %>% 
-      text_transform(
+      text_transform( 
         locations = cells_body(
           columns = c(indicator2),
           rows = (agency == "USAID")
@@ -290,110 +271,113 @@
       opt_align_table_header(align = c("center")) %>% 
       add_achv_colors() %>% 
       tab_source_note(
-        source_note = paste("Produced on ",Sys.Date(), "by the ", team, " using PEPFAR FY21Q2i MSD released on 2021-05-14",
-                            "\nAll other agencies based on aggregates excluding dedups.")
+        source_note = paste("Produced on ",Sys.Date(), "by the ", team, " using PEPFAR FY21Q2i MSD released on 2021-05-14.")
       ) %>% 
       tab_source_note(
-        source_note = md("*ALL OTHER AGENCIES* based on aggregates excluding dedups.")
+        source_note = md("*ALL OTHER AGENCIES* based on aggregates excluding de-duplication.")
       ) %>% 
       tab_options(
         source_notes.font.size = 10,
         table.font.size = 12
       ) %>% 
-      cols_width(
-        indicator2 ~ px(340),
-      ) %>% 
-      tab_options(data_row.padding = px(7))
+      # cols_width(
+      #   indicator2 ~ px(340),
+      # ) %>% 
+      tab_options(data_row.padding = px(5)) 
   }
     
     
-# Test it all together
+
+# TEST TABLE GENERATION BY OU OR COUNTRY ----------------------------------
+
+  # Test it all together
     md_tbl_old <- shape_md_tbl(df = ou_im, country_col = operatingunit, ou = "Asia Region")
     tbl_col_names <- fix_col_names(md_tbl_old)
     md_tbl(md_tbl_old, tbl_col_names, "Asia Region")
     
     
   # Wrapper around everything to pull it all together  
-  get_md_table <- function(df, country_col, ou) {
-    
-    message(paste('Creating base MD table for', ou))
-    
-    # Reproduce MD table data frame
-    md_tbl_old <- shape_md_tbl(df, {{country_col}}, ou)
-    
-    # Column labels
-    tbl_col_names <- fix_col_names(md_tbl_old)
-    
-    # Generate the table
-    md_ou_tbl <- md_tbl(md_tbl_old, tbl_col_names, ou) 
-    return(md_ou_tbl)
-  }  
+    get_md_table <- function(df, country_col, ou) {
+      
+      message(paste('Creating base MD table for', ou))
+      
+      # Reproduce MD table data frame
+      md_tbl_old <- shape_md_tbl(df, {{country_col}}, ou)
+      
+      # Column labels
+      tbl_col_names <- fix_col_names(md_tbl_old)
+      
+      # Generate the table
+      md_ou_tbl <- md_tbl(md_tbl_old, tbl_col_names, ou) 
+      return(md_ou_tbl)
+    }  
 
   # Test for a single OU  
-  get_md_table(ou_im, country_col = countryname, "Burkina Faso")
-  get_md_table(ou_im, country_col = operatingunit, "Kenya")
+    get_md_table(ou_im, country_col = countryname, "Burkina Faso")
+    get_md_table(ou_im, country_col = operatingunit, "Kenya")
 
 # BATCH GENERATE TABLES ------------------------------------------------
-# Generating for the following folders
-# Global - TOTAL PEPFAR
-# OU - Operating Unit level
-# Regional - SNU1 Equivalent but for Regional Programs
+  
+    # Generating for the following folders
+  # Global - TOTAL PEPFAR
+  # OU - Operating Unit level
+  # Regional - SNU1 Equivalent but for Regional Programs
   
   
   # Distinct list of OUS to loop over
-  ou_list <- ou_im %>% 
-    distinct(operatingunit) %>% 
-    pull()
-  
-  map(ou_list, ~get_md_table(ou_im, operatingunit, .x) %>% 
-        gtsave(file.path("Images/OU", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
+    ou_list <- ou_im %>% 
+      distinct(operatingunit) %>% 
+      pull()
+    
+    map(ou_list, ~get_md_table(ou_im, operatingunit, .x) %>% 
+          gtsave(file.path("Images/OU", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
   
   
   # Distinct list of Countries in Regional OUS
   # Asia
-  asia_cntry_list <- 
-    ou_im %>% 
-    filter(str_detect(operatingunit, "Asia Region")) %>% 
-    distinct(countryname) %>% 
-    pull()
-  
-  map(asia_cntry_list, ~get_md_table(ou_im, countryname, .x) %>% 
-        gtsave(file.path("Images/Regional/Asia", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
+    asia_cntry_list <- 
+      ou_im %>% 
+      filter(str_detect(operatingunit, "Asia Region")) %>% 
+      distinct(countryname) %>% 
+      pull()
+    
+    map(asia_cntry_list, ~get_md_table(ou_im, countryname, .x) %>% 
+          gtsave(file.path("Images/Regional/Asia", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
 
   # West Africa
-  westafr_cntry_list <- 
-    ou_im %>% 
-    filter(str_detect(operatingunit, "Africa Region")) %>% 
-    distinct(countryname) %>% 
-    pull()
-  
-  map(westafr_cntry_list, ~get_md_table(ou_im, countryname, .x) %>% 
-        gtsave(file.path("Images/Regional/WAR", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
+    westafr_cntry_list <- 
+      ou_im %>% 
+      filter(str_detect(operatingunit, "Africa Region")) %>% 
+      distinct(countryname) %>% 
+      pull()
+    
+    map(westafr_cntry_list, ~get_md_table(ou_im, countryname, .x) %>% 
+          gtsave(file.path("Images/Regional/WAR", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
   
   
   # Western Hemisphere
   # Omitting Guyana and Barbados due to no reporting in FY21
-  wh_cntry_list <- 
-    ou_im %>% 
-    filter(str_detect(operatingunit, "Western")) %>% 
-    filter(!countryname %in% c("Guyana", "Barbados")) %>% 
-    distinct(countryname) %>% 
-    pull()
-  
-  map(wh_cntry_list, ~get_md_table(ou_im, countryname, .x) %>% 
-        gtsave(file.path("Images/Regional/WesternHemi", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
+    wh_cntry_list <- 
+      ou_im %>% 
+      filter(str_detect(operatingunit, "Western")) %>% 
+      filter(!countryname %in% c("Guyana", "Barbados")) %>% 
+      distinct(countryname) %>% 
+      pull()
+    
+    map(wh_cntry_list, ~get_md_table(ou_im, countryname, .x) %>% 
+          gtsave(file.path("Images/Regional/WesternHemi", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
   
   
   # Generate global numbers
   # Change all operating units to be "Global" to generate
-  return_global_tbl <- function() {
-    all <- shape_md_tbl(ou_im %>% mutate(operatingunit = "Global"), operatingunit, "Global")
-    tbl_col_names <- fix_col_names(all)
-    ou_tbl <- md_tbl(all, tbl_col_names, "PEPFAR GLOBAL")
-    return(ou_tbl)
-  }
-  
-  return_global_tbl() %>% 
-    gtsave("Images/Global/GLOBAL_FY21Q2_KEY_INDICATORS_MD.png")
+    return_global_tbl <- function() {
+      all <- shape_md_tbl(ou_im %>% mutate(operatingunit = "Global"), operatingunit, "Global")
+      tbl_col_names <- fix_col_names(all)
+      ou_tbl <- md_tbl(all, tbl_col_names, "PEPFAR GLOBAL")
+      return(ou_tbl)
+    }
+    
+    return_global_tbl() %>% 
+      gtsave("Images/Global/GLOBAL_FY21Q2_KEY_INDICATORS_MD.png")
     
 
