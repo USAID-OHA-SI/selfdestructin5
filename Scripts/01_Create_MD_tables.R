@@ -48,9 +48,6 @@
                 "HTS_TST", "HTS_TST_POS",
                 "TX_NEW", "TX_CURR")
     
-    cumulative_indic <- c("PrEP_NEW", "VMMC_CIRC", 
-                          "HTS_TST", "HTS_TST_POS")
-    
   # Mechs that need to be filtered for whatever reason
     
   # Agency order throughout
@@ -76,6 +73,11 @@
         "treatment",        "TX_CURR",        "Currently receiving antiretroviral therapy"
       )
     
+  # Authors
+    authors <- c("SI Core Analytic Cluster")
+    today <- Sys.Date()
+
+    
 # LOAD DATA ============================================================================  
 
     ou_im <- 
@@ -83,12 +85,19 @@
       return_latest("OU_IM_FY19-21_20210514") %>% 
       read_msd() %>% 
       filter(fiscal_year %in% c(2020, 2021))
+  
+  # GRAB MSD Source
+  msd_source <- 
+    ou_im %>% 
+    identifypd() %>% 
+    msd_period(period = .)
     
 
 # HELPER FUNCTIONS --------------------------------------------------------
 
   # KEEP ONLY USAID AND ALL OTHER AGENCIES
   # Helper to do a bit of repetitive munging
+  # Requires a data frame to complete the munging over; OU_IM is standard one.
     clean_and_aggregate <- function(df){
       df %>% 
         filter(indicator %in% indics,
@@ -107,10 +116,16 @@
 
 # SHAPE BASE TABLE --------------------------------------------------------
     # Shape the base dataframe from which the table is derived
-    #@description shape the msd to wide with key indicators  
-    #@param df - base msd from which all manipulations are done
-    #@param country_col either countryname or operating unit, depending on table desired
-    #@param ou countryname or operating unit
+  
+    # TODO : PONDER BELOW
+    # Currently this is set up to loop over OUs / Countries. A proposed alternative
+    # Would be to calculate a single table for all OUs / Countries and USAID and then
+    # Pull from that single Table. 
+  
+    #' @description shape the msd to wide with key indicators  
+    #' @param df - base msd from which all manipulations are done
+    #' @param country_col either countryname or operating unit, depending on table desired
+    #' @param ou the name of the operating unit or country
     
     shape_md_tbl <- function(df, country_col, ou) {
       
@@ -154,7 +169,7 @@
         pivot_wider(names_from = period, 
                     names_glue = "{period}{.value}",
                     values_from = c(targets, results, APR),
-                    names_sort = TRUE) %>% 
+                    names_sort = F) %>% 
         left_join(., indic_def) %>% 
         ungroup() %>% 
         mutate(indicator2 = ifelse(agency == "USAID", paste(indicator, indicator_plain), paste(indicator)),
@@ -165,7 +180,10 @@
         md_tbl_old %>% 
         relocate(indicator2, .before = indicator) %>% 
         select(-indic_category, -indicator_plain) %>% 
-        select(agency, indicator2, indicator, sort(tidyselect::peek_vars()))
+        select(agency, indicator2, indicator, sort(tidyselect::peek_vars())) %>% 
+        relocate(FY20APR, .after = FY20targets) %>%
+        relocate(FY21APR, .after = FY21targets) %>% 
+        mutate(circle = FY21APR)
       
     return(md_tbl_old)
     }
@@ -188,13 +206,13 @@
       pivot_longer(everything(), names_to = "column", values_to = "value") %>% 
       select(-value) %>% 
       mutate(label = ifelse(str_detect(column, "FY"), str_sub(column, 5, -1), ""),
-             label = ifelse(label == "APR", "achievement", label)) %>% 
+             label = ifelse(label == "APR", "achv", label)) %>% 
       deframe()
       
       return(tbl_col_names)
     }
     
-    fix_col_names(shape_md_tbl(ou_im, operatingunit, "Zambia"))
+    fix_col_names(shape_md_tbl(ou_im, operatingunit, "Zambia")) 
     
     
 # BASE TABLE GENERATION ---------------------------------------------------
@@ -204,8 +222,7 @@
     md_tbl <- function(md_tbl_old, tbl_col_names, ou) {
       
     cntry <-  str_to_upper(ou)
-    team <- "Core Analytics Cluster"
-    
+
     md_tbl_old %>% 
       gt(groupname_col = "agency") %>% 
       cols_hide(indicator) %>% 
@@ -222,10 +239,10 @@
         columns = everything(),
         missing_text = "-"
       ) %>% 
-      cols_align(
-        align = c("left"),
-        columns = "indicator"
-      ) %>% 
+      # cols_align(
+      #   align = c("left"),
+      #   columns = "indicator"
+      # ) %>% 
       tab_options(
         row_group.font.weight = "bold"
       ) %>% 
@@ -234,10 +251,6 @@
         locations = c("row_group")
       ) %>% 
       cols_label(.list = {{tbl_col_names}}) %>% 
-      tab_spanner(
-        label = md("**FY19**"),
-        columns = contains("FY19")
-      ) %>% 
       text_transform( 
         locations = cells_body(
           columns = c(indicator2),
@@ -264,14 +277,15 @@
         style = list("font-variant: small-caps;"),
         locations = cells_column_labels(columns = everything()
         )
-      ) %>% 
+      ) %>%
       tab_header(
         title = glue::glue("{cntry} PERFORMANCE SUMMARY")
       ) %>%
       opt_align_table_header(align = c("center")) %>% 
-      add_achv_colors() %>% 
+      #add_achv_colors() %>% 
+      add_achv_circles() %>% 
       tab_source_note(
-        source_note = paste("Produced on ",Sys.Date(), "by the ", team, " using PEPFAR FY21Q2i MSD released on 2021-05-14.")
+        source_note = glue::glue("Produced on {today} by the {authors} using {msd_source}")
       ) %>% 
       tab_source_note(
         source_note = md("*ALL OTHER AGENCIES* based on aggregates excluding de-duplication.")
@@ -291,9 +305,9 @@
 # TEST TABLE GENERATION BY OU OR COUNTRY ----------------------------------
 
   # Test it all together
-    md_tbl_old <- shape_md_tbl(df = ou_im, country_col = operatingunit, ou = "Asia Region")
+    md_tbl_old <- shape_md_tbl(df = ou_im, country_col = operatingunit, ou = "Zambia")
     tbl_col_names <- fix_col_names(md_tbl_old)
-    md_tbl(md_tbl_old, tbl_col_names, "Asia Region")
+    md_tbl(md_tbl_old, tbl_col_names, "Tanzania")
     
     
   # Wrapper around everything to pull it all together  
