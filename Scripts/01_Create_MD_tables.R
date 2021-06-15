@@ -22,7 +22,10 @@
     library(here)
     library(gt)
     library(fontawesome)
+    library(countrycode)
     
+  # Load creds for DATIM
+    load_secrets()
     
   # Set paths  
     data   <- "Data"
@@ -44,11 +47,11 @@
     qtr <- "2"
     
   # Key indicators for the base tables
-    indics <- c("PrEP_NEW", "OVC_SERV", "VMMC_CIRC", 
+    indics <- c("PrEP_NEW", "KP_PREV", "OVC_SERV", 
                 "HTS_TST", "HTS_TST_POS",
                 "TX_NEW", "TX_CURR")
     
-    cumulative_indic <- c("PrEP_NEW", "VMMC_CIRC", 
+    cumulative_indic <- c("PrEP_NEW", "KP_PREV",
                           "HTS_TST", "HTS_TST_POS")
     
   # Mechs that need to be filtered for whatever reason
@@ -66,15 +69,17 @@
   # Indicator Definitions -- THESE MAY CHANGE DEPENENT ON INDICS above
     indic_def <- 
       tibble::tribble(
-        ~indic_category,    ~indicator,        ~indicator_plain,
-        "prevention",       "PrEP_NEW",       "Newly enrolled on antiretroviral pre-exposure prophylaxis",
-        "prevention",       "OVC_SERV",       "Beneficiaries of OVC programs for children/families affected by HIV",
-        "prevention",       "VMMC_CIRC",      "Voluntary medical male circumcision for HIV prevention",
-        "testing",          "HTS_TST",        "Received HIV testing service and results",
-        "testing",          "HTS_TST_POS",    "Received HIV testing service and positive results",
-        "treatment",        "TX_NEW",         "Newly enrolled on antiretroviral therapy",
-        "treatment",        "TX_CURR",        "Currently receiving antiretroviral therapy"
+        ~indic_category,    ~indicator,                                                       ~indicator_plain,
+        "prevention",    "PrEP_NEW",            "Newly enrolled on antiretroviral pre-exposure prophylaxis",
+        "prevention",     "KP_PREV", "Key Population individuals reached with HIV prevention interventions",
+        "prevention",    "OVC_SERV",  "Beneficiaries of OVC programs for children/families affected by HIV",
+        "prevention",   "VMMC_CIRC",               "Voluntary medical male circumcision for HIV prevention",
+        "testing",        "HTS_TST",                             "Received HIV testing service and results",
+        "testing",    "HTS_TST_POS",                    "Received HIV testing service and positive results",
+        "treatment",       "TX_NEW",                             "Newly enrolled on antiretroviral therapy",
+        "treatment",      "TX_CURR",                           "Currently receiving antiretroviral therapy"
       )
+    
     
 # LOAD DATA ============================================================================  
 
@@ -83,7 +88,23 @@
       return_latest("OU_IM_FY19-21_20210514") %>% 
       read_msd() %>% 
       filter(fiscal_year %in% c(2020, 2021))
+
+# BUREAU STRUCTURE --------------------------------------------------------
+
+    iso <- get_outable(datim_user(), datim_pwd()) %>%
+      select(countryname, countryname_iso) 
+      
+    bureaus <- iso %>%
+      mutate(wb_region = countrycode(iso$countryname_iso, "iso3c", "region"),
+             usaid_region = case_when(countryname == "Ukraine" ~ "Europe",
+                                      wb_region == "Sub-Saharan Africa" ~ "Africa",
+                                      wb_region == "Latin America & Caribbean" ~ "LAC",
+                                      TRUE ~ "Asia")) %>% 
+      select(-c(wb_region, countryname_iso))
     
+    region_im <- ou_im %>% 
+      left_join(bureaus) #%>% 
+      # mutate(operatingunit = usaid_region)
 
 # HELPER FUNCTIONS --------------------------------------------------------
 
@@ -381,3 +402,9 @@
       gtsave("Images/Global/GLOBAL_FY21Q2_KEY_INDICATORS_MD.png")
     
 
+    # Generate regional numbers
+    map(unique(bureaus$usaid_region), 
+        ~get_md_table(region_im, usaid_region, .x) %>% 
+          gtsave(file.path("Images/Regional", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
+    
+    
