@@ -332,6 +332,9 @@
     map(ou_list, ~get_md_table(ou_im, operatingunit, .x) %>% 
           gtsave(file.path("Images/OU", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
   
+    # Write raw data to csvs
+    map(ou_list, ~shape_md_tbl(ou_im, operatingunit, .x) %>% 
+          write_csv(file.path("Dataout/", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD_RAW.csv"))))
   
   # Distinct list of Countries in Regional OUS
   # Asia
@@ -343,6 +346,9 @@
     
     map(asia_cntry_list, ~get_md_table(ou_im, countryname, .x) %>% 
           gtsave(file.path("Images/Regional/Asia", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
+    
+    map(asia_cntry_list, ~shape_md_tbl(ou_im, countryname, .x) %>% 
+          write_csv(file.path("Dataout/", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD_RAW.csv"))))
 
   # West Africa
     westafr_cntry_list <- 
@@ -354,6 +360,9 @@
     map(westafr_cntry_list, ~get_md_table(ou_im, countryname, .x) %>% 
           gtsave(file.path("Images/Regional/WAR", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
   
+    
+    map(westafr_cntry_list, ~shape_md_tbl(ou_im, countryname, .x) %>% 
+          write_csv(file.path("Dataout/", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD_RAW.csv"))))
   
   # Western Hemisphere
   # Omitting Guyana and Barbados due to no reporting in FY21
@@ -366,6 +375,9 @@
     
     map(wh_cntry_list, ~get_md_table(ou_im, countryname, .x) %>% 
           gtsave(file.path("Images/Regional/WesternHemi", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
+    
+    map(wh_cntry_list, ~shape_md_tbl(ou_im, countryname, .x) %>% 
+          write_csv(file.path("Dataout/", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD_RAW.csv"))))
   
   
   # Generate global numbers
@@ -380,4 +392,5 @@
     return_global_tbl() %>% 
       gtsave("Images/Global/GLOBAL_FY21Q2_KEY_INDICATORS_MD.png")
     
-
+    shape_md_tbl(ou_im %>% mutate(operatingunit = "Global"), operatingunit, "Global") %>% 
+      write_csv(file.path("Dataout/", "GLOBAL_FY21Q2_KEY_INDICATORS_MD_RAW.csv"))
