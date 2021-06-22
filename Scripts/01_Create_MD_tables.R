@@ -20,9 +20,11 @@
     library(patchwork)
     library(ggtext)
     library(here)
-    library(gt)
+    library(gt) #Version 0.2.2 used
     library(fontawesome)
     
+  # In case a rollback is required; v.0.3.3 seems to have breaking changes
+  #devtools::install_version("gt", version = "0.2.2", repos = "http://cran.us.r-project.org")
     
   # Set paths  
     data   <- "Data"
@@ -52,6 +54,7 @@
                           "HTS_TST", "HTS_TST_POS")
     
   # Mechs that need to be filtered for whatever reason
+    omit_mechs <- c("84562", "84566")
     
   # Agency order throughout
   # Use the long order b/c of the varying nature of coverage by diff agencies
@@ -82,7 +85,8 @@
       si_path() %>% 
       return_latest("OU_IM_FY19-21_20210514") %>% 
       read_msd() %>% 
-      filter(fiscal_year %in% c(2020, 2021))
+      filter(fiscal_year %in% c(2020, 2021), 
+             !mech_code %in% omit_mechs)
     
 
 # HELPER FUNCTIONS --------------------------------------------------------
@@ -208,7 +212,7 @@
     
     md_tbl_old %>% 
       gt(groupname_col = "agency") %>% 
-      cols_hide(indicator) %>% 
+      cols_hide(columns = "indicator") %>% 
       # Format numbers
       fmt_percent(
         columns = contains("APR"), 
@@ -240,7 +244,7 @@
       ) %>% 
       text_transform( 
         locations = cells_body(
-          columns = c(indicator2),
+          columns = c("indicator2"),
           rows = (agency == "USAID")
         ),
         fn = function(x){
@@ -283,7 +287,7 @@
       # cols_width(
       #   indicator2 ~ px(340),
       # ) %>% 
-      tab_options(data_row.padding = px(5)) 
+      tab_options(data_row.padding = px(5))
   }
     
     
@@ -291,9 +295,9 @@
 # TEST TABLE GENERATION BY OU OR COUNTRY ----------------------------------
 
   # Test it all together
-    md_tbl_old <- shape_md_tbl(df = ou_im, country_col = operatingunit, ou = "Asia Region")
+    md_tbl_old <- shape_md_tbl(df = ou_im, country_col = operatingunit, ou = "Cameroon")
     tbl_col_names <- fix_col_names(md_tbl_old)
-    md_tbl(md_tbl_old, tbl_col_names, "Asia Region")
+    md_tbl(md_tbl_old, tbl_col_names, "Cameroon")
     
     
   # Wrapper around everything to pull it all together  
@@ -313,7 +317,7 @@
     }  
 
   # Test for a single OU  
-    get_md_table(ou_im, country_col = countryname, "Burkina Faso")
+    get_md_table(ou_im, country_col = countryname, "Cambodia")
     get_md_table(ou_im, country_col = operatingunit, "Kenya")
 
 # BATCH GENERATE TABLES ------------------------------------------------
@@ -331,11 +335,12 @@
     
     map(ou_list, ~get_md_table(ou_im, operatingunit, .x) %>% 
           gtsave(file.path("Images/OU", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
-  
+
     # Write raw data to csvs
     map(ou_list, ~shape_md_tbl(ou_im, operatingunit, .x) %>% 
           write_csv(file.path("Dataout/", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD_RAW.csv"))))
   
+    
   # Distinct list of Countries in Regional OUS
   # Asia
     asia_cntry_list <- 

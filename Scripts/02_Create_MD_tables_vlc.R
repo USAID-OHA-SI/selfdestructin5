@@ -337,7 +337,19 @@
   # Test it all
     get_md_vls_table(ou_im_vlc, countryname, "Malawi")
 
+  # Get just the dataframes for each place and write to a csv
+    write_md_vls_df <- function(df, country_col, ou) {
+      
+      tx_curr_base <- get_tx_curr_base(df, {{country_col}}, ou)
+      mmd_vlc <- get_mmd_vlc_base(df, {{country_col}}, ou)
+      
+      tx_mmds <- get_tx_mmds(mmd_vlc)
+      md_vlc_df <- shape_vlc_tbl(mmd_vlc, tx_mmds, tx_curr_base)
 
+      md_vlc_df %>% 
+        write_csv(file.path("Dataout/MMD_VLC", paste0({{ou}}, "_FY21Q2_MMD_VL_MD_RAW.csv")))
+    }  
+    
 # BATCH VLC/MMD TABLES ----------------------------------------------------
 
   # Distinct list of OUS to loop over
@@ -346,7 +358,10 @@
     pull()
   
   map(ou_list, ~get_md_vls_table(ou_im_vlc, operatingunit, .x) %>% 
-        gtsave(file.path("Images/OU", paste0(.x, "_FY21Q2_MMD_VL_MD.png"))))    
+        gtsave(file.path("Images/OU", paste0(.x, "_FY21Q2_MMD_VL_MD.png")))) 
+  
+  map(ou_list, ~write_md_vls_df(ou_im_vlc, operatingunit, .x))
+  
   
   # Distinct list of Countries in Regional OUS
   
@@ -362,6 +377,8 @@
   map(asia_cntry_list, ~get_md_vls_table(ou_im_vlc, countryname, .x) %>% 
         gtsave(file.path("Images/Regional/Asia", paste0(.x, "_FY21Q2_MMD_VL_MD.png"))))
   
+  map(asia_cntry_list, ~write_md_vls_df(ou_im_vlc, countryname, .x))
+  
   # West Africa
   westafr_cntry_list <- 
     ou_im_vlc %>% 
@@ -373,6 +390,7 @@
   map(westafr_cntry_list, ~get_md_vls_table(ou_im_vlc, countryname, .x) %>% 
         gtsave(file.path("Images/Regional/WAR", paste0(.x, "_FY21Q2_MMD_VL_MD.png"))))
   
+  map(westafr_cntry_list, ~write_md_vls_df(ou_im_vlc, countryname, .x))
   
   # Western Hemisphere
   # Omitting Guyana and Barbados due to no reporting in FY21
@@ -386,6 +404,7 @@
   map(wh_cntry_list, ~get_md_vls_table(ou_im_vlc, countryname, .x) %>% 
         gtsave(file.path("Images/Regional/WesternHemi", paste0(.x, "_FY21Q2_MMD_VL_MD.png"))))
 
+  map(wh_cntry_list, ~write_md_vls_df(ou_im_vlc, countryname, .x))
   
 
 #  GENERATE GLOBAL TABLE -- SOUTH AFRICA FLAG -----------------------------
@@ -614,3 +633,5 @@
           )
         ) %>% 
       gtsave("Images/Global/GLOBAL_FY21Q2_MMD_VL_MD.png")
+    
+    mmd_vlc_tbl %>% write_csv("Dataout/MMD_VLC/GLOBAL_FY21Q2_MMD_VL_MD_RAW.csv")
