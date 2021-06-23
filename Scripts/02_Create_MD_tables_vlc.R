@@ -51,7 +51,8 @@
       si_path() %>% 
       return_latest("OU_IM_FY19-21_20210514") %>% 
       read_msd() %>% 
-      filter(fiscal_year %in% c(2019, 2020, 2021))
+      filter(fiscal_year %in% c(2019, 2020, 2021),
+             !mech_code %in% omit_mechs) 
 
 
 # HELPER FUNCTIONS --------------------------------------------------------
@@ -225,20 +226,20 @@
         ) %>% 
         tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.25)),
                   locations = cells_body(
-                    columns = c(delta),
+                    columns = vars(delta),
                     rows = delta <= -0.005)
         ) %>% 
         tab_style(style = list(cell_fill(color = genoa_light, alpha = 0.25)),
                   locations = cells_body(
-                    columns = c(delta),
+                    columns = vars(delta),
                     rows = delta >= 0.005)
         ) %>% 
         cols_hide(
-          columns = c(FY20APR, FY20targets, FY21APR, FY21targets)
+          columns = vars(FY20APR, FY20targets, FY21APR, FY21targets)
         ) %>% 
         cols_align(
           align = c("left"),
-          columns = "indicator"
+          columns = vars(indicator)
         ) %>% 
         tab_options(
           row_group.font.weight = "bold"
@@ -264,7 +265,7 @@
         ) %>% 
         text_transform(
           locations = cells_body(
-            columns = c(indicator2),
+            columns = vars(indicator2),
             rows = (agency == "USAID")
           ),
           fn = function(x){
@@ -290,7 +291,7 @@
         tab_source_note(
           source_note = paste("Produced on ",Sys.Date(), "by the ", team, " using PEPFAR FY21Q2i MSD released on 2021-05-14.")
         ) %>% 
-        cols_hide(indicator) %>% 
+        cols_hide(vars(indicator)) %>% 
         tab_style(
           style = list(
             cell_borders(
@@ -301,12 +302,12 @@
           ),
           locations = list(
             cells_body(
-              columns = c(FY20results)
+              columns = vars(FY20results)
             )
           )
         ) %>% 
         cols_width(
-          indicator2 ~ px(500),
+          vars(indicator2) ~ px(500),
         ) %>% 
         tab_options(data_row.padding = px(7)) %>% 
         tab_style(
@@ -518,7 +519,7 @@
   # Produce Table for Global
     mmd_vlc_tbl %>% 
       gt(groupname_col = "agency") %>% 
-        cols_hide(indicator) %>% 
+        cols_hide(vars(indicator)) %>% 
         fmt_number(
           columns = matches("results|Q1|Q2|delta"),
           rows = str_detect(indicator2, "(TX_CURR|TX_MMD3+|TX_MMD6)"),
@@ -535,16 +536,16 @@
         ) %>% 
         tab_style(style = list(cell_fill(color = old_rose_light, alpha = 0.25)),
                   locations = cells_body(
-                    columns = c(delta),
+                    columns = vars(delta),
                     rows = delta <= -0.005)
         ) %>% 
         tab_style(style = list(cell_fill(color = genoa_light, alpha = 0.25)),
                   locations = cells_body(
-                    columns = c(delta),
+                    columns = vars(delta),
                     rows = delta >= 0.005)
         ) %>% 
         cols_hide(
-          columns = c(FY20APR, FY20targets, FY21APR, FY21targets)
+          columns = vars(FY20APR, FY20targets, FY21APR, FY21targets)
         ) %>% 
         cols_align(
           align = c("left"),
@@ -578,7 +579,7 @@
         ) %>%
         text_transform(
           locations = cells_body(
-            columns = c(indicator2),
+            columns = vars(indicator2),
             rows = (agency == "USAID")
           ),
           fn = function(x){
@@ -590,7 +591,7 @@
             )
           }
         ) %>% 
-        cols_hide(indicator) %>% 
+        cols_hide(vars(indicator)) %>% 
         tab_style(
           style = list(
             cell_borders(
@@ -601,7 +602,7 @@
           ),
           locations = list(
             cells_body(
-              columns = c(FY20results)
+              columns = vars(FY20results)
             )
           )
         ) %>% 
@@ -624,7 +625,7 @@
           source_note = md("Viral Load Covererage = TX_PVLS_N / TX_CURR_2_period_lag. *ALL OTHER AGENCIES* based on aggregates excluding de-duplication.")
           )  %>% 
         cols_width(
-          indicator2 ~ px(500),
+          vars(indicator2) ~ px(500),
         ) %>% 
         tab_options(data_row.padding = px(7)) %>% 
         tab_style(
