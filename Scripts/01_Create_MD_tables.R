@@ -175,7 +175,7 @@
     }
     
   # Test function above
-    tst <-  shape_md_tbl(df = ou_im, country_col = operatingunit, ou = "Zambia") %>% prinf()
+    tst <-  shape_md_tbl(df = ou_im, country_col = operatingunit, ou = "Cameroon") %>% prinf()
 
 
 # PRETTIFY COLUMN NAMES ---------------------------------------------------
@@ -317,7 +317,7 @@
     }  
 
   # Test for a single OU  
-    get_md_table(ou_im, country_col = countryname, "Cambodia")
+    get_md_table(ou_im, country_col = countryname, "Cameroon")
     get_md_table(ou_im, country_col = operatingunit, "Kenya")
 
 # BATCH GENERATE TABLES ------------------------------------------------
@@ -332,14 +332,15 @@
     ou_list <- ou_im %>% 
       distinct(operatingunit) %>% 
       pull()
-    
+  
+  #Write locally  
     map(ou_list, ~get_md_table(ou_im, operatingunit, .x) %>% 
           gtsave(file.path("Images/OU", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
 
     # Write raw data to csvs
     map(ou_list, ~shape_md_tbl(ou_im, operatingunit, .x) %>% 
           write_csv(file.path("Dataout/", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD_RAW.csv"))))
-  
+    
     
   # Distinct list of Countries in Regional OUS
   # Asia
