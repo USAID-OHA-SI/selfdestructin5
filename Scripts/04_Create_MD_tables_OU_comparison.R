@@ -137,7 +137,7 @@
     data_color(columns = 2:8, colors = pal, alpha = 0.50) %>% 
     data_color(columns = 9, colors = pal_tx, alpha = 0.50) %>% 
     tab_source_note(
-      source_note = paste("Produced on ",Sys.Date(), "by the Core Analytics Cluster using PEPFAR FY21Q2i MSD released on 2021-05-14.")
+      source_note = md("Viral Load Covererage = TX_PVLS_N / TX_CURR_2_period_lag. *ALL OTHER AGENCIES* based on aggregates excluding de-duplication.")
     ) %>% 
     tab_options(
       source_notes.font.size = 10
