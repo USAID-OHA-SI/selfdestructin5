@@ -22,6 +22,7 @@
     library(here)
     library(gt) #Version 0.2.2 used
     library(fontawesome)
+    library(googledrive)
     
   # In case a rollback is required; v.0.3.3 seems to have breaking changes
   #devtools::install_version("gt", version = "0.2.2", repos = "http://cran.us.r-project.org")
@@ -79,11 +80,14 @@
         "treatment",        "TX_CURR",        "Currently receiving antiretroviral therapy"
       )
     
+
+    
+    
 # LOAD DATA ============================================================================  
 
     ou_im <- 
       si_path() %>% 
-      return_latest("OU_IM_FY19-21_20210514") %>% 
+      return_latest("OU_IM_FY19-21_20210618_v2_1") %>% 
       read_msd() %>% 
       filter(fiscal_year %in% c(2020, 2021), 
              !mech_code %in% omit_mechs)
@@ -94,7 +98,7 @@
   # KEEP ONLY USAID AND ALL OTHER AGENCIES
   # Helper to do a bit of repetitive munging
     clean_and_aggregate <- function(df){
-      df %>% 
+      suppressWarnings(df %>% 
         filter(indicator %in% indics,
                standardizeddisaggregate %in% c("Total Numerator"),
                fundingagency != "Dedup") %>% 
@@ -105,6 +109,7 @@
                agency = fct_relevel(agency, agency_order_shrt)) %>% 
         group_by(fiscal_year, agency, indicator) %>% 
         summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop")
+      )
     }           
     
     
@@ -128,7 +133,8 @@
     
     # Clean up and add up down flags, these will be used in version 1.0   
       md_tbl <- 
-        ou_tbl %>% 
+        suppressWarnings(
+          ou_tbl %>% 
         reshape_msd("quarters", qtrs_keep_cumulative = TRUE) %>% 
         group_by(agency, indicator) %>% 
         mutate(value_run = row_number(),
@@ -148,10 +154,12 @@
         mutate(indicator = fct_relevel(indicator, indics)) %>% 
         calc_achv(., APR, period) %>% 
         group_by(agency)
+        )
     
     # Old table layout
       md_tbl_old <- 
-        md_tbl %>% 
+        suppressWarnings(
+          md_tbl %>% 
         filter(period %in% c("FY20Q4", "FY21Q2")) %>% 
         select(period, agency, indicator, targets, results = cumulative, APR) %>% 
         mutate(period = str_sub(period, 1, 4)) %>%
@@ -161,9 +169,10 @@
                     names_sort = TRUE) %>% 
         left_join(., indic_def) %>% 
         ungroup() %>% 
-        mutate(indicator2 = ifelse(agency == "USAID", paste(indicator, indicator_plain), paste(indicator)),
-               indicator = fct_relevel(indicator, indics)) %>% 
-        arrange(agency, indicator)
+        
+          mutate(indicator2 = ifelse(agency == "USAID", paste(indicator, indicator_plain), paste(indicator)),
+               indicator = fct_relevel(indicator, indics))) %>% 
+        arrange(agency, indicator) 
     
       md_tbl_old <- 
         md_tbl_old %>% 
@@ -275,7 +284,7 @@
       opt_align_table_header(align = c("center")) %>% 
       add_achv_colors() %>% 
       tab_source_note(
-        source_note = paste("Produced on ",Sys.Date(), "by the ", team, " using PEPFAR FY21Q2i MSD released on 2021-05-14.")
+        source_note = paste("Produced on ",Sys.Date(), "by the ", team, " using PEPFAR FY21Q2c MSD released on 2021-06-18.")
       ) %>% 
       tab_source_note(
         source_note = md("*ALL OTHER AGENCIES* based on aggregates excluding de-duplication.")
@@ -336,13 +345,13 @@
   #Write locally  
     map(ou_list, ~get_md_table(ou_im, operatingunit, .x) %>% 
           gtsave(file.path("Images/OU", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
-
+    
     # Write raw data to csvs
     map(ou_list, ~shape_md_tbl(ou_im, operatingunit, .x) %>% 
           write_csv(file.path("Dataout/", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD_RAW.csv"))))
     
     
-  # Distinct list of Countries in Regional OUS
+# Distinct list of Countries in Regional OUS
   # Asia
     asia_cntry_list <- 
       ou_im %>% 
@@ -353,6 +362,7 @@
     map(asia_cntry_list, ~get_md_table(ou_im, countryname, .x) %>% 
           gtsave(file.path("Images/Regional/Asia", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
     
+
     map(asia_cntry_list, ~shape_md_tbl(ou_im, countryname, .x) %>% 
           write_csv(file.path("Dataout/", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD_RAW.csv"))))
 
@@ -365,7 +375,6 @@
     
     map(westafr_cntry_list, ~get_md_table(ou_im, countryname, .x) %>% 
           gtsave(file.path("Images/Regional/WAR", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
-  
     
     map(westafr_cntry_list, ~shape_md_tbl(ou_im, countryname, .x) %>% 
           write_csv(file.path("Dataout/", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD_RAW.csv"))))

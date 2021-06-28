@@ -73,7 +73,7 @@
     
     return(md_tbl_old)
   }
-  shape_md_tbl_ou_comp(ou_im)
+  shape_md_tbl_ou_comp(ou_im) %>% View()
   
 
 # GENERATE OU COMPARISON TABLE --------------------------------------------
@@ -83,16 +83,16 @@
     ungroup() %>% 
     gt() %>% 
     fmt_percent(
-      columns = -c(operatingunit),
+      columns = 2:9,
       decimals = 0
     ) %>% 
     fmt_missing(
-      columns = -c(operatingunit),
+      columns = 2:9,
       missing_text = "-"
      ) %>% 
     tab_spanner(
       label = md("**PREVENTION**"),
-      columns = PrEP_NEW:VMMC_CIRC
+      columns = 2:4
     ) %>% 
     tab_spanner(
       label = md("**TESTING**"),
@@ -101,7 +101,7 @@
     tab_spanner(
       label = md("**TREATMENT**"),
       columns = matches("TX")
-    ) %>% 
+    )%>% 
     tab_style(
       style = list("font-variant: small-caps;"),
       locations = cells_column_labels(columns = 1)

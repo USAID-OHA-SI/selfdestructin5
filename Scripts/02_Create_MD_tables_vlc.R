@@ -37,9 +37,9 @@
       "treatment",        "VLS",           "Percent of antiretroviral patients with a suppressed viral load result documented in past 12 months"
     ) 
 
-  # call required functions in case 01 is not ran
-    source("Scripts/add_achv_colors_tbl.R")
-    source("Scripts/MD_tables_reboot_funs.R")
+  # Run 01_Create_MD_tables.R before moving one
+    # source("Scripts/add_achv_colors_tbl.R")
+    # source("Scripts/MD_tables_reboot_funs.R")
 
 # LOAD DATA ============================================================================  
 
@@ -49,7 +49,7 @@
   
     ou_im_vlc <- 
       si_path() %>% 
-      return_latest("OU_IM_FY19-21_20210514") %>% 
+      return_latest("OU_IM_FY19-21_20210618_v2_1") %>% 
       read_msd() %>% 
       filter(fiscal_year %in% c(2019, 2020, 2021),
              !mech_code %in% omit_mechs) 
@@ -59,7 +59,8 @@
   
   # This has to change to TX_CURR for VLS/MMD TABLES
     clean_and_aggregate_tx <- function(df){
-      df %>% 
+      suppressWarnings(
+        df %>% 
         filter(indicator %in% c("TX_CURR"),
                standardizeddisaggregate %in% c("Total Numerator"),
                fundingagency != "Dedup") %>% 
@@ -70,6 +71,7 @@
                agency = fct_relevel(agency, agency_order_shrt)) %>% 
         group_by(fiscal_year, agency, indicator) %>% 
         summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop")
+      )
     }   
   
   
@@ -94,7 +96,8 @@
     
     get_mmd_vlc_base <- function(df, country_col, ou){
       mmd_vlc <-
-        df %>%
+        suppressWarnings(
+          df %>%
         filter(indicator %in% c("TX_CURR", "TX_PVLS"),
                disaggregate %in%  c("Age/Sex/ARVDispense/HIVStatus", "Total Numerator", "Total Denominator") |
                  otherdisaggregate %in% c("ARV Dispensing Quantity - 6 or more months", "ARV Dispensing Quantity - 3 to 5 months"),
@@ -115,7 +118,8 @@
         group_by(fiscal_year, agency, indicator) %>%
         summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop") %>%
         ungroup() %>%
-        arrange(agency, fiscal_year, indicator) 
+        arrange(agency, fiscal_year, indicator)
+        )
       return(mmd_vlc)
     }
     mmd_vlc <- get_mmd_vlc_base(ou_im_vlc, operatingunit, "Zambia")
@@ -138,7 +142,8 @@
     shape_vlc_tbl <- function(mmd_vlc, tx_mmds, tx_curr_base) {
     
     mmd_vlc_tbl <- 
-      mmd_vlc %>% 
+      suppressWarnings(
+        mmd_vlc %>% 
       filter(!indicator %in% c("TX_MMD3+")) %>% 
       bind_rows(tx_mmds) %>% 
       bind_rows(tx_curr_base) %>% 
@@ -181,6 +186,7 @@
              agency = fct_relevel(agency,
                                   agency_order_shrt)) %>% 
       arrange(agency, indicator)
+      )
     
     # Bring in indicator names
     mmd_vlc_tbl <- 
@@ -289,7 +295,7 @@
           source_note = "Viral Load Covererage = TX_PVLS_N / TX_CURR_2_period_lag"
         ) %>% 
         tab_source_note(
-          source_note = paste("Produced on ",Sys.Date(), "by the ", team, " using PEPFAR FY21Q2i MSD released on 2021-05-14.")
+          source_note = paste("Produced on ",Sys.Date(), "by the ", team, " using PEPFAR FY21Q2c MSD released on 2021-06-18.")
         ) %>% 
         cols_hide(vars(indicator)) %>% 
         tab_style(
@@ -619,7 +625,7 @@
           location = cells_row_groups()
         ) %>% 
         tab_source_note(
-          source_note = paste("Produced on ",Sys.Date(), "by SI Core Analytics Cluster using OU_IM_FY19-21_20210514i MSD.")
+          source_note = paste("Produced on ",Sys.Date(), "by the Core Analytics Cluster using PEPFAR FY21Q2c MSD released on 2021-06-18.")
         ) %>% 
         tab_source_note(
           source_note = md("Viral Load Covererage = TX_PVLS_N / TX_CURR_2_period_lag. *ALL OTHER AGENCIES* based on aggregates excluding de-duplication.")
@@ -636,3 +642,5 @@
       gtsave("Images/Global/GLOBAL_FY21Q2_MMD_VL_MD.png")
     
     mmd_vlc_tbl %>% write_csv("Dataout/MMD_VLC/GLOBAL_FY21Q2_MMD_VL_MD_RAW.csv")
+
+
