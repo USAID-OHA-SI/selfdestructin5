@@ -55,7 +55,7 @@
                           "HTS_TST", "HTS_TST_POS")
     
   # Mechs that need to be filtered for whatever reason
-    omit_mechs <- c("84562", "84566")
+    omit_mechs <- c("16772", "84562", "84566")
     
   # Agency order throughout
   # Use the long order b/c of the varying nature of coverage by diff agencies
@@ -400,11 +400,15 @@
     return_global_tbl <- function() {
       all <- shape_md_tbl(ou_im %>% mutate(operatingunit = "Global"), operatingunit, "Global")
       tbl_col_names <- fix_col_names(all)
-      ou_tbl <- md_tbl(all, tbl_col_names, "PEPFAR GLOBAL")
+      ou_tbl <- md_tbl(all, tbl_col_names, "PEPFAR GLOBAL") %>% 
+        
       return(ou_tbl)
     }
     
     return_global_tbl() %>% 
+      tab_source_note(
+        source_note = md(paste('Omitted mechanisms:', toString(omit_mechs)))
+      ) %>% 
       gtsave("Images/Global/GLOBAL_FY21Q2_KEY_INDICATORS_MD.png")
     
     shape_md_tbl(ou_im %>% mutate(operatingunit = "Global"), operatingunit, "Global") %>% 

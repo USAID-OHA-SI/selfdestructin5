@@ -9,7 +9,7 @@
   # Where does this stuff live on the drive?
   # These will need to be retrieved each quarter
   # TODO: CREATE a FUNCTION TO CREATE FOLDERS / FETCH ID BASED ON fy / period / MSD release (i or c)
-    gdrive_ou_c <- "102iefMh1DURa_4nxwE7MVy0Tz_ANOf3i"
+    gdrive_ou_c <- "102iefMh1DURa_4nxwE7MVy0Tz_ANOf3i" 
     gdrive_asia_c <- "1vXnqhFm37KvqocidccSgJk0xnaPKkEpW"
     gdrive_afr_c <- "1KPggkgZ_4TkUClC113bWa2Rtx_gyfPtL"
     gdrive_wh_c <- "1z94UO8-ztxKQblpLeRj_BVcqRdJFwZ22"
@@ -23,8 +23,15 @@
   # TODO: CREATE a FUNCTION TO FETCH FILES FROM EACH LEVEL OF FOLDERS
   # AND MAP TO THE APPROPRIATE DRIVE CALL. BASICALLY, A MAP OVER THE LOCAL
     
+  # Fix Cote D'Ivoire as google drive does not like it
+    rename_list <- list.files("Images/OU", pattern = "\\'", full.names = TRUE)
+    file.rename(rename_list, str_remove(rename_list, "'"))
+    
+  # Check they are renamed
+   list.files("Images/OU", pattern = "Cote")
+    
   # Upload to Google drive now
-    local_files <- list.files("Images/OU", full.names = T)
+    local_files_ou <- list.files("Images/OU", full.names = T)
     local_files_asia <- list.files("Images/Regional/Asia", full.names = T)
     local_files_afr <- list.files("Images/Regional/WAR", full.names = T)
     local_files_wh <- list.files("Images/Regional/WesternHemi", full.names = T)
@@ -36,15 +43,15 @@
     
   # Write to Google drive folder (either i or c depending on MSD release)    
   # OU level  
-    walk(local_files,
-         ~drive_upload(.x,
+    walk(local_files_ou,
+         ~drive_put(.x,
                        path = as_id(gdrive_ou_c),
                        name = basename(.x))
     )
    
   # Asia Regional 
     walk(local_files_asia,
-         ~drive_upload(.x,
+         ~drive_put(.x,
                        path = as_id(gdrive_asia_c),
                        name = basename(.x))
     )
@@ -52,21 +59,21 @@
     
   # WAR
     walk(local_files_afr,
-         ~drive_upload(.x,
+         ~drive_put(.x,
                        path = as_id(gdrive_afr_c),
                        name = basename(.x))
     )
     
   # WESTERN HEMI
     walk(local_files_wh,
-         ~drive_upload(.x,
+         ~drive_put(.x,
                        path = as_id(gdrive_wh_c),
                        name = basename(.x))
     )
     
   #GLOBAL
     walk(local_files_glb,
-         ~drive_upload(.x,
+         ~drive_put(.x,
                        path = as_id(gdrive_glbl_c),
                        name = basename(.x))
     )
@@ -74,14 +81,14 @@
 # Data posting
   # Key Indicators
     walk(local_files_rawdata,
-         ~drive_upload(.x,
+         ~drive_put(.x,
                        path = as_id(gdrive_keyind_data),
                        name = basename(.x))
     )
     
   # MMD VLC Data
     walk(local_files_mmd_rawdata,
-         ~drive_upload(.x,
+         ~drive_put(.x,
                        path = as_id(gdrive_mmd_data),
                        name = basename(.x))
     )    
