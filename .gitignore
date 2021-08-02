@@ -2,7 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-
 #no data
 *.csv
 *.txt
@@ -13,7 +12,6 @@
 *.png
 *.twbx
 *.pptx
-
 #nothing from these folders
 AI/*
 GIS/*
@@ -29,7 +27,6 @@ Graphics/*
 *.png
 *.twbx
 *.pptx
-
 #nothing from these folders
 AI/*
 GIS/*
@@ -45,9 +42,9 @@ Graphics/*
 *.png
 *.twbx
 *.pptx
-
 #nothing from these folders
 AI/*
 GIS/*
 Images/*
 Graphics/*
+~/.githapi.oauth
