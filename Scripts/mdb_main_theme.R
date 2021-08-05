@@ -66,8 +66,13 @@ mdb_main_theme <- function(df, ...){
       source_note = md(glue::glue("**Note**: {dedup_note} | {caveats}"))
     ) %>% 
     tab_source_note(
-      source_note = glue::glue(md("{authors}"))
+      source_note = md(glue::glue("**Source**:{authors}"))
     ) %>%
+    tab_footnote(
+      footnote = md(glue::glue("**Details**:{change_note}")),
+      locations = cells_column_labels(
+        columns = present_z_change)
+      ) %>% 
     tab_style(
       style = list(
         cell_borders(
@@ -82,18 +87,17 @@ mdb_main_theme <- function(df, ...){
         )
       )
     ) %>% 
-    tab_footnote(
-      footnote = "Change from same quarter in prior year.",
-      locations = cells_column_labels(
-        columns = present_z_change
+    tab_style(
+      style = list("font-variant: small-caps;"),
+      locations = cells_column_labels(columns = everything()
       )
     ) %>% 
     tab_options(
-      source_notes.font.size = 10,
+      source_notes.font.size = 8,
       table.font.size = 12, 
       data_row.padding = px(5),
       footnotes.font.size = 8,
-      # source_notes.font.size = 8, 
-      # source_notes.padding = px(1),
+      source_notes.padding = px(1),
       ...) 
 }
+

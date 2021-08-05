@@ -9,18 +9,11 @@
 # Libraries
   library(glitr)
   library(glamr)
-  library(gisr)
-  library(Wavelength)
   library(ICPIutilities)
   library(tidyverse)
   library(scales)
-  library(sf)
   library(extrafont)
-  library(tidytext)
-  library(patchwork)
-  library(ggtext)
-  library(here)
-  library(gt) #Version 0.2.2 used
+  library(gt) #Version 0.3.0
   library(fontawesome)
   library(googledrive)
 
@@ -50,16 +43,18 @@
     return_latest("OU_IM_FY19-21_20210618_v2_1") %>% 
     read_msd() 
   
-  #2) Globals needed
+  #2) Objects needed 
   present_fy <- paste(identifypd(ou_im), "Cumulative")
   present_qtr <- paste(identifypd(ou_im), "Results")
   past_fy <- paste("FY", identifypd(ou_im) %>% str_sub(., 3, 4) %>% as.numeric() - 1, sep = "")
   
-  authors <- paste("Created by Core Analytics Cluster on", Sys.Date())
-  caveats <- "Certain mechanisms have been omitted. See the Known Issues Tracker for full list of mechanisms omitted"
+  msd_source <- ou_im %>% identifypd() %>% msd_period(period = .)
+  authors <- paste("Created by Core Analytics Cluster on", Sys.Date(), "using", msd_source)
+  caveats <- "Certain mechanisms have been omitted. See the Known Issues Tracker for full list of mechanisms omitted."
   dedup_note <- "ALL OTHER AGENCIES based on aggregates excluding de-duplication."
   change_note <- "Number reflects percentage change from the same quarter in the previous year."
-  msd_source <- 
+  
+  
 
 # MAKE TABLES - DRAW THE OWL ----------------------------------------------
 
@@ -69,7 +64,6 @@
   #4) Reshape the main table into a gt ready format
   mdb_tbl <- reshape_mdb_df(mdb_df)
 
-  
   # Generic function to call an OU/Country/Agency
   create_mdb_table <- function(df, ou){
     
