@@ -110,7 +110,8 @@ make_mdb_df <- function(df, resolve_issues = T) {
   df_usaid <- df %>% 
     dplyr::mutate(operatingunit = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES")) %>% 
     collapse_base_tbl(., indicator_fltr, operatingunit) %>% 
-    dplyr::mutate(agg_type = "Agency")  
+    dplyr::mutate(agg_type = "Agency", 
+                  operatingunit = "Global")  
   
   # Bind the tables, set indictor levels
   md_table <- dplyr::bind_rows(df_ou, df_reg, df_usaid) %>% 
@@ -176,7 +177,7 @@ reshape_mdb_df <- function(df) {
                 values_from = c(targets, z_aresults, results_cumulative, targets_achievement, tint_achv, z_change, z_direction),
                 names_sort = TRUE) %>%
     mutate(indicator2 = ifelse(agency == "USAID", paste(indicator, indicator_plain), paste(indicator)),
-           #indicator2 = format_indicator(indicator2), 
+           indicator2 = ifelse(agency == "USAID", format_indicator(indicator2), indicator2), 
            agency = fct_relevel(agency, "USAID"), 
            present_z_direction = map(present_z_direction, rank_chg),
            present_tint_achv = map(present_tint_achv, achv_circle)
@@ -252,8 +253,7 @@ achv_circle <- function(x){
 
 
 #' GT function to format indicator + indicator plain definition
-#' Use as part of table formatting
-#' TODO: Need to so gt can read output from this in main table; not currently working
+#' Creates the top part of table that lists indicator and description
 #' 
 #' @examples
 #' \dontrun{
@@ -262,9 +262,9 @@ achv_circle <- function(x){
 format_indicator <- function(x){
   name <- word(x, 1)
   name2 <- word(x, 2, -1)
-  glue::glue(
+    glue::glue(
     "<div style='line-height:10px'<span style='font-weight:regular;font-variant:small-caps;font-size:13px'>{name}</div>
         <div><span style='font-weight:regular;font-size:11px'>{name2}</br></div>"
-  )
+    )
 }
 

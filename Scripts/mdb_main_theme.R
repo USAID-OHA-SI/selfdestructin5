@@ -3,6 +3,7 @@
 mdb_main_theme <- function(df, ...){
   
   df %>% 
+    # These columns are not needed so they are hidden
     cols_hide(
       columns = c("operatingunit", "agg_type", "indicator")
     ) %>% 
@@ -13,27 +14,14 @@ mdb_main_theme <- function(df, ...){
     fmt_percent(
       columns = matches("achievement|present_z_change"), 
       decimal = 0
-    ) %>%
-    text_transform(
-      locations = cells_body(
-        columns = c("indicator2"),
-        rows = (agency == "USAID")
-      ),
-      fn = function(x){
-        name <- word(x, 1)
-        name2 <- word(x, 2, -1)
-        glue::glue(
-          "<div style='line-height:10px'<span style='font-weight:regular;font-variant:small-caps;font-size:13px'>{name}</div>
-        <div><span style='font-weight:regular;font-size:11px'>{name2}</br></div>"
-        )
-      }
-    ) %>%
+    ) %>% 
     fmt_number(
       columns = c("past_results_cumulative", "past_targets", 
                   "present_results_cumulative", "present_targets",
                   "present_z_aresults"),
       decimal = 0
       ) %>% 
+    fmt_markdown(columns = c("indicator2")) %>% 
     tab_spanner(
       label = glue::glue("{past_fy}"),
       columns = contains("past")
@@ -51,7 +39,7 @@ mdb_main_theme <- function(df, ...){
         cell_text(weight = "bold")), 
       locations = cells_column_spanners(spanners = everything())
     ) %>% 
-    cols_label(
+    cols_label( # TODO -- Move this to an automated step using a naming f()
       indicator2 = " ",
       past_results_cumulative = "results", 
       past_targets = "targets",
@@ -73,8 +61,12 @@ mdb_main_theme <- function(df, ...){
         columns = present_targets_achievement
       )
     ) %>% 
+    # Merge Key details into a single source note
     tab_source_note(
-      source_note = md("*ALL OTHER AGENCIES* based on aggregates excluding de-duplication.")
+      source_note = md(glue::glue("**Note**: {dedup_note} | {caveats}"))
+    ) %>% 
+    tab_source_note(
+      source_note = glue::glue(md("{authors}"))
     ) %>%
     tab_style(
       style = list(
@@ -90,9 +82,18 @@ mdb_main_theme <- function(df, ...){
         )
       )
     ) %>% 
+    tab_footnote(
+      footnote = "Change from same quarter in prior year.",
+      locations = cells_column_labels(
+        columns = present_z_change
+      )
+    ) %>% 
     tab_options(
       source_notes.font.size = 10,
       table.font.size = 12, 
       data_row.padding = px(5),
+      footnotes.font.size = 8,
+      # source_notes.font.size = 8, 
+      # source_notes.padding = px(1),
       ...) 
 }

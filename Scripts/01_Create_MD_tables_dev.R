@@ -55,6 +55,11 @@
   present_qtr <- paste(identifypd(ou_im), "Results")
   past_fy <- paste("FY", identifypd(ou_im) %>% str_sub(., 3, 4) %>% as.numeric() - 1, sep = "")
   
+  authors <- paste("Created by Core Analytics Cluster on", Sys.Date())
+  caveats <- "Certain mechanisms have been omitted. See the Known Issues Tracker for full list of mechanisms omitted"
+  dedup_note <- "ALL OTHER AGENCIES based on aggregates excluding de-duplication."
+  change_note <- "Number reflects percentage change from the same quarter in the previous year."
+  msd_source <- 
 
 # MAKE TABLES - DRAW THE OWL ----------------------------------------------
 
@@ -76,8 +81,8 @@
       mdb_main_theme() %>% 
       tab_header(
         title = glue::glue("{cntry} PERFORMANCE SUMMARY")
-      )
+      ) 
   }
   
-  create_mdb_table(mdb_tbl, "Kenya")
+  create_mdb_table(mdb_tbl, c("Global"))
 
