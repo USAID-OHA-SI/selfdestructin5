@@ -31,7 +31,7 @@ mdb_main_theme <- function(df, ...){
       columns = contains("present")
     ) %>% 
     tab_spanner(
-      label = glue::glue("{present_qtr}"),
+      label = glue::glue("{pd}"),
       columns = contains("_z_")
     ) %>% 
     tab_style(
@@ -49,7 +49,7 @@ mdb_main_theme <- function(df, ...){
       present_targets_achievement = "achv",
       present_tint_achv = " ",
       present_z_aresults = "results",
-      present_z_change = "change",
+      present_z_change = "change*",
       present_z_direction = " "
     ) %>% 
     tab_style(
@@ -63,16 +63,15 @@ mdb_main_theme <- function(df, ...){
     ) %>% 
     # Merge Key details into a single source note
     tab_source_note(
-      source_note = md(glue::glue("**Note**: {dedup_note} | {caveats}"))
+      source_note = md(glue::glue("***Change**: {change_note}"))
     ) %>% 
     tab_source_note(
-      source_note = md(glue::glue("**Source**:{authors}"))
+      source_note = md(glue::glue("**Notes**: {dedup_note} | {caveats}"))
+    ) %>% 
+    tab_source_note(
+      source_note = md(glue::glue("**Source**: {authors} | si.coreanalytics@usaid.gov"))
     ) %>%
-    tab_footnote(
-      footnote = md(glue::glue("**Details**:{change_note}")),
-      locations = cells_column_labels(
-        columns = present_z_change)
-      ) %>% 
+ 
     tab_style(
       style = list(
         cell_borders(
@@ -96,7 +95,6 @@ mdb_main_theme <- function(df, ...){
       source_notes.font.size = 8,
       table.font.size = 12, 
       data_row.padding = px(5),
-      footnotes.font.size = 8,
       source_notes.padding = px(1),
       ...) 
 }

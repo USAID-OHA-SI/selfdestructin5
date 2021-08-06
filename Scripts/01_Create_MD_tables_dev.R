@@ -35,31 +35,48 @@
   #5) call resulting table and apply mdb_main_theme()
   
   #1) 
-  purrr::map(list("Scripts/99_utilities.R", "Scripts/mdb_main_theme.R"), ~source(.x))
+  source("Scripts/99_utilities.R")
+  purrr::walk(list("Scripts/99_utilities.R", "Scripts/mdb_main_theme.R", "Scripts/mdb_treatment_theme.R"), ~source(.x))
   
   #2) Load OU_IM table
   ou_im <- 
     si_path() %>% 
-    return_latest("OU_IM_FY19-21_20210618_v2_1") %>% 
+    # return_latest("OU_IM_FY19-21_20210618_v2_1") %>%
+    return_latest("OU_IM_FY18-21_20200918") %>% 
     read_msd() 
   
   #2) Objects needed 
-  present_fy <- paste(identifypd(ou_im), "Cumulative")
-  present_qtr <- paste(identifypd(ou_im), "Results")
-  past_fy <- paste("FY", identifypd(ou_im) %>% str_sub(., 3, 4) %>% as.numeric() - 1, sep = "")
   
+  # Time Items
+  pd <- identifypd(ou_im)
+  present_fy <- paste(identifypd(ou_im) %>% substr(., 1, 4), "Cumulative")
+  present_qtr <- paste(identifypd(ou_im), "Results")
+  present_results <- paste(identifypd(ou_im) %>% substr(., 1, 4), "Results")
+  past_fy <- paste0("FY", identifypd(ou_im, "year", TRUE) %>% substr(3, 4))
+  
+  identifypd(ou_im, pd_type = "year", pd_prior = TRUE)
+  
+  fy_end <- pd %>% str_sub(., 3, 4) %>% as.numeric() + 2000
+  fy_beg <- fy_end - 1 
+  min_pd <- paste0("FY", str_sub(fy_beg, 3, 4), "Q4")
+  
+  # Table notes
   msd_source <- ou_im %>% identifypd() %>% msd_period(period = .)
   authors <- paste("Created by Core Analytics Cluster on", Sys.Date(), "using", msd_source)
   caveats <- "Certain mechanisms have been omitted. See the Known Issues Tracker for full list of mechanisms omitted."
   dedup_note <- "ALL OTHER AGENCIES based on aggregates excluding de-duplication."
   change_note <- "Number reflects percentage change from the same quarter in the previous year."
+  delta_note <- "Number reflects the change between current and most recent quarter"
+  vlc_note <- "Viral Load Covererage = TX_PVLS_D / TX_CURR_2_period_lag"
   
+  # DATIM TABLES
+  ou_list <- unique(glamr::pepfar_country_list$operatingunit)
   
 
 # MAKE TABLES - DRAW THE OWL ----------------------------------------------
 
   #3) Create the long base table
-  mdb_df <- make_mdb_df(ou_im, resolve_issues = T)
+  mdb_df <- make_mdb_df(ou_im, resolve_issues = F)
   
   #4) Reshape the main table into a gt ready format
   mdb_tbl <- reshape_mdb_df(mdb_df)
@@ -78,5 +95,34 @@
       ) 
   }
   
-  create_mdb_table(mdb_tbl, c("Global"))
+  create_mdb_table(mdb_tbl, c("Kenya"))
+  
+  
 
+# MAKE VLS/VLC Tables -----------------------------------------------------
+
+  #3a) Create the long base table for treatment indicators
+  mdb_df_tx <- make_mdb_tx_df(ou_im, resolve_issues = F)
+  
+  #4a) Reshape treatment table into gt ready table
+  mdb_tbl_tx <- reshape_mdb_tx_df(mdb_df_tx)
+  
+  # Generic function to call
+  # Generic function to call an OU/Country/Agency
+  create_mdb_tx_table <- function(df, ou){
+    
+    # Define numeric cols for formatting in table
+    numeric_cols <- df %>% select_if(is.numeric) %>% names()
+    cntry <- str_to_upper(ou)
+    
+    df %>% 
+      filter(operatingunit %in% c({{ou}})) %>% 
+      gt(groupname_col = "agency") %>% 
+      mdb_treatment_theme(numeric_cols) %>% 
+      tab_header(
+        title = glue::glue("{cntry} PERFORMANCE SUMMARY")
+      ) 
+  }
+  
+  create_mdb_tx_table(mdb_tbl_tx, c("Zambia"))
+  

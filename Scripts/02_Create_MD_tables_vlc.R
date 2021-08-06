@@ -66,9 +66,6 @@
                fundingagency != "Dedup") %>% 
         clean_agency() %>% 
         mutate(agency = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES"),
-               # Lump factors at 3 then apply long agency order b/c of varying nature
-               # mutate(agency = fct_lump(fundingagency, n = 2, other_level = "ALL OTHER AGENCIES"),
-               agency = fct_relevel(agency, agency_order_shrt)) %>% 
         group_by(fiscal_year, agency, indicator) %>% 
         summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop")
       )
@@ -168,14 +165,6 @@
       relocate(FY20targets, .after = FY20results) %>% 
       relocate(FY21Q2, .after = FY21APR) %>% 
       filter(!indicator %in% c("TX_PVLS", "TX_PVLS_D", "TX_CURR_VLC")) %>% 
-      # mutate(indicator = case_when(
-      #   indicator == "TX_CURR" ~ "TX_CURR",
-      #   indicator == "TX_MMD3_SHARE" ~ "MMD 3+ Share",
-      #   indicator == "TX_MMD3+" ~ "MMD 3+",
-      #   indicator == "TX_MMD6+" ~ "MMD 6+",
-      #   indicator == "VLC" ~ "Viral Load Coverage",
-      #   indicator == "VLS" ~ "Virally Suppressed",
-      # )) %>% 
       mutate(indicator = fct_relevel(indicator,
                                      "TX_CURR",
                                      "TX_MMD3_SHARE",
