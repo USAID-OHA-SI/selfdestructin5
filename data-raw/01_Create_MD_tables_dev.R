@@ -35,8 +35,9 @@
   #5) call resulting table and apply mdb_main_theme()
   
   #1) 
-  source("Scripts/99_utilities.R")
-  purrr::walk(list("Scripts/99_utilities.R", "Scripts/mdb_main_theme.R", "Scripts/mdb_treatment_theme.R"), ~source(.x))
+  # source("Scripts/99_utilities.R")
+  # purrr::walk(list("Scripts/99_utilities.R", "Scripts/mdb_main_theme.R", "Scripts/mdb_treatment_theme.R"), ~source(.x))
+  # 
   
   #2) Load OU_IM table
   ou_im <- 
@@ -58,7 +59,7 @@
   
   fy_end <- pd %>% str_sub(., 3, 4) %>% as.numeric() + 2000
   fy_beg <- fy_end - 1 
-  min_pd <- paste0("FY", str_sub(fy_beg, 3, 4), "Q4")
+  min_pd <- paste0("FY", substr(fy_beg, 3, 4), "Q4")
   
   # Table notes
   msd_source <- ou_im %>% identifypd() %>% msd_period(period = .)
@@ -124,5 +125,5 @@
       ) 
   }
   
-  create_mdb_tx_table(mdb_tbl_tx, c("Zambia"))
+  create_mdb_tx_table(mdb_tbl_tx, c("Malawi"))
   
