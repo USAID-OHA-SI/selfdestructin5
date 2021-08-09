@@ -19,7 +19,7 @@ fetch_indicators <- function(df, tab = "main") {
   
   # Determine what quarter you are fetching data from
   pd <- df %>% 
-    ICPIutilities::identifypd() %>% 
+    gophr::identifypd() %>% 
     stringr::str_extract(".{2}$")
   cat("Fetching ", crayon::yellow(pd), " indicators\n")
   

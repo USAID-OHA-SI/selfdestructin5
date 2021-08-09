@@ -2,7 +2,7 @@
 % Please edit documentation in R/collapse_vlc_tbl.R
 \name{collapse_vlc_tbl}
 \alias{collapse_vlc_tbl}
-\title{Collapse base msd down to a desired level for core treatment indicators}
+\title{Collapse base MSD down to a desired level for core treatment indicators}
 \usage{
 collapse_vlc_tbl(df, ...)
 }
@@ -15,7 +15,16 @@ collapse_vlc_tbl(df, ...)
 collapsed data frame of TX_CURR and TX_PVLS indicators
 }
 \description{
-Helper function to collapse data down by a provided grouping
-Used in the creation of the treatment / viral load coverage MDB table
-Similar to the \code{\link[=collapse_base_tbl]{collapse_base_tbl()}} function but specifically for treatment MDB table.
+Helper function to collapse data down by a provided grouping.
+Used in the creation of the treatment / viral load coverage MDB table.
 }
+\seealso{
+\link{collapse_base_tbl} to see equivalent collapse sequence for core indicators.
+
+Other data frame munging: 
+\code{\link{collapse_base_tbl}()},
+\code{\link{make_mdb_df}()},
+\code{\link{reshape_mdb_df}()},
+\code{\link{reshape_mdb_tx_df}()}
+}
+\concept{data frame munging}

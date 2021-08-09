@@ -9,19 +9,21 @@
 #' 
 #' @export 
 #' 
+#' @family MDB helper functions
+#' 
 #' 
 # Function to label aggreagation level based on input
-label_aggregation <- function(df, type = "ou") {
+label_aggregation <- function(df, type = "OU") {
   
-  if(!type %in% c("regional", "agency", "ou")) {
-    stop("Please select the type of aggregation label to apply: ou, regional or agency")
+  if(!type %in% c("Regional", "Agency", "OU")) {
+    stop("Please select the type of aggregation label to apply: OU, Regional or Agency")
   }  
   
-  if (type == "agency") {
+  if (type == "Agency") {
     df %>% 
       dplyr::mutate(agg_type = "Agency", 
                     operatingunit = "Global") 
-  } else if (type == "regional") {
+  } else if (type == "Regional") {
     df %>% 
       dplyr::mutate(agg_type = "Region-Country",
                     operatingunit = paste(operatingunit, countryname, sep = "-")) %>% 

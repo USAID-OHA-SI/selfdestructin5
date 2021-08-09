@@ -25,3 +25,11 @@ Used to create the upper portion of the MDB tables.
  
  
 }
+\seealso{
+Other MDB helper functions: 
+\code{\link{calc_growth}()},
+\code{\link{label_aggregation}()},
+\code{\link{make_achv_shape}()},
+\code{\link{make_chg_shape}()}
+}
+\concept{MDB helper functions}

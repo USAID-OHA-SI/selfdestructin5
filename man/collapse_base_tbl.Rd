@@ -2,7 +2,7 @@
 % Please edit documentation in R/collapse_base_tbl.R
 \name{collapse_base_tbl}
 \alias{collapse_base_tbl}
-\title{Collapse base msd down to a desired level}
+\title{Collapse base MSD down to a desired level for main MDB table}
 \usage{
 collapse_base_tbl(df, indic_list, ...)
 }
@@ -14,7 +14,16 @@ collapse_base_tbl(df, indic_list, ...)
 \item{...}{dot-dot-dot that can be passed to the group_by step}
 }
 \description{
-Helper function to collapse data down by a provided grouping
+Helper function to collapse data down by a provided grouping.
 Used in the creation of the main MDB table.
-Called in the creation of the treatment
 }
+\seealso{
+\link{collapse_vlc_tbl} to see equivalent collapse sequence for VLC/VLCS variables
+
+Other data frame munging: 
+\code{\link{collapse_vlc_tbl}()},
+\code{\link{make_mdb_df}()},
+\code{\link{reshape_mdb_df}()},
+\code{\link{reshape_mdb_tx_df}()}
+}
+\concept{data frame munging}

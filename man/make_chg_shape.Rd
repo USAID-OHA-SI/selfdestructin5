@@ -26,3 +26,11 @@ Appears to work well when applied with purrr::map()
 
 
 }
+\seealso{
+Other MDB helper functions: 
+\code{\link{calc_growth}()},
+\code{\link{format_indicator}()},
+\code{\link{label_aggregation}()},
+\code{\link{make_achv_shape}()}
+}
+\concept{MDB helper functions}

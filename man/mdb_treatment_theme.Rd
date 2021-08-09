@@ -32,3 +32,8 @@ A different theme exists for the main tables as the layout is different.
  
  }
 }
+\seealso{
+Other MDB gt themes: 
+\code{\link{mdb_main_theme}()}
+}
+\concept{MDB gt themes}

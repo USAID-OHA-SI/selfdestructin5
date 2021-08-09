@@ -21,3 +21,11 @@ Returns NA_real_ if the
  df \%>\% mutate(z_change = calc_growth(results_cumulative, dplyr::lag(results_cumulative, n = 4)))}
 
 }
+\seealso{
+Other MDB helper functions: 
+\code{\link{format_indicator}()},
+\code{\link{label_aggregation}()},
+\code{\link{make_achv_shape}()},
+\code{\link{make_chg_shape}()}
+}
+\concept{MDB helper functions}

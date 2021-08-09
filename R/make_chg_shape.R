@@ -12,6 +12,8 @@
 #' @param change_dir variable indicating direction of change or not applicable
 #' @export
 #' 
+#' @family MDB helper functions
+#' 
 #' @examples
 #' \dontrun{
 #'  rank_chg("increase") %>% htmltools::html_print()

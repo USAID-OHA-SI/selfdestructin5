@@ -1,11 +1,12 @@
-#' Collapse base msd down to a desired level for core treatment indicators
+#' Collapse base MSD down to a desired level for core treatment indicators
 #' 
 #'   
 #' @description
-#' Helper function to collapse data down by a provided grouping
-#' Used in the creation of the treatment / viral load coverage MDB table
-#' Similar to the [collapse_base_tbl()] function but specifically for treatment MDB table.
+#' Helper function to collapse data down by a provided grouping.
+#' Used in the creation of the treatment / viral load coverage MDB table.
 #' 
+#' 
+#' @seealso [collapse_base_tbl] to see equivalent collapse sequence for core indicators.
 #' 
 #' @param df MSD or Genie data frame
 #' @param ... dot-dot-dot to be used in the grouping option
@@ -13,7 +14,7 @@
 #' @export
 #' @return collapsed data frame of TX_CURR and TX_PVLS indicators
 #' 
-#' 
+#' @family data frame munging
 #' 
 #' 
 collapse_vlc_tbl  <- function(df, ...) {

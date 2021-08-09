@@ -11,6 +11,8 @@
 #' @returns return gt html() code for an svg
 #' @export
 #' 
+#' @family MDB helper functions
+#' 
 #'@examples
 #' \dontrun{
 #'  achv_circle(glitr::scooter) %>% htmltools::html_print()

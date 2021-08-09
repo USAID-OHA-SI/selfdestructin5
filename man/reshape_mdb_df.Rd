@@ -14,14 +14,9 @@ returns a wide formatted data frame (table) of all OUs, countries and USAID
 }
 \description{
 \code{reshape_mdb_df} takes the output from \code{\link[=make_mdb_df]{make_mdb_df()}} and creates a gt ready data frame.
-The transformed data frame retains the most recent quarter and previous year performance.
+The transformed data frame retains the most recent quarter and previous year's performance.
 The resulting table can be passed directly to the \code{\link[=mdb_main_theme]{mdb_main_theme()}} to create a MDB table.
 Helper functions format certain columns as svgs to be rendered in the gt call.
-}
-\details{
-Reshape the base table to a gt() ready table
-Keeps most recent quarter and cumulative results from previous year
-Inherits the table from make_md_df
 }
 \examples{
 \dontrun{
@@ -35,4 +30,11 @@ Inherits the table from make_md_df
 \code{\link[=mdb_main_theme]{mdb_main_theme()}} to see the gt theme used to format the table
 \code{\link[=make_chg_shape]{make_chg_shape()}} creates an svg based on the direction of change
 \code{\link[=make_achv_shape]{make_achv_shape()}} creates a colored circle based on achievement level
+
+Other data frame munging: 
+\code{\link{collapse_base_tbl}()},
+\code{\link{collapse_vlc_tbl}()},
+\code{\link{make_mdb_df}()},
+\code{\link{reshape_mdb_tx_df}()}
 }
+\concept{data frame munging}

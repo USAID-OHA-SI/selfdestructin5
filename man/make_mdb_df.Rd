@@ -28,4 +28,11 @@ Output from this function feeds into \code{\link[=reshape_mdb_df]{reshape_mdb_df
 \seealso{
 \code{\link[=reshape_mdb_df]{reshape_mdb_df()}} to reshape into gt ready data frame;
 \code{\link[=fetch_indicators]{fetch_indicators()}} to filter indicators
+
+Other data frame munging: 
+\code{\link{collapse_base_tbl}()},
+\code{\link{collapse_vlc_tbl}()},
+\code{\link{reshape_mdb_df}()},
+\code{\link{reshape_mdb_tx_df}()}
 }
+\concept{data frame munging}

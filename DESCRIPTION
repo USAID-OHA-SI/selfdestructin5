@@ -28,7 +28,7 @@ Imports:
     utils,
     glitr,
     glamr,
-    ICPIutilities,
+    gophr,
     gt,
     tidyselect
 Suggests:

@@ -22,8 +22,8 @@ msd_period <- function(type = "OU_IM", period = NULL){
   
   if(is.null(period)){
     period <- file %>% 
-      ICPIutilities::read_msd() %>% 
-      ICPIutilities::identifypd()
+      gophr::read_msd() %>% 
+      gophr::identifypd()
     
   }
   

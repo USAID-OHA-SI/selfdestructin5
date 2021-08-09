@@ -14,6 +14,8 @@
 #' @export
 #' @return data frame that is pivoted wide for passing to gt() call
 #' 
+#' @family data frame munging 
+#' 
 #' @examples
 #' \dontrun{
 #'  mdb_df <- make_mdb_tx_df(ou_im, resolve_issues = F)
@@ -29,7 +31,7 @@ reshape_mdb_tx_df <- function(df){
   # Should take the output from make_mdb_tx_df
   vlc_mdb_df <- df %>% 
     dplyr::select(-c(targets, cumulative)) %>% 
-    ICPIutilities::reshape_msd() %>% 
+    gophr::reshape_msd() %>% 
     tidyr::spread(indicator, value) %>% 
     dplyr::arrange(agency, operatingunit, period) %>%
     # Calculate global TX_CURR for global mmd

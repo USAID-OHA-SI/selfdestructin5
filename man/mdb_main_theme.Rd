@@ -27,3 +27,8 @@ A different theme exists for the treatment tables as the layout is different.
  
  }
 }
+\seealso{
+Other MDB gt themes: 
+\code{\link{mdb_treatment_theme}()}
+}
+\concept{MDB gt themes}

@@ -10,6 +10,7 @@
 #' 
 #' @return html formatted string that can be rendered in gt
 #' 
+#' @family MDB helper functions
 #' 
 #' @examples
 #' \dontrun{

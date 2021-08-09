@@ -5,6 +5,8 @@
 #' @param x numerator to calculate growth - most recent metric
 #' @param y denominator to calculate growth - lagged metric
 #' 
+#' @family MDB helper functions
+#' 
 #'@examples
 #' \dontrun{
 #'  calc_growth(110, 100) #should give 10%

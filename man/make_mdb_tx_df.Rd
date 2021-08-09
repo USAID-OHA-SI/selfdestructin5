@@ -9,9 +9,7 @@ make_mdb_tx_df(df, resolve_issues = "TRUE")
 \arguments{
 \item{df}{usually and ou_im data frame}
 
-\item{resolve_issues}{logical indicating whether or not known issues are removed
-
-TODO: Should this be broken out into 3 separate functions?}
+\item{resolve_issues}{logical indicating whether or not known issues are removed}
 }
 \description{
 Use the \code{\link[=collapse_vlc_tbl]{collapse_vlc_tbl()}} to combine different data frames needed to calculate VLS and VLC.
@@ -23,3 +21,6 @@ Second, \code{\link[=collapse_vlc_tbl]{collapse_vlc_tbl()}} is called to create 
 Third, Three month + MMD is calculated from the TX_CURR table.
 Finally, the tables are combined to be used in creation of the VLS/VLC and MMD+ Share calculations.
 }
+\concept{data frame munging
+
+TODO: Should this be broken out into 3 separate functions?}

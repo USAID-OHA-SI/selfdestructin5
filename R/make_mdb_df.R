@@ -12,7 +12,8 @@
 #' @export
 #' @seealso [reshape_mdb_df()] to reshape into gt ready data frame;
 #'   [fetch_indicators()] to filter indicators
-
+#'   
+#' @family data frame munging
 #' 
 #' 
 #' @examples
@@ -32,10 +33,10 @@ make_mdb_df <- function(df, resolve_issues = T) {
   indicator_fltr <- indicators %>% 
     dplyr::distinct(indicator) %>% 
     dplyr::pull()
-  
+
   # Create three dataframes for ou, regional-country, agency
   df_ou <- df %>% 
-    dplyr::filter(operatingunit %in% ou_list) %>% 
+    dplyr::filter(operatingunit %in% unique(glamr::pepfar_country_list$operatingunit)) %>% 
     collapse_base_tbl(indicator_fltr, fiscal_year, agency, indicator, operatingunit) %>% 
     label_aggregation(type = "ou")
   

@@ -25,3 +25,11 @@ Returns a html formatting circle that can be embedded in gt object
  achv_circle(glitr::scooter) \%>\% htmltools::html_print()
  df \%>\% mutate(achv_color = achv_circle(achv_color)) }
 }
+\seealso{
+Other MDB helper functions: 
+\code{\link{calc_growth}()},
+\code{\link{format_indicator}()},
+\code{\link{label_aggregation}()},
+\code{\link{make_chg_shape}()}
+}
+\concept{MDB helper functions}

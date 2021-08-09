@@ -1,16 +1,9 @@
 #' Prepare filtered data frame for MSD briefer formatting
 #' 
 #' `reshape_mdb_df` takes the output from [make_mdb_df()] and creates a gt ready data frame.
-#' The transformed data frame retains the most recent quarter and previous year performance.
+#' The transformed data frame retains the most recent quarter and previous year's performance.
 #' The resulting table can be passed directly to the [mdb_main_theme()] to create a MDB table.
 #' Helper functions format certain columns as svgs to be rendered in the gt call.
-#' 
-#' 
-#' 
-#' 
-#' Reshape the base table to a gt() ready table
-#' Keeps most recent quarter and cumulative results from previous year
-#' Inherits the table from make_md_df
 #' 
 #' @param df takes the [make_mdb_df()] results as an input 
 #' @return returns a wide formatted data frame (table) of all OUs, countries and USAID
@@ -22,7 +15,7 @@
 #'   [make_achv_shape()] creates a colored circle based on achievement level
 #' 
 #' @export
-#' 
+#' @family data frame munging
 #' 
 #' @examples
 #' \dontrun{
@@ -34,8 +27,11 @@
 reshape_mdb_df <- function(df) {
   
   # Need to know the fiscal year and quarters to filter
-  pd <- ICPIutilities::identifypd(df)
-  fy_end <-  pd %>% substr(3, 4) %>% as.numeric() + 2000
+  if(!exists(pd)){
+    pd <- gophr::identifypd(df)
+  }
+  
+  fy_end <- pd %>% substr(3, 4) %>% as.numeric() + 2000
   fy_beg <- fy_end - 1 
   max_pd <- pd
   min_pd <- paste0("FY", substr(fy_beg, 3, 4), "Q4")

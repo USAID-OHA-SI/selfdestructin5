@@ -15,6 +15,8 @@
 #' @return formatted gt object
 #' @export
 #' 
+#' @family MDB gt themes
+#' 
 #' @examples
 #' \dontrun{
 #'  mdb_df <- make_mdb_tx_df(ou_im, resolve_issues = F)

@@ -4,7 +4,7 @@
 \alias{label_aggregation}
 \title{Label aggregation level}
 \usage{
-label_aggregation(df, type = "ou")
+label_aggregation(df, type = "OU")
 }
 \arguments{
 \item{df}{MSD or genie data frame that has been ran through collapse_base_tbl()}
@@ -15,3 +15,11 @@ label_aggregation(df, type = "ou")
 Labels the level of aggregation using regiona, agency or operating unit
 Used to apply a filter column to the single data frame returned from table operations
 }
+\seealso{
+Other MDB helper functions: 
+\code{\link{calc_growth}()},
+\code{\link{format_indicator}()},
+\code{\link{make_achv_shape}()},
+\code{\link{make_chg_shape}()}
+}
+\concept{MDB helper functions}
