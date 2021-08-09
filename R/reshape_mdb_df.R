@@ -39,7 +39,7 @@ reshape_mdb_df <- function(df) {
   # Filter out years and quarters not needed
   md_tbl <- 
     df %>% 
-    ICPIutilities::reshape_msd("quarters", qtrs_keep_cumulative = TRUE) %>% 
+    gophr::reshape_msd("quarters", qtrs_keep_cumulative = TRUE) %>% 
     dplyr::arrange(agency, operatingunit, indicator, period) %>%
     dplyr::group_by(agency, operatingunit, indicator) %>% 
     dplyr::mutate(
@@ -53,8 +53,8 @@ reshape_mdb_df <- function(df) {
     dplyr::ungroup() %>% 
     dplyr::mutate(qtr = substr(period, 5, 6)) %>% 
     dplyr::filter(period %in% c(max_pd, min_pd)) %>% 
-    ICPIutilities::calc_achievement() %>% 
-    ICPIutilities::adorn_achievement()
+    gophr::calc_achievement() %>% 
+    gophr::adorn_achievement()
   
   
   # Now, rename so results are output in order after pivoting
