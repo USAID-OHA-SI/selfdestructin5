@@ -14,6 +14,7 @@
 #' @param df usually and ou_im data frame
 #' @param resolve_issues logical indicating whether or not known issues are removed
 #' @family data frame munging
+#' @export
 #' 
 #' TODO: Should this be broken out into 3 separate functions?
 #' 
