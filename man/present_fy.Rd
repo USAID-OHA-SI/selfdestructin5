@@ -4,7 +4,7 @@
 \alias{present_fy}
 \title{Create present fy object for gt theme
 @keywords internal
-@param pd of the format FY@Q@ that is returned from \code{\link[gophr:identifypd]{gophr::identifypd()}}
+@param pd of the format FYXXQX that is returned from \code{\link[gophr:identifypd]{gophr::identifypd()}}
 @returns a string
 @family gt helpers}
 \usage{
@@ -13,7 +13,7 @@ present_fy(pd)
 \description{
 Create present fy object for gt theme
 @keywords internal
-@param pd of the format FY@Q@ that is returned from \code{\link[gophr:identifypd]{gophr::identifypd()}}
+@param pd of the format FYXXQX that is returned from \code{\link[gophr:identifypd]{gophr::identifypd()}}
 @returns a string
 @family gt helpers
 }

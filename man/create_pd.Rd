@@ -10,7 +10,7 @@ create_pd(df)
 \item{df}{MSD or Genie extract}
 }
 \value{
-object of the format FY@Q@
+object of the format FYXXQX
 }
 \description{
 The derived pd object is used throughout the generation of the tables.
