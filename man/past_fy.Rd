@@ -2,18 +2,31 @@
 % Please edit documentation in R/gt_helpers.R
 \name{past_fy}
 \alias{past_fy}
-\title{Create past_fy object for gt theme
-@keywords internal
-@param pd of the format FYXXQX that is returned from \code{\link[gophr:identifypd]{gophr::identifypd()}}
-@return a string
-@family gt helpers}
+\title{Create past_fy object for gt theme}
 \usage{
 past_fy(pd)
 }
+\arguments{
+\item{pd}{of the format FYXXQX that is returned from \code{\link[gophr:identifypd]{gophr::identifypd()}}}
+}
+\value{
+a string
+}
 \description{
 Create past_fy object for gt theme
-@keywords internal
-@param pd of the format FYXXQX that is returned from \code{\link[gophr:identifypd]{gophr::identifypd()}}
-@return a string
-@family gt helpers
 }
+\seealso{
+Other gt helpers: 
+\code{\link{authors_footnote}()},
+\code{\link{caveats_footnote}()},
+\code{\link{change_footnote}()},
+\code{\link{create_pd}()},
+\code{\link{dedup_footnote}()},
+\code{\link{delta_footnote}()},
+\code{\link{extract_num_colnames}()},
+\code{\link{present_fy}()},
+\code{\link{present_qtr}()},
+\code{\link{vlc_footnote}()}
+}
+\concept{gt helpers}
+\keyword{internal}

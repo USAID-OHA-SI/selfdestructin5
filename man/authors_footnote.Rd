@@ -2,18 +2,31 @@
 % Please edit documentation in R/gt_helpers.R
 \name{authors_footnote}
 \alias{authors_footnote}
-\title{Create author footnote for gt theme
-@keywords internal
-@param msd_source source metadata recovered from \code{\link[=msd_period]{msd_period()}}
-@return  a string
-@family gt helpers}
+\title{Create author footnote for gt theme}
 \usage{
 authors_footnote(msd_source)
 }
+\arguments{
+\item{msd_source}{source metadata recovered from \code{\link[=msd_period]{msd_period()}}}
+}
+\value{
+a string
+}
 \description{
 Create author footnote for gt theme
-@keywords internal
-@param msd_source source metadata recovered from \code{\link[=msd_period]{msd_period()}}
-@return  a string
-@family gt helpers
 }
+\seealso{
+Other gt helpers: 
+\code{\link{caveats_footnote}()},
+\code{\link{change_footnote}()},
+\code{\link{create_pd}()},
+\code{\link{dedup_footnote}()},
+\code{\link{delta_footnote}()},
+\code{\link{extract_num_colnames}()},
+\code{\link{past_fy}()},
+\code{\link{present_fy}()},
+\code{\link{present_qtr}()},
+\code{\link{vlc_footnote}()}
+}
+\concept{gt helpers}
+\keyword{internal}

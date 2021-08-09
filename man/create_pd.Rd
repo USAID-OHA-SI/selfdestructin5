@@ -18,6 +18,15 @@ It is used multiple times for formatting columns and column spanners.
 }
 \seealso{
 Other gt helpers: 
-\code{\link{extract_num_colnames}()}
+\code{\link{authors_footnote}()},
+\code{\link{caveats_footnote}()},
+\code{\link{change_footnote}()},
+\code{\link{dedup_footnote}()},
+\code{\link{delta_footnote}()},
+\code{\link{extract_num_colnames}()},
+\code{\link{past_fy}()},
+\code{\link{present_fy}()},
+\code{\link{present_qtr}()},
+\code{\link{vlc_footnote}()}
 }
 \concept{gt helpers}

@@ -2,14 +2,25 @@
 % Please edit documentation in R/gt_helpers.R
 \name{dedup_footnote}
 \alias{dedup_footnote}
-\title{Create dedup note for gt theme
-@keywords internal
-@family gt helpers}
+\title{Create dedup note for gt theme}
 \usage{
 dedup_footnote()
 }
 \description{
 Create dedup note for gt theme
-@keywords internal
-@family gt helpers
 }
+\seealso{
+Other gt helpers: 
+\code{\link{authors_footnote}()},
+\code{\link{caveats_footnote}()},
+\code{\link{change_footnote}()},
+\code{\link{create_pd}()},
+\code{\link{delta_footnote}()},
+\code{\link{extract_num_colnames}()},
+\code{\link{past_fy}()},
+\code{\link{present_fy}()},
+\code{\link{present_qtr}()},
+\code{\link{vlc_footnote}()}
+}
+\concept{gt helpers}
+\keyword{internal}

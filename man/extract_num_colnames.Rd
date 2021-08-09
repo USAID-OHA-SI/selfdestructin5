@@ -18,6 +18,15 @@ The result is passed to the treatment theme for use in formatting columns.
 }
 \seealso{
 Other gt helpers: 
-\code{\link{create_pd}()}
+\code{\link{authors_footnote}()},
+\code{\link{caveats_footnote}()},
+\code{\link{change_footnote}()},
+\code{\link{create_pd}()},
+\code{\link{dedup_footnote}()},
+\code{\link{delta_footnote}()},
+\code{\link{past_fy}()},
+\code{\link{present_fy}()},
+\code{\link{present_qtr}()},
+\code{\link{vlc_footnote}()}
 }
 \concept{gt helpers}
