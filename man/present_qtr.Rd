@@ -5,7 +5,7 @@
 \title{Create present quarter object for gt theme
 @keywords internal
 @param pd of the format FYXXQX that is returned from \code{\link[gophr:identifypd]{gophr::identifypd()}}
-@returns a string
+@return a string
 @family gt helpers}
 \usage{
 present_qtr(pd)
@@ -14,6 +14,6 @@ present_qtr(pd)
 Create present quarter object for gt theme
 @keywords internal
 @param pd of the format FYXXQX that is returned from \code{\link[gophr:identifypd]{gophr::identifypd()}}
-@returns a string
+@return a string
 @family gt helpers
 }

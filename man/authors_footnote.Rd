@@ -5,7 +5,7 @@
 \title{Create author footnote for gt theme
 @keywords internal
 @param msd_source source metadata recovered from \code{\link[=msd_period]{msd_period()}}
-@returns a string
+@return  a string
 @family gt helpers}
 \usage{
 authors_footnote(msd_source)
@@ -14,6 +14,6 @@ authors_footnote(msd_source)
 Create author footnote for gt theme
 @keywords internal
 @param msd_source source metadata recovered from \code{\link[=msd_period]{msd_period()}}
-@returns a string
+@return  a string
 @family gt helpers
 }

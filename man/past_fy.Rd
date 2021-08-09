@@ -5,7 +5,7 @@
 \title{Create past_fy object for gt theme
 @keywords internal
 @param pd of the format FYXXQX that is returned from \code{\link[gophr:identifypd]{gophr::identifypd()}}
-@returns a string
+@return a string
 @family gt helpers}
 \usage{
 past_fy(pd)
@@ -14,6 +14,6 @@ past_fy(pd)
 Create past_fy object for gt theme
 @keywords internal
 @param pd of the format FYXXQX that is returned from \code{\link[gophr:identifypd]{gophr::identifypd()}}
-@returns a string
+@return a string
 @family gt helpers
 }
