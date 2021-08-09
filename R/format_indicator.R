@@ -1,4 +1,4 @@
-#' Formats PEPFAR indicators based on [fetch_indicator()] list
+#' Formats PEPFAR indicators for MDB tables
 #' 
 #' @description 
 #' Formats a string containing the main PEPFAR abbrevation and plain text.

@@ -4,7 +4,10 @@
 \alias{make_footnotes}
 \title{Create recommended table footnotes}
 \usage{
-make_footnotes()
+make_footnotes(msd_source)
+}
+\arguments{
+\item{msd_source}{key metadata from the MSD used in the table creation}
 }
 \description{
 Wrapper function to create footnotes that are called throughout the table creation process.

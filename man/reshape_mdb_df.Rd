@@ -4,10 +4,12 @@
 \alias{reshape_mdb_df}
 \title{Prepare filtered data frame for MSD briefer formatting}
 \usage{
-reshape_mdb_df(df)
+reshape_mdb_df(df, pd = pd)
 }
 \arguments{
 \item{df}{takes the \code{\link[=make_mdb_df]{make_mdb_df()}} results as an input}
+
+\item{pd}{metadata from the MSD used to create time variables}
 }
 \value{
 returns a wide formatted data frame (table) of all OUs, countries and USAID

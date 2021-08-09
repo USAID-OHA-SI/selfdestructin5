@@ -3,6 +3,8 @@
 #' @description 
 #' Wrapper function to create footnotes that are called throughout the table creation process.
 #' 
+#' @param msd_source key metadata from the MSD used in the table creation
+#' 
 #' @export
 #' @importFrom usethis ui_code_block
 #' @importFrom usethis ui_todo
@@ -13,7 +15,7 @@
 #' make_footnotes()
 #' # paste clipboard to session and run }
 #' 
-make_footnotes <- function(){
+make_footnotes <- function(msd_source){
   
   if(!exists("msd_source")){
     usethis::ui_oops("Please create the msd_source object using:") 

@@ -28,19 +28,20 @@ make_mdb_tx_df <- function(df, resolve_issues = "TRUE") {
   
   # Create the base treatment table for TX_CURR
   df_ou_tx <- df %>%
+    dplyr::filter(operatingunit %in% unique(glamr::pepfar_country_list$operatingunit)) %>% 
     collapse_base_tbl(indic_list = indic, fiscal_year, agency, indicator, operatingunit) %>% 
-    label_aggregation(type = "ou")
+    label_aggregation(type = "OU")
   
   df_reg_tx <- df %>% 
     dplyr::filter(stringr::str_detect(operatingunit, "Region")) %>% 
     collapse_base_tbl(indic_list = indic, fiscal_year, agency, indicator, operatingunit, countryname) %>% 
-    label_aggregation(type = "regional") 
+    label_aggregation(type = "Regional") 
   
   df_usaid_tx <- df %>% 
     dplyr::filter(operatingunit != "South Africa") %>% 
     dplyr::mutate(operatingunit = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES")) %>% 
     collapse_base_tbl(indic_list = indic, fiscal_year, agency, indicator) %>% 
-    label_aggregation(type = "agency")
+    label_aggregation(type = "Agency")
   
   # Create the base disagg tables
   tx_table <- dplyr::bind_rows(df_ou_tx, df_reg_tx, df_usaid_tx) 
@@ -48,19 +49,19 @@ make_mdb_tx_df <- function(df, resolve_issues = "TRUE") {
   # TX PVLS TABLE
   # Get all the VLC table info needed
   vlc_ou <- df %>% 
-    dplyr::filter(operatingunit %in% ou_list) %>% 
+    dplyr::filter(operatingunit %in% unique(glamr::pepfar_country_list$operatingunit)) %>% 
     collapse_vlc_tbl(fiscal_year, agency, indicator, operatingunit) %>% 
-    label_aggregation(type = "ou") 
+    label_aggregation(type = "OU") 
   
   vlc_reg <- df %>% 
     dplyr::filter(stringr::str_detect(operatingunit, "Region")) %>% 
     collapse_vlc_tbl(fiscal_year, agency, indicator, operatingunit, countryname) %>% 
-    label_aggregation(type = "regional")
+    label_aggregation(type = "Regional")
   
   vlc_usaid <- df %>% 
     dplyr::mutate(operatingunit = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES")) %>% 
     collapse_vlc_tbl(fiscal_year, agency, indicator) %>% 
-    label_aggregation(type = "agency")
+    label_aggregation(type = "Agency")
   
   vlc_table <- dplyr::bind_rows(vlc_ou, vlc_reg, vlc_usaid)
 

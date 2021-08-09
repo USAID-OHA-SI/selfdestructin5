@@ -2,7 +2,7 @@
 % Please edit documentation in R/format_indicator.R
 \name{format_indicator}
 \alias{format_indicator}
-\title{Formats PEPFAR indicators based on \code{\link[=fetch_indicator]{fetch_indicator()}} list}
+\title{Formats PEPFAR indicators for MDB tables}
 \usage{
 format_indicator(x)
 }

@@ -4,10 +4,12 @@
 \alias{reshape_mdb_tx_df}
 \title{Prepare filtered data frame of treatment indicators for MDB formatting}
 \usage{
-reshape_mdb_tx_df(df)
+reshape_mdb_tx_df(df, pd)
 }
 \arguments{
 \item{df}{dataframe that is the result of running make_mdb_tx_df()}
+
+\item{pd}{metadata from the MSD used to create time variables}
 }
 \value{
 data frame that is pivoted wide for passing to gt() call
@@ -27,6 +29,8 @@ Create a wide formatted and sorted table for treatment indicators
  mdb_df <- make_mdb_tx_df(ou_im, resolve_issues = F)
  mdb_tbl <- reshape_mdb_tx_df(mdb_df)
  }
+
+
 
 
 }

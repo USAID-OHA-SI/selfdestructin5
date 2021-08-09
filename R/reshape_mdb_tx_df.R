@@ -10,6 +10,7 @@
 #' 
 #' Create a wide formatted and sorted table for treatment indicators
 #' @param df dataframe that is the result of running make_mdb_tx_df()
+#' @param pd metadata from the MSD used to create time variables
 #' 
 #' @export
 #' @return data frame that is pivoted wide for passing to gt() call
@@ -23,10 +24,20 @@
 #'  }
 #' 
 #' 
-reshape_mdb_tx_df <- function(df){
+#' 
+#' 
+reshape_mdb_tx_df <- function(df, pd){
+  
+  if(!exists("pd")){
+    stop("Please create the pd variable using the the following: pd <- gophr::identifypd(ou_im)")
+  }
   
   indicators <- fetch_indicators(df, tab = "treatment")
   indicator_fltr <- indicators %>% dplyr::distinct(indicator) %>% dplyr::pull()
+  
+  fy_end <- pd %>% substr(3, 4) %>% as.numeric() + 2000
+  fy_beg <- fy_end - 1 
+  min_pd <- paste0("FY", substr(fy_beg, 3, 4), "Q4")
   
   # Should take the output from make_mdb_tx_df
   vlc_mdb_df <- df %>% 
@@ -92,3 +103,5 @@ reshape_mdb_tx_df <- function(df){
   
   return(vlc_md_tbl)
 }
+
+

@@ -9,6 +9,8 @@
 #' @param indic_list list of indicators to be filter on
 #' @param ... dot-dot-dot that can be passed to the group_by step
 #' 
+#' @export
+#' 
 #' @seealso [collapse_vlc_tbl] to see equivalent collapse sequence for VLC/VLCS variables
 #' 
 #' @family data frame munging
