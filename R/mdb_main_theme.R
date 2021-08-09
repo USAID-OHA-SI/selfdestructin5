@@ -9,6 +9,8 @@
 #' 
 #' 
 #' @param df [reshape_mdb_df()] output
+#' @param pd character object of the style FY@@Q@ that is returned from [gophr::identifypd()]
+#' @param msd_source source of the data used to generate tables
 #' @param ... dot-dot-dot option to pass additional formatting to gt object
 #' 
 #' @return formatted gt object
@@ -25,7 +27,11 @@
 #'  }
 
 
-mdb_main_theme <- function(df, ...){
+mdb_main_theme <- function(df, pd, msd_source, ...){
+  
+  if(!exists("pd")){
+    stop("Please create the pd variable to ensure columns can be labelled dynamically.")
+  }
   
   df %>% 
     # These columns are not needed so they are hidden
@@ -48,11 +54,11 @@ mdb_main_theme <- function(df, ...){
       ) %>% 
     gt::fmt_markdown(columns = c("indicator2")) %>% 
     gt::tab_spanner(
-      label = glue::glue("{past_fy}"),
+      label = glue::glue("{past_fy(pd)}"),
       columns = tidyselect::contains("past")
     ) %>% 
     gt::tab_spanner(
-      label = glue::glue("{present_fy}"),
+      label = glue::glue("{present_fy(pd)}"),
       columns = tidyselect::contains("present")
     ) %>% 
     gt::tab_spanner(
@@ -88,10 +94,10 @@ mdb_main_theme <- function(df, ...){
     ) %>% 
     # Merge Key details into a single source note
     gt::tab_source_note(
-      source_note = gt::md(glue::glue("***Change**: {change_note}"))
+      source_note = gt::md(glue::glue("***Change**: {change_footnote()}"))
     ) %>% 
     gt::tab_source_note(
-      source_note = gt::md(glue::glue("**Notes**: {dedup_note} | {caveats}"))
+      source_note = gt::md(glue::glue("**Notes**: {dedup_footnote()} | {caveats_footnote()}"))
     ) %>% 
     gt::tab_source_note(
       source_note = gt::md(glue::glue("**Source**: {authors} | si.coreanalytics@usaid.gov"))

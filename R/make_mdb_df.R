@@ -34,20 +34,24 @@ make_mdb_df <- function(df, resolve_issues = T) {
     dplyr::distinct(indicator) %>% 
     dplyr::pull()
 
+  # Group by columns
+  group_base <- c("fiscal_year", "agency", "indicator", "operatingunit")
+  group_base_cntry <- c(group_base, "countryname")
+  
   # Create three dataframes for ou, regional-country, agency
   df_ou <- df %>% 
     dplyr::filter(operatingunit %in% unique(glamr::pepfar_country_list$operatingunit)) %>% 
-    collapse_base_tbl(indicator_fltr, fiscal_year, agency, indicator, operatingunit) %>% 
+    collapse_base_tbl(indicator_fltr, group_base) %>% 
     label_aggregation(type = "OU")
   
   df_reg <- df %>% 
     dplyr::filter(stringr::str_detect(operatingunit, "Region")) %>% 
-    collapse_base_tbl(indicator_fltr, fiscal_year, agency, indicator, operatingunit, countryname) %>% 
+    collapse_base_tbl(indicator_fltr, group_base_cntry) %>% 
     label_aggregation(type = "Regional")
   
   df_usaid <- df %>% 
     dplyr::mutate(operatingunit = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES")) %>% 
-    collapse_base_tbl(indicator_fltr, fiscal_year, agency, indicator, operatingunit) %>% 
+    collapse_base_tbl(indicator_fltr, group_base) %>% 
     label_aggregation(type = "Agency") 
   
   # Bind the tables, set indicator levels

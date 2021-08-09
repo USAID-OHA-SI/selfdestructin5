@@ -26,21 +26,26 @@ make_mdb_tx_df <- function(df, resolve_issues = "TRUE") {
   
   indic <- "TX_CURR"
   
+  # Group_by columns
+  group_base <- c("fiscal_year", "agency", "indicator", "operatingunit")
+  group_base_cntry <- c(group_base, "countryname")
+  group_base_agency <- group_base[1:3]
+  
   # Create the base treatment table for TX_CURR
   df_ou_tx <- df %>%
     dplyr::filter(operatingunit %in% unique(glamr::pepfar_country_list$operatingunit)) %>% 
-    collapse_base_tbl(indic_list = indic, fiscal_year, agency, indicator, operatingunit) %>% 
+    collapse_base_tbl(indic_list = indic, group_base) %>% 
     label_aggregation(type = "OU")
   
   df_reg_tx <- df %>% 
     dplyr::filter(stringr::str_detect(operatingunit, "Region")) %>% 
-    collapse_base_tbl(indic_list = indic, fiscal_year, agency, indicator, operatingunit, countryname) %>% 
+    collapse_base_tbl(indic_list = indic, group_base_cntry) %>% 
     label_aggregation(type = "Regional") 
   
   df_usaid_tx <- df %>% 
     dplyr::filter(operatingunit != "South Africa") %>% 
     dplyr::mutate(operatingunit = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES")) %>% 
-    collapse_base_tbl(indic_list = indic, fiscal_year, agency, indicator) %>% 
+    collapse_base_tbl(indic_list = indic, group_base_agency) %>% 
     label_aggregation(type = "Agency")
   
   # Create the base disagg tables
@@ -50,17 +55,17 @@ make_mdb_tx_df <- function(df, resolve_issues = "TRUE") {
   # Get all the VLC table info needed
   vlc_ou <- df %>% 
     dplyr::filter(operatingunit %in% unique(glamr::pepfar_country_list$operatingunit)) %>% 
-    collapse_vlc_tbl(fiscal_year, agency, indicator, operatingunit) %>% 
+    collapse_vlc_tbl(group_base) %>% 
     label_aggregation(type = "OU") 
   
   vlc_reg <- df %>% 
     dplyr::filter(stringr::str_detect(operatingunit, "Region")) %>% 
-    collapse_vlc_tbl(fiscal_year, agency, indicator, operatingunit, countryname) %>% 
+    collapse_vlc_tbl(group_base_cntry) %>% 
     label_aggregation(type = "Regional")
   
   vlc_usaid <- df %>% 
     dplyr::mutate(operatingunit = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES")) %>% 
-    collapse_vlc_tbl(fiscal_year, agency, indicator) %>% 
+    collapse_vlc_tbl(group_base_agency) %>% 
     label_aggregation(type = "Agency")
   
   vlc_table <- dplyr::bind_rows(vlc_ou, vlc_reg, vlc_usaid)

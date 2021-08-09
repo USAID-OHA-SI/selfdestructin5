@@ -8,8 +8,10 @@
 #' A different theme exists for the main tables as the layout is different.
 #' 
 #' 
-#' @param df [reshape_mdb_tx_df()] output
+#' @param df a dataframe from [reshape_mdb_tx_df()] output
 #' @param numeric_cols an object containing the names of the columns that are numeric
+#' @param pd character object of the style FY@@Q@ that is returned from [gophr::identifypd()]
+#' @param msd_source source of the data used to generate tables
 #' @param ... dot-dot-dot option to pass additional formatting to gt object
 #' 
 #' @return formatted gt object
@@ -29,7 +31,7 @@
 #'  }
 
 
-mdb_treatment_theme <- function(df, numeric_cols, ...){
+mdb_treatment_theme <- function(df, numeric_cols, pd, msd_source, ...){
   
   df %>% 
     # These columns are not needed so they are hidden
@@ -52,11 +54,11 @@ mdb_treatment_theme <- function(df, numeric_cols, ...){
     ) %>% 
     gt::fmt_markdown(columns = c("indicator2")) %>% 
     gt::tab_spanner(
-      label = glue::glue("{past_fy}"),
+      label = glue::glue("{past_fy(pd)}"),
       columns = tidyselect::contains("results")
     ) %>% 
     gt::tab_spanner(
-      label = glue::glue("{present_qtr}"),
+      label = glue::glue("{present_qtr(pd)}"),
       columns = tidyselect::matches("q|delta")
     ) %>% 
     gt::tab_style(
@@ -89,10 +91,10 @@ mdb_treatment_theme <- function(df, numeric_cols, ...){
       indicator2 = " "
     ) %>% 
     gt::tab_source_note(
-      source_note = gt::md(glue::glue("***Delta**: {delta_note}"))
+      source_note = gt::md(glue::glue("***Delta**: {delta_footnote()}"))
     ) %>% 
     gt::tab_source_note(
-      source_note = gt::md(glue::glue("**Notes**: {dedup_note} | {caveats}"))
+      source_note = gt::md(glue::glue("**Notes**: {dedup_footnote()} | {caveats_footnote()}"))
     ) %>% 
     gt::tab_source_note(
       source_note = gt::md(glue::glue("**Source**: {authors} | si.coreanalytics@usaid.gov"))

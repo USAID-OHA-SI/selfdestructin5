@@ -42,28 +42,13 @@
   # TODO: Determine a better way to incorporate these into the functions
   # GT themes don't seem to like receiving anything other than gt-based parameters
   # Time items are used to make column headers dynamic
-  pd <- gophr::identifypd(ou_im)
+  pd <- 
   msd_source <- pd %>% msd_period(period = .)
- 
-  # Time objects for table columns and filters
-  # These are used in the GT themes to name columns and filter rows
-  present_fy <- paste(pd %>% substr(., 1, 4), "Cumulative")
-  present_qtr <- paste(pd, "Results")
-  present_results <- paste(pd %>% substr(., 1, 4), "Results")
-  past_fy <- paste(pd %>% substr(., 1, 4), "Results")
-  fy_end <- pd %>% substr(., 3, 4) %>% as.numeric() + 2000
-  fy_beg <- fy_end - 1 
-  min_pd <- paste0("FY", substr(fy_beg, 3, 4), "Q4")
-  
+
   # Table notes
   make_footnotes(msd_source)
   
   # authors <- glue::glue("Created by Core Analytics Cluster on", Sys.Date(), "using", {msd_source})
-  # caveats <- "Certain mechanisms have been omitted. See the Known Issues Tracker for full list of mechanisms omitted."
-  # dedup_note <- "ALL OTHER AGENCIES based on aggregates excluding de-duplication."
-  # change_note <- "Number reflects percentage change from the same quarter in the previous year."
-  # delta_note <- "Number reflects the change between current and most recent quarter"
-  # vlc_note <- "Viral Load Covererage = TX_PVLS_D / TX_CURR_2_period_lag"
 
   
 
@@ -114,12 +99,12 @@
     # Define numeric cols for formatting in table
     # numeric_cols <- df %>% select_if(is.numeric) %>% names()
     cntry <- str_to_upper(ou)
-    numeric_cols <- df %>% select_if(is.numeric) %>% names()
+    numeric_cols <- extract_num_colnames(df)
     
     df %>% 
       filter(operatingunit %in% c({{ou}})) %>% 
       gt(groupname_col = "agency") %>% 
-      mdb_treatment_theme(numeric_cols) %>% 
+      mdb_treatment_theme(numeric_cols, pd) %>% 
       tab_header(
         title = glue::glue("{cntry} PERFORMANCE SUMMARY")
       ) 
@@ -128,7 +113,7 @@
 
   create_mdb_tx_table(mdb_tbl_tx, c("Malawi"))
   
-  ous <- unique(mdb_tbl_tx$operatingunit)[15:25]
+  ous <- unique(mdb_tbl_tx$operatingunit)[15:35]
   purrr::map(ous, ~create_mdb_tx_table(mdb_tbl_tx, ou =.x))
   
 

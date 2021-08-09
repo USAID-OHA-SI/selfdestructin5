@@ -4,12 +4,16 @@
 \alias{mdb_treatment_theme}
 \title{GT theme for main MDB tables}
 \usage{
-mdb_treatment_theme(df, numeric_cols, ...)
+mdb_treatment_theme(df, numeric_cols, pd, msd_source, ...)
 }
 \arguments{
-\item{df}{\code{\link[=reshape_mdb_tx_df]{reshape_mdb_tx_df()}} output}
+\item{df}{a dataframe from \code{\link[=reshape_mdb_tx_df]{reshape_mdb_tx_df()}} output}
 
 \item{numeric_cols}{an object containing the names of the columns that are numeric}
+
+\item{pd}{character object of the style FY@Q@ that is returned from \code{\link[gophr:identifypd]{gophr::identifypd()}}}
+
+\item{msd_source}{source of the data used to generate tables}
 
 \item{...}{dot-dot-dot option to pass additional formatting to gt object}
 }
