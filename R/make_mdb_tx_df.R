@@ -13,10 +13,13 @@
 #' 
 #' @param df usually and ou_im data frame
 #' @param resolve_issues logical indicating whether or not known issues are removed
-#' @family data frame munging
-#' @export
 #' 
-#' TODO: Should this be broken out into 3 separate functions?
+#' @export
+#' @return data frame of the combined TX and VLS/VLC indicators
+#' @family data frame munging
+#' 
+#' @seealso [reshape_mdb_tx_df()] to reshape into gt ready data frame;
+#' 
 #' 
 # Create the base TX_CURR table
 make_mdb_tx_df <- function(df, resolve_issues = "TRUE") {
