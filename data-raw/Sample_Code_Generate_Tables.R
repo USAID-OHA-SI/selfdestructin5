@@ -22,8 +22,8 @@
 # Load OU_IM table
   ou_im <- 
     si_path() %>% 
-    return_latest("OU_IM_FY19-21_20210618_v2_1") %>%
-    # return_latest("OU_IM_FY18-21_20200918") %>% 
+    #return_latest("OU_IM_FY19-21_20210618_v2_1") %>%
+    return_latest("OU_IM_FY18-21_20200918") %>% 
     read_msd() 
   
 # Time metadata needed  
