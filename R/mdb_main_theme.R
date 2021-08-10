@@ -124,7 +124,7 @@ mdb_main_theme <- function(df, pd, msd_source, ...){
     ) %>% 
     gt::tab_options(
       source_notes.font.size = 8,
-      table.font.size = 12, 
+      table.font.size = 13, 
       data_row.padding = gt::px(5),
       source_notes.padding = gt::px(1),
       ...) 
