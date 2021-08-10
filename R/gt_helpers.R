@@ -30,6 +30,7 @@ vlc_footnote <- function() {"Viral Load Covererage = TX_PVLS_D / TX_CURR_2_perio
 #' Create past_fy object for gt theme
 #' @keywords internal
 #' @param pd of the format FYXXQX that is returned from [gophr::identifypd()]
+#' @export
 #' @return a string
 #' @family gt helpers
 #' 
@@ -39,6 +40,7 @@ past_fy <- function(pd) {paste0("FY", pd %>% substr(3, 4) %>% as.numeric() - 1, 
 #' 
 #' @keywords internal
 #' @param pd of the format FYXXQX that is returned from [gophr::identifypd()]
+#' @export
 #' @return a string
 #' @family gt helpers
 #'  
@@ -48,6 +50,7 @@ present_fy <- function(pd) {paste(pd %>% substr(1, 4), "Cumulative") %>% glue::a
 #' 
 #' @keywords  internal 
 #' @param pd of the format FYXXQX that is returned from [gophr::identifypd()]
+#' @export
 #' @return a string 
 #' @family gt helpers
 #'  
@@ -56,6 +59,7 @@ present_qtr <- function(pd) { paste(pd, "Results") %>% glue::as_glue()}
 #' Create author footnote for gt theme
 #' @keywords internal
 #' @param msd_source source metadata recovered from [selfdestructin5::msd_period()]
+#' @export
 #' @return  a string
 #' @family gt helpers
 #' 

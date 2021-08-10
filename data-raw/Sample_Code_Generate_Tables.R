@@ -39,7 +39,7 @@
   mdb_tbl  <- reshape_mdb_df(mdb_df, pd)
   
   # Treatment
-  mdb_df_tx    <- make_mdb_tx_df(ou_im)
+  mdb_df_tx    <- make_mdb_tx_df(ou_im, resolve_issues = F)
   mdb_tbl_tx   <- reshape_mdb_tx_df(mdb_df_tx, pd)
 
 
@@ -50,6 +50,12 @@
     filter(operatingunit == "Malawi") %>% 
     gt(groupname_col = "agency") %>% 
     mdb_main_theme(pd, msd_source)
+  
+  mdb_tbl_tx %>% 
+    filter(operatingunit == "Malawi") %>% 
+    gt(groupname_col = "agency") %>% 
+    mdb_treatment_theme(pd, msd_source)
+  
   
   # create batch tables
  distinct_agg_type <- function(df, type = "OU"){

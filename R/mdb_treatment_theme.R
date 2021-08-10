@@ -9,7 +9,6 @@
 #' 
 #' 
 #' @param df a dataframe from [reshape_mdb_tx_df()] output
-#' @param numeric_cols an object containing the names of the columns that are numeric
 #' @param pd character object of the style FY@@Q@ that is returned from [gophr::identifypd()]
 #' @param msd_source source of the data used to generate tables
 #' @param ... dot-dot-dot option to pass additional formatting to gt object
@@ -31,7 +30,7 @@
 #'  }
 
 
-mdb_treatment_theme <- function(df, numeric_cols, pd, msd_source, ...){
+mdb_treatment_theme <- function(df, pd, msd_source, ...){
   
   df %>% 
     # These columns are not needed so they are hidden
@@ -43,12 +42,12 @@ mdb_treatment_theme <- function(df, numeric_cols, pd, msd_source, ...){
       missing_text = "-"
     ) %>% 
     gt::fmt_number(
-      columns = tidyselect::all_of({{numeric_cols}}),
+      columns = where(is.numeric),
       rows = stringr::str_detect(indicator2, "(TX_CURR|TX_MMD3+|TX_MMD6)"),
       decimal = 0
     ) %>% 
     gt::fmt_percent(
-      columns = tidyselect::all_of({{numeric_cols}}),
+      columns = where(is.numeric),
       rows = stringr::str_detect(indicator2, "(TX_MMD3_SHARE|VLC|VLS)"),
       decimal = 0
     ) %>% 
