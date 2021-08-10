@@ -42,14 +42,8 @@
   # TODO: Determine a better way to incorporate these into the functions
   # GT themes don't seem to like receiving anything other than gt-based parameters
   # Time items are used to make column headers dynamic
-  pd <- 
+  pd <- create_pd(ou_im)
   msd_source <- pd %>% msd_period(period = .)
-
-  # Table notes
-  make_footnotes(msd_source)
-  
-  # authors <- glue::glue("Created by Core Analytics Cluster on", Sys.Date(), "using", {msd_source})
-
   
 
 # MAKE TABLES - DRAW THE OWL ----------------------------------------------
@@ -67,11 +61,32 @@
   df %>% 
     filter(operatingunit %in% c({{ou}})) %>% 
     gt(groupname_col = "agency") %>% 
-    mdb_main_theme(pd) %>% 
+    mdb_main_theme(pd, msd_source) %>% 
     tab_header(
       title = glue::glue("{cntry} PERFORMANCE SUMMARY")
     ) 
   }
+  
+  
+  
+  
+  
+  
+  
+  # Write tables to drive
+  upload_mdb_tables <- function( agg_type = ){
+    
+    
+    
+    
+    
+  }
+  
+  
+  
+  
+  
+  
 
   
   create_mdb_table(mdb_tbl, c("Zambia"))

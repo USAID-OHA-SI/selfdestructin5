@@ -54,11 +54,11 @@ mdb_main_theme <- function(df, pd, msd_source, ...){
       ) %>% 
     gt::fmt_markdown(columns = c("indicator2")) %>% 
     gt::tab_spanner(
-      label = glue::glue("{past_fy(pd)}"),
+      label = glue::glue("{past_fy(pd) %>% toupper}"),
       columns = tidyselect::contains("past")
     ) %>% 
     gt::tab_spanner(
-      label = glue::glue("{present_fy(pd)}"),
+      label = glue::glue("{present_fy(pd) %>% toupper}"),
       columns = tidyselect::contains("present")
     ) %>% 
     gt::tab_spanner(

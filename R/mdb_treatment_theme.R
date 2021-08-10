@@ -54,11 +54,11 @@ mdb_treatment_theme <- function(df, numeric_cols, pd, msd_source, ...){
     ) %>% 
     gt::fmt_markdown(columns = c("indicator2")) %>% 
     gt::tab_spanner(
-      label = glue::glue("{past_fy(pd)}"),
+      label = glue::glue("{past_fy(pd) %>% toupper}"),
       columns = tidyselect::contains("results")
     ) %>% 
     gt::tab_spanner(
-      label = glue::glue("{present_qtr(pd)}"),
+      label = glue::glue("{present_qtr(pd) %>% toupper}"),
       columns = tidyselect::matches("q|delta")
     ) %>% 
     gt::tab_style(
