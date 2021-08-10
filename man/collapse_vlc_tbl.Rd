@@ -24,6 +24,7 @@ Used in the creation of the treatment / viral load coverage MDB table.
 Other data frame munging: 
 \code{\link{collapse_base_tbl}()},
 \code{\link{make_mdb_df}()},
+\code{\link{make_mdb_tx_df}()},
 \code{\link{reshape_mdb_df}()},
 \code{\link{reshape_mdb_tx_df}()}
 }

@@ -33,7 +33,7 @@ vlc_footnote <- function() {"Viral Load Covererage = TX_PVLS_D / TX_CURR_2_perio
 #' @return a string
 #' @family gt helpers
 #' 
-past_fy <- function(pd) {paste0("FY", pd %>% substr(., 3, 4) %>% as.numeric() - 1, " Results") %>% glue::as_glue()}
+past_fy <- function(pd) {paste0("FY", pd %>% substr(3, 4) %>% as.numeric() - 1, " Results") %>% glue::as_glue()}
 
 #' Create present fy object for gt theme
 #' 
@@ -42,7 +42,7 @@ past_fy <- function(pd) {paste0("FY", pd %>% substr(., 3, 4) %>% as.numeric() - 
 #' @return a string
 #' @family gt helpers
 #'  
-present_fy <- function(pd) {paste(pd %>% substr(., 1, 4), "Cumulative") %>% glue::as_glue()}
+present_fy <- function(pd) {paste(pd %>% substr(1, 4), "Cumulative") %>% glue::as_glue()}
 
 #' Create present quarter object for gt theme
 #' 

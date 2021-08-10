@@ -34,7 +34,7 @@ collapse_vlc_tbl  <- function(df, ...) {
                     TRUE ~ indicator)
     ) %>%
     dplyr::filter(indicator != "TX_CURR") %>%
-    dplyr::group_by_at(.vars = all_of(...)) %>% 
+    dplyr::group_by_at(.vars = tidyselect::all_of(...)) %>% 
     dplyr::summarise(dplyr::across(where(is.double), sum, na.rm = TRUE), .groups = "drop") %>%
     dplyr::ungroup() 
   

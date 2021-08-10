@@ -1,7 +1,7 @@
 #' Creates the base table for the treatment / VLS MDB tables
 #' 
 #' @description 
-#' Use the [collapse_vlc_tbl()] to combine different data frames needed to calculate VLS and VLC.
+#' Uses the [collapse_vlc_tbl()] to combine different data frames needed to calculate VLS and VLC.
 #' Filters for mechs with known issues by default, can be controlled with resolve_issues argument
 #' Wrapper function to create three core tables needed for the treatment MDB data frame.
 #' 
@@ -14,14 +14,16 @@
 #' @param df usually and ou_im data frame
 #' @param resolve_issues logical indicating whether or not known issues are removed
 #' 
+#' @return data frame of the combined TX and VLS/VLC indicator
 #' @export
-#' @return data frame of the combined TX and VLS/VLC indicators
+#' 
+#' @seealso [reshape_mdb_tx_df()] used to reshape the resulting output into gt ready data frame;
+#' 
 #' @family data frame munging
 #' 
-#' @seealso [reshape_mdb_tx_df()] to reshape into gt ready data frame;
 #' 
 #' 
-# Create the base TX_CURR table
+# 
 make_mdb_tx_df <- function(df, resolve_issues = "TRUE") {
   
   if (resolve_issues == TRUE) {

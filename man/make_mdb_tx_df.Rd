@@ -11,8 +11,11 @@ make_mdb_tx_df(df, resolve_issues = "TRUE")
 
 \item{resolve_issues}{logical indicating whether or not known issues are removed}
 }
+\value{
+data frame of the combined TX and VLS/VLC indicator
+}
 \description{
-Use the \code{\link[=collapse_vlc_tbl]{collapse_vlc_tbl()}} to combine different data frames needed to calculate VLS and VLC.
+Uses the \code{\link[=collapse_vlc_tbl]{collapse_vlc_tbl()}} to combine different data frames needed to calculate VLS and VLC.
 Filters for mechs with known issues by default, can be controlled with resolve_issues argument
 Wrapper function to create three core tables needed for the treatment MDB data frame.
 
@@ -21,6 +24,14 @@ Second, \code{\link[=collapse_vlc_tbl]{collapse_vlc_tbl()}} is called to create 
 Third, Three month + MMD is calculated from the TX_CURR table.
 Finally, the tables are combined to be used in creation of the VLS/VLC and MMD+ Share calculations.
 }
-\concept{data frame munging
+\seealso{
+\code{\link[=reshape_mdb_tx_df]{reshape_mdb_tx_df()}} used to reshape the resulting output into gt ready data frame;
 
-TODO: Should this be broken out into 3 separate functions?}
+Other data frame munging: 
+\code{\link{collapse_base_tbl}()},
+\code{\link{collapse_vlc_tbl}()},
+\code{\link{make_mdb_df}()},
+\code{\link{reshape_mdb_df}()},
+\code{\link{reshape_mdb_tx_df}()}
+}
+\concept{data frame munging}

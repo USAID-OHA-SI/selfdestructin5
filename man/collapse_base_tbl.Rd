@@ -23,6 +23,7 @@ Used in the creation of the main MDB table.
 Other data frame munging: 
 \code{\link{collapse_vlc_tbl}()},
 \code{\link{make_mdb_df}()},
+\code{\link{make_mdb_tx_df}()},
 \code{\link{reshape_mdb_df}()},
 \code{\link{reshape_mdb_tx_df}()}
 }

@@ -25,7 +25,7 @@ collapse_base_tbl <- function(df, indic_list, ...){
                   standardizeddisaggregate == "Total Numerator",
                   fundingagency != "Dedup") %>% 
     dplyr::mutate(agency = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES")) %>% 
-    dplyr::group_by_at(.vars = all_of(...)) %>% 
+    dplyr::group_by_at(.vars = tidyselect::all_of(...)) %>% 
     dplyr::summarise(dplyr::across(where(is.double), sum, na.rm = TRUE), .groups = "drop") 
 }
 
