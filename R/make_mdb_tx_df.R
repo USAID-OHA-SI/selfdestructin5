@@ -2,7 +2,7 @@
 #' 
 #' @description 
 #' Uses the [collapse_vlc_tbl()] to combine different data frames needed to calculate VLS and VLC.
-#' Filters for mechs with known issues by default, can be controlled with resolve_issues argument
+#' Filters for mechs with known issues by default, can be controlled with resolve_issues argument.
 #' Wrapper function to create three core tables needed for the treatment MDB data frame.
 #' 
 #' First, it creates a TX_CURR table and excludes South Africa from the USAID Global table.
