@@ -81,7 +81,7 @@ The package is engineered to work with OU_IM MSDs from FY21 and onward. The main
         filter(operatingunit == "Malawi") %>% 
         gt(groupname_col = "agency") %>% 
         mdb_treatment_theme(pd, msd_source)
-      
+```
 
 ---
 
