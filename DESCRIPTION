@@ -19,6 +19,7 @@ Imports:
     dplyr,
     glue,
     googledrive,
+    googlesheets4,
     magrittr,
     purrr,
     stringr,
@@ -30,9 +31,15 @@ Imports:
     glamr,
     gophr,
     gt,
-    tidyselect
+    tidyselect, 
+    fontawesome
 Suggests:
-  fontawesome,
   forcats,
-  googlesheets4
+Remotes:
+    USAID-OHA-SI/glamr,
+    USAID-OHA-SI/glitr,
+    USAID-OHA-SI/gophr
+BuildVignettes: true
+VignetteBuilder: knitr
+
 
