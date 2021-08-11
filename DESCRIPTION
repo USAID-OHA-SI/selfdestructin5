@@ -35,7 +35,9 @@ Imports:
     fontawesome
 Suggests:
   forcats,
-  knitr
+  knitr, 
+  rmarkdown,
+  qpdf
 Remotes:
     USAID-OHA-SI/glamr,
     USAID-OHA-SI/glitr,
