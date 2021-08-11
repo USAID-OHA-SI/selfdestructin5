@@ -23,8 +23,7 @@
 # Load OU_IM table
   ou_im <- 
     si_path() %>% 
-    #return_latest("OU_IM_FY19-21_20210618_v2_1") %>%
-    return_latest("OU_IM_FY18-21_20200918") %>% 
+    return_latest("OU_IM_FY19-21_20210618_v2_1") %>%
     read_msd() 
   
 # Time metadata needed  
@@ -113,6 +112,7 @@
   #2) Think about whether footnotes are added incrementally with a separate f()
   #3) Determine if there is a better way to integrate pd and msd_source in f()s
   #4) Fix Cote D'Ivoire as google drive does not like it if used in the name of file
+  #5) PrEP_NEW was not reported quarterly prior to FY21
   
   
   
