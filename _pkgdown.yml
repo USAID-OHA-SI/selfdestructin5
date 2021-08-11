@@ -55,7 +55,8 @@ reference:
   - label_aggregation
   - make_achv_shape
   - make_chg_shape
-  - make_footnotes
   - msd_period
+  - extract_num_colnames
+  
 
 

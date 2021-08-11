@@ -88,7 +88,6 @@ create_pd <- function(df){
 #' The result is passed to the treatment theme for use in formatting columns. 
 #' 
 #' @param df data frame from the [reshape_mdb_tx_df()] call
-#' @export
 #' @return vector of column names for all numeric vars
 #' @family gt helpers
 #' 
