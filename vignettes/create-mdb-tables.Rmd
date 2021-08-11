@@ -1,10 +1,10 @@
 ---
-  title: "create-mdb-tables"
-  author: Tim Essam | USAID
-  date: "`r Sys.Date()`"
+  title: "Create MDB Tables"
   output: rmarkdown::html_vignette
+  description: |
+    How to create MDB tables
   vignette: >
-    %\VignetteIndexEntry{create-mdb-tables}
+    %\VignetteIndexEntry{Credential Management}
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
 ---
@@ -23,11 +23,11 @@ The Mission Director Briefer (MDB) Tables are an SI product that is created on a
 
 Below we review the process for creating the main and treatment tables
 
-```{r setup}
+```{r setup, eval=F, echo=T, include = F}
 # Load libraries needed for table creation (glitr, glamr and gophr are OHA-SI packages not on CRAN)
   library(glitr)
   library(glamr)
-  #library(tidyverse)
+  library(tidyverse)
   library(gophr)
   library(gt)
   library(selfdestructin5)
@@ -154,8 +154,6 @@ If there is a core indicator on which you'd like to focus across a list of opera
     tab_header(
       title = glue::glue("HTS_TST Comparison Across OUs")
     )
-
-
 
 ```
 
