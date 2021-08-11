@@ -24,11 +24,9 @@ navbar:
     articles:
       text: Articles
       menu:
-      - text: Munging MSDs for MDB tables
-        href: 
-      - text: MDB Table Creation
-        href:
-        
+      - text: Create MDB Tables
+        href: articles/create-mdb-tables.html
+
 
 reference:
 - title: MDB Munging

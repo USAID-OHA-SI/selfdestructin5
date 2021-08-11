@@ -28,61 +28,7 @@ If you do not have `remotes` installed, you will have to run the `install.packag
   ls('package:selfdestructin5')
   
 ```
-
-### Creating a MDB table
-The package is engineered to work with OU_IM MSDs from FY21 and onward. The main table returns a summary of select indicators for the current quarter. The treatment table returns a summary of TX_CURR / VLS /VLC indicators from all quarters of the current fiscal year. 
-
-```{r}
-
-    library(glitr)
-    library(glamr)
-    library(tidyverse)
-    library(gophr)
-    library(gt)
-    library(selfdestructin5)
-    library(fontawesome)
-
-  # Set up paths 
-    mdb_out <- "../../Sandbox/"
-    merdata <- si_path("path_msd")
-    load_secrets()
-    
-  # Load OU_IM table
-    ou_im <- 
-      si_path() %>% 
-      return_latest("OU_IM_FY19-21_20210618_v2_1") %>%
-      read_msd() 
-    
-  # Time metadata needed  
-    pd <- create_pd(ou_im)
-    msd_source <- pd %>% msd_period(period = .)
-
-# Main Table
-   # Create the long mdb_df of the main summary indicators 
-   # This will remove mechs with known issues by default
-      mdb_df   <- make_mdb_df(ou_im)
-    
-   # Create the reshaped df that is gt() ready
-      mdb_tbl  <- reshape_mdb_df(mdb_df, pd)
-    
-   # the `agg_type` column flags the operatingunit as either OU, Region-Country or Agency
-      mdb_tbl %>% distinct(agg_type, operatingunit) %>% slice(1:15)
-  
-   # Generate base table by passing the reshaped dataframe to the main mdb theme
-      create_mdb(mdb_tbl, ou = "Global", type = "main", pd, msd_source )
-    
-# Treatment Table
-  
-      mdb_df_tx    <- make_mdb_tx_df(ou_im, resolve_issues = F)
-      mdb_tbl_tx   <- reshape_mdb_tx_df(mdb_df_tx, pd)
-  
-  # Generate treatment table
-      mdb_tbl_tx %>% 
-        filter(operatingunit == "Malawi") %>% 
-        gt(groupname_col = "agency") %>% 
-        mdb_treatment_theme(pd, msd_source)
-```
-
+See the 
 ---
 
 *Disclaimer: The findings, interpretation, and conclusions expressed herein are those of the authors and do not necessarily reflect the views of United States Agency for International Development. All errors remain our own.*
