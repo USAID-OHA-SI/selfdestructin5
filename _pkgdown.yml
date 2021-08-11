@@ -1,0 +1,61 @@
+navbar:
+  structure:
+    left:
+    - home
+    - intro
+    - reference
+    - articles
+    - tutorials
+    - news
+    right: github
+  components:
+    home:
+      icon: fas fa-home fa-lg
+      href: index.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    news:
+      text: Changelog
+      href: news/index.html
+    github:
+      icon: fab fa-github fa-lg
+      href: https://github.com/USAID-OHA-SI/selfdestructin5/
+    articles:
+      text: Articles
+      menu:
+      - text: Munging MSDs for MDB tables
+        href: 
+      - text: MDB Table Creation
+        href:
+        
+
+reference:
+- title: MDB Munging
+  contents:
+  - collapse_base_tbl
+  - collapse_vlc_tbl
+  - make_mdb_df
+  - make_mdb_tx_df
+  - reshape_mdb_df
+  - reshape_mdb_tx_df
+
+- title: Table Creation
+  contents:
+  - create_mdb
+  - mdb_main_theme
+  - mdb_treatment_theme
+
+- title: Helper functions
+  contents:
+  - calc_growth
+  - create_pd
+  - fetch_indicators
+  - format_indicator
+  - label_aggregation
+  - make_achv_shape
+  - make_chg_shape
+  - make_footnotes
+  - msd_period
+
+
