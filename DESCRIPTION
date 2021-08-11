@@ -35,6 +35,7 @@ Imports:
     fontawesome
 Suggests:
   forcats,
+  knitr
 Remotes:
     USAID-OHA-SI/glamr,
     USAID-OHA-SI/glitr,
