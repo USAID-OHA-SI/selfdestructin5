@@ -96,13 +96,14 @@
 <div id="mission-director-briefer-tables" class="section level1">
 <h1 class="hasAnchor">
 <a href="#mission-director-briefer-tables" class="anchor"></a>Mission Director Briefer Tables</h1>
-<p>The Mission Director Briefer (MDB) Tables are an SI product that is created on a quarterly basis using the latest OU_IM MER Structured dataset (MSD). Two tables are produced, one which summarizes the current achievement for a set of core (main) indicators, and another which summarizes TX_MMD, VLS, and VLC. Starting in FY21 Q2, the SI team migrated the production of the tables from Tableau to R. Eventually, the SI team created a package to automate much of the data munging required for the tables. The <code>selfdestructin5</code> package is the result of these efforts.</p>
-<p>Below we review the process for creating the main and treatment tables</p>
+<p>The Mission Director Briefer (MDB) Tables are an SI product that is created on a quarterly basis using the latest OU_IM MER Structured dataset (MSD). Two tables are produced, one which summarizes the current achievement for a set of core (main) indicators, and another which summarizes TX_MMD, VLS, and VLC.</p>
+<p>Starting in FY21 Q2, the SI team migrated the production of the tables from Tableau to R. Eventually, the SI team created a package to automate much of the data munging required for the tables. The <code>selfdestructin5</code> package is the result of these efforts.</p>
+<p>Below we review the process for creating the main and treatment tables.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Load libraries needed for table creation (glitr, glamr and gophr are OHA-SI packages not on CRAN)</span>
   <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USAID-OHA-SI/glitr">glitr</a></span><span class="op">)</span>
   <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USAID-OHA-SI/glamr">glamr</a></span><span class="op">)</span>
-  <span class="co">#library(tidyverse)</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">tidyverse</span><span class="op">)</span>
   <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">gophr</span><span class="op">)</span>
   <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://gt.rstudio.com/">gt</a></span><span class="op">)</span>
   <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USAID-OHA-SI/selfdestructin5">selfdestructin5</a></span><span class="op">)</span>
@@ -125,7 +126,7 @@
 <code class="sourceCode R">  <span class="co"># Time metadata needed  </span>
     <span class="va">pd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_pd.html">create_pd</a></span><span class="op">(</span><span class="va">ou_im</span><span class="op">)</span>
     <span class="va">msd_source</span> <span class="op">&lt;-</span> <span class="va">pd</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/msd_period.html">msd_period</a></span><span class="op">(</span>period <span class="op">=</span> <span class="va">.</span><span class="op">)</span></code></pre></div>
-<p>With our data loaded and time objects created, we are ready to munge the data. Let’s start with the main table</p>
+<p>With our data loaded and time objects created, we are ready to munge the data. Let’s start with the main table.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="co"># Main Table</span>
    <span class="co"># Create the long mdb_df of the main summary indicators </span>
@@ -178,15 +179,15 @@
   <span class="va">rgl</span> <span class="op">&lt;-</span> <span class="fu">distinct_agg_type</span><span class="op">(</span><span class="va">mdb_tbl</span>, <span class="st">"Region-Country"</span><span class="op">)</span>
   
   <span class="co"># Use purr to map across the list and create tables for all entries in each object</span>
-  <span class="co">#purrr::map(ous, ~create_mdb(mdb_tbl, ou = .x, type = "main", pd, msd_source) %&gt;% </span>
-  <span class="co">#      gtsave(., path = mdb_out, filename = glue::glue("{.x}_{pd}_mdb_main.png")))</span>
+  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">ous</span>, <span class="op">~</span><span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">mdb_tbl</span>, ou <span class="op">=</span> <span class="va">.x</span>, type <span class="op">=</span> <span class="st">"main"</span>, <span class="va">pd</span>, <span class="va">msd_source</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+        <span class="fu"><a href="https://gt.rstudio.com/reference/gtsave.html">gtsave</a></span><span class="op">(</span><span class="va">.</span>, path <span class="op">=</span> <span class="va">mdb_out</span>, filename <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html">glue</a></span><span class="op">(</span><span class="st">"{.x}_{pd}_mdb_main.png"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
   
   
   <span class="co"># TREATMENT</span>
   <span class="va">ous_tx</span> <span class="op">&lt;-</span> <span class="fu">distinct_agg_type</span><span class="op">(</span><span class="va">mdb_tbl_tx</span>, <span class="st">"OU"</span><span class="op">)</span>
   
-  <span class="co">#map(ous, ~create_mdb(mdb_tbl_tx, ou = .x, type = "treatment", pd, msd_source) %&gt;% </span>
-  <span class="co">#      gtsave(., path = mdb_out, filename = glue::glue("{.x}_{pd}_mdb_treatment.png")))</span></code></pre></div>
+  <span class="fu">map</span><span class="op">(</span><span class="va">ous</span>, <span class="op">~</span><span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">mdb_tbl_tx</span>, ou <span class="op">=</span> <span class="va">.x</span>, type <span class="op">=</span> <span class="st">"treatment"</span>, <span class="va">pd</span>, <span class="va">msd_source</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+        <span class="fu"><a href="https://gt.rstudio.com/reference/gtsave.html">gtsave</a></span><span class="op">(</span><span class="va">.</span>, path <span class="op">=</span> <span class="va">mdb_out</span>, filename <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html">glue</a></span><span class="op">(</span><span class="st">"{.x}_{pd}_mdb_treatment.png"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="creating-semi-custom-tables" class="section level1">
 <h1 class="hasAnchor">
