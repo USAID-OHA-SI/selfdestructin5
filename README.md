@@ -3,7 +3,8 @@
 <!-- badges: end -->
 
 
-# selfdestructin5
+# selfdestructin5 <img src='man/figures/logo.png' align="right" height="120" />
+
 SI utilities package to create Mission Director Briefers from MSDs
 
 ## Overview
