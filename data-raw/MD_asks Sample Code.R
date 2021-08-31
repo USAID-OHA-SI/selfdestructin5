@@ -4,8 +4,8 @@
 # DATE: 2021-08-31
 # NOTES: Sample code to generate tables with edits for MD
 # Asks:
-# 1) Add Legend - preferrably next USAID subheader (?)
-# 2) Bold "USAID" and "ALL OTHER AGENCIES" and make font larger
+# 1) Add Legend - preferrably next USAID subheader (?) - larger too
+# 2) Bold "USAID" and "ALL OTHER AGENCIES" and make font larger and Darker
 # 3) Remove footnotes to only include Source at the Bottom
 # 4) Note for Tim - create_mdb() - hard to add edits to table - is this not
 #     a good way to go about it? (changing font, etc)
