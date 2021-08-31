@@ -9,6 +9,7 @@
 #' @param type type of table to be created, main or treatment
 #' @param pd period from which data are from
 #' @param msd_source source of the msd
+#' @param legend can pass a legend to subtitle if desired, default is NULL
 #' 
 #' @export
 #' @return mdb_gt a gt object formatted as the main or treatment table
@@ -35,7 +36,7 @@
 #' 
 #' 
 
-create_mdb <- function(df, ou, type = "main", pd = pd, msd_source = msd_source){
+create_mdb <- function(df, ou, type = "main", pd = pd, msd_source = msd_source, legend = NULL){
   
   #TODO: Write checks for the df to ensure they have created the wide version required
   
@@ -62,7 +63,8 @@ create_mdb <- function(df, ou, type = "main", pd = pd, msd_source = msd_source){
       gt(groupname_col = "agency") %>% 
       mdb_main_theme(pd, msd_source) %>% 
       tab_header(
-        title = glue::glue("{cntry} PERFORMANCE SUMMARY")
+        title = glue::glue("{cntry} PERFORMANCE SUMMARY"),
+        subtitle = legend
       )
   } else {
     
@@ -71,7 +73,8 @@ create_mdb <- function(df, ou, type = "main", pd = pd, msd_source = msd_source){
       gt(groupname_col = "agency") %>% 
       mdb_treatment_theme(pd, msd_source) %>% 
       tab_header(
-        title = glue::glue("{cntry} PERFORMANCE SUMMARY")
+        title = glue::glue("{cntry} PERFORMANCE SUMMARY"),
+        subtitle = legend
       )
   }
   return(mdb_gt)

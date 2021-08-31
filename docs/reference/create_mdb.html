@@ -142,7 +142,14 @@ Can be called in a purrr statement for batch creating" />
 Can be called in a purrr statement for batch creating</p>
     </div>
 
-    <pre class="usage"><span class='fu'>create_mdb</span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>ou</span>, type <span class='op'>=</span> <span class='st'>"main"</span>, pd <span class='op'>=</span> <span class='va'>pd</span>, msd_source <span class='op'>=</span> <span class='va'>msd_source</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>create_mdb</span><span class='op'>(</span>
+  <span class='va'>df</span>,
+  <span class='va'>ou</span>,
+  type <span class='op'>=</span> <span class='st'>"main"</span>,
+  pd <span class='op'>=</span> <span class='va'>pd</span>,
+  msd_source <span class='op'>=</span> <span class='va'>msd_source</span>,
+  legend <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -166,6 +173,10 @@ Can be called in a purrr statement for batch creating</p>
     <tr>
       <th>msd_source</th>
       <td><p>source of the msd</p></td>
+    </tr>
+    <tr>
+      <th>legend</th>
+      <td><p>can pass a legend to subtitle if desired, default is NULL</p></td>
     </tr>
     </table>
 
