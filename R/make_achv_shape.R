@@ -20,8 +20,8 @@
 
 make_achv_shape <- function(x){
   if(is.na(x)){
-    fontawesome::fa("circle", fill = "white") %>% as.character() %>% gt::html()
+    fontawesome::fa("circle", fill = "white", height = "2em") %>% as.character() %>% gt::html()
   } else {
-    fontawesome::fa("circle", fill = x) %>% as.character() %>% gt::html()
+    fontawesome::fa("circle", fill = x, height = "2em") %>% as.character() %>% gt::html()
   }
 }
