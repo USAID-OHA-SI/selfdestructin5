@@ -92,9 +92,9 @@ mdb_treatment_theme <- function(df, pd, msd_source, ...){
     gt::tab_source_note(
       source_note = gt::md(glue::glue("***Delta**: {delta_footnote()}"))
     ) %>% 
-    gt::tab_source_note(
-      source_note = gt::md(glue::glue("**Notes**: {dedup_footnote()} | {caveats_footnote()}"))
-    ) %>% 
+    # gt::tab_source_note(
+    #   source_note = gt::md(glue::glue("**Notes**: {dedup_footnote()} | {caveats_footnote()}"))
+    # ) %>% 
     gt::tab_source_note(
       source_note = gt::md(glue::glue("**Source**: {authors_footnote(msd_source)} | si.coreanalytics@usaid.gov"))
     ) %>% 
