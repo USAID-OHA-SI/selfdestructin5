@@ -18,6 +18,9 @@ Other gt helpers:
 \code{\link{dedup_footnote}()},
 \code{\link{delta_footnote}()},
 \code{\link{extract_num_colnames}()},
+\code{\link{legend_q2}},
+\code{\link{legend_q3}},
+\code{\link{legend_snapshot}},
 \code{\link{past_fy}()},
 \code{\link{present_fy}()},
 \code{\link{present_qtr}()}

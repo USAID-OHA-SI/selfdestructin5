@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create present quarter object for gt theme — present_qtr • selfdestructin5</title>
+<title>Object pointing to github location of legend for Q2 — legend_q2 • selfdestructin5</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,10 @@
 
 
 
-<meta property="og:title" content="Create present quarter object for gt theme — present_qtr" />
-<meta property="og:description" content="Create present quarter object for gt theme" />
+<meta property="og:title" content="Object pointing to github location of legend for Q2 — legend_q2" />
+<meta property="og:description" content="This helper object returns the location of the q2_cumulative legend.
+The object is passed to a legend_chunk f() that creates md for the legend
+This can then be inserted into the subtitle as an image" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -131,29 +133,23 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create present quarter object for gt theme</h1>
+    <h1>Object pointing to github location of legend for Q2</h1>
     <small class="dont-index">Source: <a href='https://github.com/USAID-OHA-SI/selfdestructin5/blob/master/R/gt_helpers.R'><code>R/gt_helpers.R</code></a></small>
-    <div class="hidden name"><code>present_qtr.Rd</code></div>
+    <div class="hidden name"><code>legend_q2.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Create present quarter object for gt theme</p>
+    <p>This helper object returns the location of the q2_cumulative legend.
+The object is passed to a legend_chunk f() that creates md for the legend
+This can then be inserted into the subtitle as an image</p>
     </div>
 
-    <pre class="usage"><span class='fu'>present_qtr</span><span class='op'>(</span><span class='va'>pd</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='va'>legend_q2</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>pd</th>
-      <td><p>of the format FYXXQX that is returned from <code><a href='https://rdrr.io/pkg/gophr/man/identifypd.html'>gophr::identifypd()</a></code></p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>a string</p>
+    <p>An object of class <code>character</code> of length 1.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other gt helpers: 
@@ -164,11 +160,11 @@
 <code><a href='dedup_footnote.html'>dedup_footnote</a>()</code>,
 <code><a href='delta_footnote.html'>delta_footnote</a>()</code>,
 <code><a href='extract_num_colnames.html'>extract_num_colnames</a>()</code>,
-<code><a href='legend_q2.html'>legend_q2</a></code>,
 <code><a href='legend_q3.html'>legend_q3</a></code>,
 <code><a href='legend_snapshot.html'>legend_snapshot</a></code>,
 <code><a href='past_fy.html'>past_fy</a>()</code>,
 <code><a href='present_fy.html'>present_fy</a>()</code>,
+<code><a href='present_qtr.html'>present_qtr</a>()</code>,
 <code><a href='vlc_footnote.html'>vlc_footnote</a>()</code></p></div>
 
   </div>
