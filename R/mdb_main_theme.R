@@ -86,7 +86,7 @@ mdb_main_theme <- function(df, pd, msd_source, ...){
     gt::tab_style(
       style = list(
         gt::cell_fill(color = "#e6e7e8", alpha = 0.5),
-        gt::cell_text(weight = 500)
+        gt::cell_text(weight = 700)
       ),
       locations = gt::cells_body(
         columns = present_targets_achievement
