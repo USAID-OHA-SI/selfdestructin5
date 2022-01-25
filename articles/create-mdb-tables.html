@@ -27,6 +27,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -39,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">selfdestructin5</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9000</span>
       </span>
     </div>
 
@@ -72,7 +74,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/USAID-OHA-SI/selfdestructin5/">
+  <a href="https://github.com/USAID-OHA-SI/selfdestructin5/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -93,46 +95,46 @@
       <h1 data-toc-skip>Create MDB Tables</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/USAID-OHA-SI/selfdestructin5/blob/master/vignettes/create-mdb-tables.Rmd"><code>vignettes/create-mdb-tables.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/USAID-OHA-SI/selfdestructin5/blob/HEAD/vignettes/create-mdb-tables.Rmd" class="external-link"><code>vignettes/create-mdb-tables.Rmd</code></a></small>
       <div class="hidden name"><code>create-mdb-tables.Rmd</code></div>
 
     </div>
 
     
     
-<div id="mission-director-briefer-tables" class="section level1">
-<h1 class="hasAnchor">
-<a href="#mission-director-briefer-tables" class="anchor"></a>Mission Director Briefer Tables</h1>
+<div class="section level2">
+<h2 id="mission-director-briefer-tables">Mission Director Briefer Tables<a class="anchor" aria-label="anchor" href="#mission-director-briefer-tables"></a>
+</h2>
 <p>The Mission Director Briefer (MDB) Tables are an SI product that is created on a quarterly basis using the latest OU_IM MER Structured dataset (MSD). Two tables are produced, one which summarizes the current achievement for a set of core (main) indicators, and another which summarizes TX_MMD, VLS, and VLC.</p>
 <p>Starting in FY21 Q2, the SI team migrated the production of the tables from Tableau to R. Eventually, the SI team created a package to automate much of the data munging required for the tables. The <code>selfdestructin5</code> package is the result of these efforts.</p>
 <p>Below we review the process for creating the main and treatment tables.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Load libraries needed for table creation (glitr, glamr and gophr are OHA-SI packages not on CRAN)</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USAID-OHA-SI/glitr">glitr</a></span><span class="op">)</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USAID-OHA-SI/glamr">glamr</a></span><span class="op">)</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">tidyverse</span><span class="op">)</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">gophr</span><span class="op">)</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://gt.rstudio.com/">gt</a></span><span class="op">)</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USAID-OHA-SI/selfdestructin5">selfdestructin5</a></span><span class="op">)</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/fontawesome">fontawesome</a></span><span class="op">)</span></code></pre></div>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USAID-OHA-SI/glitr" class="external-link">glitr</a></span><span class="op">)</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USAID-OHA-SI/glamr" class="external-link">glamr</a></span><span class="op">)</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">gophr</span><span class="op">)</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gt.rstudio.com/" class="external-link">gt</a></span><span class="op">)</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USAID-OHA-SI/selfdestructin5" class="external-link">selfdestructin5</a></span><span class="op">)</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/fontawesome" class="external-link">fontawesome</a></span><span class="op">)</span></code></pre></div>
 <p>Load helper functions/paths from other SI packages.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># Set up paths </span>
     <span class="va">mdb_out</span> <span class="op">&lt;-</span> <span class="st">"../../Sandbox/"</span> <span class="co">#Alter this path to where you'd like saved tables to go</span>
-    <span class="va">merdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glamr/man/si_path.html">si_path</a></span><span class="op">(</span><span class="st">"path_msd"</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/glamr/man/load_secrets.html">load_secrets</a></span><span class="op">(</span><span class="op">)</span>
+    <span class="va">merdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glamr/man/si_path.html" class="external-link">si_path</a></span><span class="op">(</span><span class="st">"path_msd"</span><span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/glamr/man/load_secrets.html" class="external-link">load_secrets</a></span><span class="op">(</span><span class="op">)</span>
     
 <span class="co"># Load OU_IM table - using FY21 Q2 data from Panorama</span>
     <span class="va">ou_im</span> <span class="op">&lt;-</span> 
-      <span class="fu"><a href="https://rdrr.io/pkg/glamr/man/si_path.html">si_path</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-      <span class="fu"><a href="https://rdrr.io/pkg/glamr/man/return_latest.html">return_latest</a></span><span class="op">(</span><span class="st">"OU_IM_FY19-21_20210618_v2_1"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-      <span class="fu"><a href="https://rdrr.io/pkg/gophr/man/read_msd.html">read_msd</a></span><span class="op">(</span><span class="op">)</span> </code></pre></div>
+      <span class="fu"><a href="https://rdrr.io/pkg/glamr/man/si_path.html" class="external-link">si_path</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+      <span class="fu"><a href="https://rdrr.io/pkg/glamr/man/return_latest.html" class="external-link">return_latest</a></span><span class="op">(</span><span class="st">"OU_IM_FY19-21_20210618_v2_1"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+      <span class="fu"><a href="https://rdrr.io/pkg/gophr/man/read_msd.html" class="external-link">read_msd</a></span><span class="op">(</span><span class="op">)</span> </code></pre></div>
 <p>Create the time metadata objects used in the data munging and table creation</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="co"># Time metadata needed  </span>
     <span class="va">pd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_pd.html">create_pd</a></span><span class="op">(</span><span class="va">ou_im</span><span class="op">)</span>
-    <span class="va">msd_source</span> <span class="op">&lt;-</span> <span class="va">pd</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/msd_period.html">msd_period</a></span><span class="op">(</span>period <span class="op">=</span> <span class="va">.</span><span class="op">)</span></code></pre></div>
+    <span class="va">msd_source</span> <span class="op">&lt;-</span> <span class="va">pd</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/msd_period.html">msd_period</a></span><span class="op">(</span>period <span class="op">=</span> <span class="va">.</span><span class="op">)</span></code></pre></div>
 <p>With our data loaded and time objects created, we are ready to munge the data. Let’s start with the main table.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="co"># Main Table</span>
@@ -144,7 +146,7 @@
       <span class="va">mdb_tbl</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reshape_mdb_df.html">reshape_mdb_df</a></span><span class="op">(</span><span class="va">mdb_df</span>, <span class="va">pd</span><span class="op">)</span>
     
    <span class="co"># the `agg_type` column flags the operatingunit as either OU, Region-Country or Agency</span>
-      <span class="va">mdb_tbl</span> <span class="op">%&gt;%</span> <span class="fu">distinct</span><span class="op">(</span><span class="va">agg_type</span>, <span class="va">operatingunit</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">slice</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">)</span></code></pre></div>
+      <span class="va">mdb_tbl</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">distinct</span><span class="op">(</span><span class="va">agg_type</span>, <span class="va">operatingunit</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">slice</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">)</span></code></pre></div>
 <p>The <code>mdb_tbl</code> data frame is a wide-shaped data frame that contains embedded svg icons from the <code>fontawesome</code> package. We can pass this to the <code>create_mdb</code> function to make a table for a desired operating unit.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
@@ -165,18 +167,18 @@
     
     <span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">mdb_tbl_tx</span>, ou <span class="op">=</span> <span class="st">"Global"</span>, type <span class="op">=</span> <span class="st">"treatment"</span>, <span class="va">pd</span>, <span class="va">msd_source</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="batching-tables" class="section level1">
-<h1 class="hasAnchor">
-<a href="#batching-tables" class="anchor"></a>Batching Tables</h1>
+<div class="section level2">
+<h2 id="batching-tables">Batching Tables<a class="anchor" aria-label="anchor" href="#batching-tables"></a>
+</h2>
 <p>The reshape functions for the main and treatment indicators return a single data frame of all operating units in PEPFAR, including a Global and region-country level. Using the <code>agg_type</code> column, we can define a list of operating units over which we can batch create tables.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># First, define a function to return the distinct levels in each aggregation type</span>
 
 <span class="co"># create batch tables</span>
  <span class="va">distinct_agg_type</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span>, <span class="va">type</span> <span class="op">=</span> <span class="st">"OU"</span><span class="op">)</span><span class="op">{</span>
-   <span class="va">df</span> <span class="op">%&gt;%</span> 
-     <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">agg_type</span> <span class="op">==</span> <span class="op">{</span><span class="op">{</span><span class="va">type</span><span class="op">}</span><span class="op">}</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-     <span class="fu">distinct</span><span class="op">(</span><span class="va">operatingunit</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+   <span class="va">df</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+     <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">agg_type</span> <span class="op">==</span> <span class="op">{</span><span class="op">{</span><span class="va">type</span><span class="op">}</span><span class="op">}</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+     <span class="fu">distinct</span><span class="op">(</span><span class="va">operatingunit</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
      <span class="fu">pull</span><span class="op">(</span><span class="op">)</span>
   <span class="op">}</span>
   
@@ -186,63 +188,63 @@
   <span class="va">rgl</span> <span class="op">&lt;-</span> <span class="fu">distinct_agg_type</span><span class="op">(</span><span class="va">mdb_tbl</span>, <span class="st">"Region-Country"</span><span class="op">)</span>
   
   <span class="co"># Use purr to map across the list and create tables for all entries in each object</span>
-  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">ous</span>, <span class="op">~</span><span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">mdb_tbl</span>, ou <span class="op">=</span> <span class="va">.x</span>, type <span class="op">=</span> <span class="st">"main"</span>, <span class="va">pd</span>, <span class="va">msd_source</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-        <span class="fu"><a href="https://gt.rstudio.com/reference/gtsave.html">gtsave</a></span><span class="op">(</span><span class="va">.</span>, path <span class="op">=</span> <span class="va">mdb_out</span>, filename <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html">glue</a></span><span class="op">(</span><span class="st">"{.x}_{pd}_mdb_main.png"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">ous</span>, <span class="op">~</span><span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">mdb_tbl</span>, ou <span class="op">=</span> <span class="va">.x</span>, type <span class="op">=</span> <span class="st">"main"</span>, <span class="va">pd</span>, <span class="va">msd_source</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+        <span class="fu"><a href="https://gt.rstudio.com/reference/gtsave.html" class="external-link">gtsave</a></span><span class="op">(</span><span class="va">.</span>, path <span class="op">=</span> <span class="va">mdb_out</span>, filename <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"{.x}_{pd}_mdb_main.png"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
   
   
   <span class="co"># TREATMENT</span>
   <span class="va">ous_tx</span> <span class="op">&lt;-</span> <span class="fu">distinct_agg_type</span><span class="op">(</span><span class="va">mdb_tbl_tx</span>, <span class="st">"OU"</span><span class="op">)</span>
   
-  <span class="fu">map</span><span class="op">(</span><span class="va">ous</span>, <span class="op">~</span><span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">mdb_tbl_tx</span>, ou <span class="op">=</span> <span class="va">.x</span>, type <span class="op">=</span> <span class="st">"treatment"</span>, <span class="va">pd</span>, <span class="va">msd_source</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-        <span class="fu"><a href="https://gt.rstudio.com/reference/gtsave.html">gtsave</a></span><span class="op">(</span><span class="va">.</span>, path <span class="op">=</span> <span class="va">mdb_out</span>, filename <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html">glue</a></span><span class="op">(</span><span class="st">"{.x}_{pd}_mdb_treatment.png"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+  <span class="fu">map</span><span class="op">(</span><span class="va">ous</span>, <span class="op">~</span><span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">mdb_tbl_tx</span>, ou <span class="op">=</span> <span class="va">.x</span>, type <span class="op">=</span> <span class="st">"treatment"</span>, <span class="va">pd</span>, <span class="va">msd_source</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+        <span class="fu"><a href="https://gt.rstudio.com/reference/gtsave.html" class="external-link">gtsave</a></span><span class="op">(</span><span class="va">.</span>, path <span class="op">=</span> <span class="va">mdb_out</span>, filename <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"{.x}_{pd}_mdb_treatment.png"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="creating-semi-custom-tables" class="section level1">
-<h1 class="hasAnchor">
-<a href="#creating-semi-custom-tables" class="anchor"></a>Creating semi-custom tables</h1>
+<div class="section level2">
+<h2 id="creating-semi-custom-tables">Creating semi-custom tables<a class="anchor" aria-label="anchor" href="#creating-semi-custom-tables"></a>
+</h2>
 <p>If there is a core indicator on which you’d like to focus across a list of operating units, it is possible to use the main or treatment data frames to create a custom table of OUs by indicator. For example, say we would like to compare Zambia, Malawi, Mozambique, Tanzania, and Zimbabwes’s HTS_TST_POS performance. We can filter the <code>mdb_tbl</code> data frame by a given indicator.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># Filter existing wide data frame to desired indicator and OUs</span>
-  <span class="va">mdb_tbl_hts_tst</span> <span class="op">&lt;-</span> <span class="va">mdb_tbl</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">indicator</span> <span class="op">==</span> <span class="st">"HTS_TST_POS"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">operatingunit</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Malawi"</span>, <span class="st">"Zambia"</span>, <span class="st">"Tanzania"</span>, <span class="st">"Mozambique"</span>, <span class="st">"Zimbabwe"</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">mdb_tbl_hts_tst</span> <span class="op">&lt;-</span> <span class="va">mdb_tbl</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">indicator</span> <span class="op">==</span> <span class="st">"HTS_TST_POS"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">operatingunit</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Malawi"</span>, <span class="st">"Zambia"</span>, <span class="st">"Tanzania"</span>, <span class="st">"Mozambique"</span>, <span class="st">"Zimbabwe"</span><span class="op">)</span><span class="op">)</span>
 
 
 <span class="co"># Pass resulting data frame to the mdb_main_theme() with a bit of rearranging to get a desired sort order.</span>
-  <span class="va">mdb_tbl_hts_tst</span> <span class="op">%&gt;%</span> 
-    <span class="fu">mutate</span><span class="op">(</span>operatingunit <span class="op">=</span> <span class="fu">fct_reorder</span><span class="op">(</span><span class="va">operatingunit</span>, <span class="va">present_targets_achievement</span>, .desc <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>  
-    <span class="fu">arrange</span><span class="op">(</span><span class="va">agency</span>, <span class="va">operatingunit</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://gt.rstudio.com/reference/gt.html">gt</a></span><span class="op">(</span>groupname_col <span class="op">=</span> <span class="st">"agency"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="../reference/mdb_main_theme.html">mdb_main_theme</a></span><span class="op">(</span><span class="va">pd</span>, <span class="va">msd_source</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://gt.rstudio.com/reference/cols_unhide.html">cols_unhide</a></span><span class="op">(</span><span class="st">"operatingunit"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://gt.rstudio.com/reference/cols_align.html">cols_align</a></span><span class="op">(</span>
+  <span class="va">mdb_tbl_hts_tst</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu">mutate</span><span class="op">(</span>operatingunit <span class="op">=</span> <span class="fu">fct_reorder</span><span class="op">(</span><span class="va">operatingunit</span>, <span class="va">present_targets_achievement</span>, .desc <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>  
+    <span class="fu">arrange</span><span class="op">(</span><span class="va">agency</span>, <span class="va">operatingunit</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span>groupname_col <span class="op">=</span> <span class="st">"agency"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="../reference/mdb_main_theme.html">mdb_main_theme</a></span><span class="op">(</span><span class="va">pd</span>, <span class="va">msd_source</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://gt.rstudio.com/reference/cols_unhide.html" class="external-link">cols_unhide</a></span><span class="op">(</span><span class="st">"operatingunit"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://gt.rstudio.com/reference/cols_align.html" class="external-link">cols_align</a></span><span class="op">(</span>
       align <span class="op">=</span> <span class="st">"left"</span>,
       columns <span class="op">=</span> <span class="va">operatingunit</span>
-    <span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://gt.rstudio.com/reference/cols_hide.html">cols_hide</a></span><span class="op">(</span><span class="va">indicator2</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://gt.rstudio.com/reference/tab_header.html">tab_header</a></span><span class="op">(</span>
-      title <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html">glue</a></span><span class="op">(</span><span class="st">"HTS_TST Comparison Across OUs"</span><span class="op">)</span>
+    <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://gt.rstudio.com/reference/cols_hide.html" class="external-link">cols_hide</a></span><span class="op">(</span><span class="va">indicator2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://gt.rstudio.com/reference/tab_header.html" class="external-link">tab_header</a></span><span class="op">(</span>
+      title <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"HTS_TST Comparison Across OUs"</span><span class="op">)</span>
     <span class="op">)</span></code></pre></div>
 <p>You can also create a comparison table of OU achievement by core indicators. With a couple reshapes and filters, you can generate summary table organized in descending order by TX_CURR.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-  <span class="va">mdb_tbl</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">agency</span> <span class="op">==</span> <span class="st">"USAID"</span>, <span class="va">agg_type</span> <span class="op">==</span> <span class="st">"OU"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu">select</span><span class="op">(</span><span class="va">operatingunit</span>, <span class="va">present_targets_achievement</span>, <span class="va">indicator</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="va">mdb_tbl</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">agency</span> <span class="op">==</span> <span class="st">"USAID"</span>, <span class="va">agg_type</span> <span class="op">==</span> <span class="st">"OU"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu">select</span><span class="op">(</span><span class="va">operatingunit</span>, <span class="va">present_targets_achievement</span>, <span class="va">indicator</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
     <span class="fu">pivot_wider</span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">indicator</span>, 
                 values_from <span class="op">=</span> <span class="va">present_targets_achievement</span>,
-                names_sort <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu">arrange</span><span class="op">(</span><span class="fu">desc</span><span class="op">(</span><span class="va">TX_CURR</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://gt.rstudio.com/reference/gt.html">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://gt.rstudio.com/reference/fmt_missing.html">fmt_missing</a></span><span class="op">(</span>columns <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"operatingunit"</span><span class="op">)</span>, missing_text <span class="op">=</span> <span class="st">"-"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://gt.rstudio.com/reference/fmt_percent.html">fmt_percent</a></span><span class="op">(</span>columns <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"operatingunit"</span><span class="op">)</span>, decimals <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://gt.rstudio.com/reference/cols_label.html">cols_label</a></span><span class="op">(</span>operatingunit <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://gt.rstudio.com/reference/tab_options.html">tab_options</a></span><span class="op">(</span>
+                names_sort <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu">arrange</span><span class="op">(</span><span class="fu">desc</span><span class="op">(</span><span class="va">TX_CURR</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://gt.rstudio.com/reference/fmt_missing.html" class="external-link">fmt_missing</a></span><span class="op">(</span>columns <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"operatingunit"</span><span class="op">)</span>, missing_text <span class="op">=</span> <span class="st">"-"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://gt.rstudio.com/reference/fmt_percent.html" class="external-link">fmt_percent</a></span><span class="op">(</span>columns <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"operatingunit"</span><span class="op">)</span>, decimals <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://gt.rstudio.com/reference/cols_label.html" class="external-link">cols_label</a></span><span class="op">(</span>operatingunit <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://gt.rstudio.com/reference/tab_options.html" class="external-link">tab_options</a></span><span class="op">(</span>
       source_notes.font.size <span class="op">=</span> <span class="fl">8</span>,
       table.font.size <span class="op">=</span> <span class="fl">13</span>, 
-      data_row.padding <span class="op">=</span> <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/px.html">px</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>
-    <span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://gt.rstudio.com/reference/tab_header.html">tab_header</a></span><span class="op">(</span>title <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html">glue</a></span><span class="op">(</span><span class="st">"USAID OU PERFORMANCE SUMMARY FOR {pd}"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+      data_row.padding <span class="op">=</span> <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/px.html" class="external-link">px</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>
+    <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://gt.rstudio.com/reference/tab_header.html" class="external-link">tab_header</a></span><span class="op">(</span>title <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"USAID OU PERFORMANCE SUMMARY FOR {pd}"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
   </div>
 
@@ -257,11 +259,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Tim Essam.</p>
+  <p></p>
+<p>Developed by Tim Essam.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -269,6 +273,8 @@
 
   
 
+
+  
 
   </body>
 </html>
