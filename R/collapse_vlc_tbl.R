@@ -26,8 +26,8 @@ collapse_vlc_tbl  <- function(df, ...) {
                   disaggregate %in%  c("Age/Sex/ARVDispense/HIVStatus", "Total Numerator", "Total Denominator") |
                     otherdisaggregate %in% c("ARV Dispensing Quantity - 6 or more months", "ARV Dispensing Quantity - 3 to 5 months"),
                   fundingagency != "Dedup") %>% 
-    dplyr::mutate(agency = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES"),
-                  indicator = ifelse(numeratordenom == "D", paste0(indicator, "_D"), indicator),
+    dplyr::mutate(agency = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES") %>% as.character(),
+                  indicator = ifelse(numeratordenom == "D", paste0(indicator, "_D"), indicator) %>% as.character(),
                   indicator = dplyr::case_when(
                     stringr::str_detect(otherdisaggregate, "3 to 5") ~ "TX_MMD3+",
                     stringr::str_detect(otherdisaggregate, "6 or more") ~ "TX_MMD6+",
