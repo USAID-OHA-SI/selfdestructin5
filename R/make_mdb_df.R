@@ -47,7 +47,8 @@ make_mdb_df <- function(df, resolve_issues = T) {
   df_reg <- df %>% 
     dplyr::filter(stringr::str_detect(operatingunit, "Region")) %>% 
     collapse_base_tbl(indicator_fltr, group_base_cntry) %>% 
-    label_aggregation(type = "Regional")
+    label_aggregation(type = "Regional") %>% 
+    mutate(agency = as.character(agency)) # in case there is no region, coerce agency to a character
   
   df_usaid <- df %>% 
     dplyr::mutate(operatingunit = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES")) %>% 
