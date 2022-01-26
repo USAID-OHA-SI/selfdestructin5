@@ -24,6 +24,7 @@ Other gt helpers:
 \code{\link{create_pd}()},
 \code{\link{dedup_footnote}()},
 \code{\link{delta_footnote}()},
+\code{\link{legend_q1}},
 \code{\link{legend_q2}},
 \code{\link{legend_q3}},
 \code{\link{legend_snapshot}},

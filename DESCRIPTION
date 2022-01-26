@@ -13,7 +13,7 @@ LazyData: true
 URL: https://github.com/USAID-OHA-SI/selfdestructin5
 BugReports: https://github.com/USAID-OHA-SI/selfdestructin5/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Imports: 
     crayon,
     dplyr,
@@ -44,5 +44,3 @@ Remotes:
     USAID-OHA-SI/gophr
 BuildVignettes: true
 VignetteBuilder: knitr
-
-
