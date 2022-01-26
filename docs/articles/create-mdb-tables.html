@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">selfdestructin5</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
@@ -102,9 +102,9 @@
 
     
     
-<div class="section level1">
-<h1 id="mission-director-briefer-tables">Mission Director Briefer Tables<a class="anchor" aria-label="anchor" href="#mission-director-briefer-tables"></a>
-</h1>
+<div class="section level2">
+<h2 id="mission-director-briefer-tables">Mission Director Briefer Tables<a class="anchor" aria-label="anchor" href="#mission-director-briefer-tables"></a>
+</h2>
 <p>The Mission Director Briefer (MDB) Tables are an SI product that is created on a quarterly basis using the latest OU_IM MER Structured dataset (MSD). Two tables are produced, one which summarizes the current achievement for a set of core (main) indicators, and another which summarizes TX_MMD, VLS, and VLC.</p>
 <p>Starting in FY21 Q2, the SI team migrated the production of the tables from Tableau to R. Eventually, the SI team created a package to automate much of the data munging required for the tables. The <code>selfdestructin5</code> package is the result of these efforts.</p>
 <p>Below we review the process for creating the main and treatment tables.</p>
@@ -167,9 +167,9 @@
     
     <span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">mdb_tbl_tx</span>, ou <span class="op">=</span> <span class="st">"Global"</span>, type <span class="op">=</span> <span class="st">"treatment"</span>, <span class="va">pd</span>, <span class="va">msd_source</span><span class="op">)</span></code></pre></div>
 </div>
-<div class="section level1">
-<h1 id="batching-tables">Batching Tables<a class="anchor" aria-label="anchor" href="#batching-tables"></a>
-</h1>
+<div class="section level2">
+<h2 id="batching-tables">Batching Tables<a class="anchor" aria-label="anchor" href="#batching-tables"></a>
+</h2>
 <p>The reshape functions for the main and treatment indicators return a single data frame of all operating units in PEPFAR, including a Global and region-country level. Using the <code>agg_type</code> column, we can define a list of operating units over which we can batch create tables.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># First, define a function to return the distinct levels in each aggregation type</span>
@@ -198,9 +198,9 @@
   <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">ous</span>, <span class="op">~</span><span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">mdb_tbl_tx</span>, ou <span class="op">=</span> <span class="va">.x</span>, type <span class="op">=</span> <span class="st">"treatment"</span>, <span class="va">pd</span>, <span class="va">msd_source</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
         <span class="fu"><a href="https://gt.rstudio.com/reference/gtsave.html" class="external-link">gtsave</a></span><span class="op">(</span><span class="va">.</span>, path <span class="op">=</span> <span class="va">mdb_out</span>, filename <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"{.x}_{pd}_mdb_treatment.png"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
-<div class="section level1">
-<h1 id="creating-semi-custom-tables">Creating semi-custom tables<a class="anchor" aria-label="anchor" href="#creating-semi-custom-tables"></a>
-</h1>
+<div class="section level2">
+<h2 id="creating-semi-custom-tables">Creating semi-custom tables<a class="anchor" aria-label="anchor" href="#creating-semi-custom-tables"></a>
+</h2>
 <p>If there is a core indicator on which you’d like to focus across a list of operating units, it is possible to use the main or treatment data frames to create a custom table of OUs by indicator. For example, say we would like to compare Zambia, Malawi, Mozambique, Tanzania, and Zimbabwes’s HTS_TST_POS performance. We can filter the <code>mdb_tbl</code> data frame by a given indicator.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
@@ -265,7 +265,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
