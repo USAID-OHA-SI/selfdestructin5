@@ -133,6 +133,15 @@ legend_snapshot <- 'https://github.com/USAID-OHA-SI/selfdestructin5/blob/main/ma
 #' 
 legend_q2 <- 'https://github.com/USAID-OHA-SI/selfdestructin5/blob/main/man/figures/Q2_cumulative_legend.png?raw=true'
 
+#' Object pointing to github location of legend for Q2
+#' 
+#' @description
+#' This helper object returns the location of the q2_cumulative legend.
+#' The object is passed to a legend_chunk f() that creates md for the legend
+#' This can then be inserted into the subtitle as an image
+#' @export
+#' @family gt helpers
+legend_q1 <- 'https://github.com/USAID-OHA-SI/selfdestructin5/blob/main/man/figures/Q1_cumulative_legend.png?raw=true'
 
 
 
