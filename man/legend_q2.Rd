@@ -12,8 +12,8 @@ legend_q2
 }
 \description{
 This helper object returns the location of the q2_cumulative legend.
-The object is passed to a legend_chunk f() that creates md for the legend
-This can then be inserted into the subtitle as an image
+The object is passed to a legend_chunk f() that creates md for the legend.
+This can then be inserted into the subtitle as an image.
 }
 \seealso{
 Other gt helpers: 

@@ -3,7 +3,7 @@
 \docType{data}
 \name{legend_q1}
 \alias{legend_q1}
-\title{Object pointing to github location of legend for Q2}
+\title{Object pointing to github location of legend for Q1}
 \format{
 An object of class \code{character} of length 1.
 }
@@ -11,9 +11,9 @@ An object of class \code{character} of length 1.
 legend_q1
 }
 \description{
-This helper object returns the location of the q2_cumulative legend.
-The object is passed to a legend_chunk f() that creates md for the legend
-This can then be inserted into the subtitle as an image
+This helper object returns the location of the q1_cumulative legend.
+The object is passed to a legend_chunk f() that creates md for the legend.
+This can then be inserted into the subtitle as an image.
 }
 \seealso{
 Other gt helpers: 
