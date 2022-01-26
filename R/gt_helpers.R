@@ -141,7 +141,7 @@ legend_q2 <- 'https://github.com/USAID-OHA-SI/selfdestructin5/blob/main/man/figu
 #' This can then be inserted into the subtitle as an image
 #' @export
 #' @family gt helpers
-legend_q1 <- 'https://github.com/USAID-OHA-SI/selfdestructin5/blob/main/man/figures/Q1_cumulative_legend.png?raw=true'
+legend_q1 <- 'https://github.com/USAID-OHA-SI/selfdestructin5/blob/main/man/figures/Q1_cumulative_legend.jpg?raw=true'
 
 
 
