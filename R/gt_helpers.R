@@ -146,5 +146,3 @@ legend_q1 <- 'https://github.com/USAID-OHA-SI/selfdestructin5/blob/main/man/figu
 
 
 
-
-
