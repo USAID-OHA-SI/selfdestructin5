@@ -18,7 +18,7 @@
     df %>% 
       filter(indicator %in% indics,
              standardizeddisaggregate %in% c("Total Numerator"),
-             fundingagency == "USAID") %>% 
+             funding_agency == "USAID") %>% 
       group_by(fiscal_year, indicator, mech_name, mech_code) %>% 
       summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop") %>% 
       ungroup() %>% 
@@ -30,8 +30,8 @@
   # Shape the base dataframe from which the table is derived
   #@description shape the msd to wide with key indicators  
   #@param df - base msd from which all manipulations are done
-  #@param country_col either countryname or operating unit, depending on table desired
-  #@param ou countryname or operating unit
+  #@param country_col either country_name or operating unit, depending on table desired
+  #@param ou country_name or operating unit
   
   shape_md_tbl_im <- function(df, country_col, ou) {
     
@@ -154,7 +154,7 @@
   
 
   # Test it all together
-  md_tbl_old <- shape_md_tbl_im(df = ou_im, country_col = countryname, ou = "Rwanda")
+  md_tbl_old <- shape_md_tbl_im(df = ou_im, country_col = country_name, ou = "Rwanda")
   tbl_col_names <- fix_col_names(md_tbl_old)
   md_tbl_im(md_tbl_old, tbl_col_names, "Rwanda")
   
@@ -178,7 +178,7 @@
   }  
   
   # Test for a single OU  
-  get_md_table_im(ou_im, country_col = countryname, "Burkina Faso")
+  get_md_table_im(ou_im, country_col = country_name, "Burkina Faso")
   get_md_table_im(ou_im, country_col = operatingunit, "Kenya")
   
   

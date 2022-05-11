@@ -34,7 +34,7 @@ make_mdb_tx_df <- function(df, resolve_issues = "TRUE") {
   
   # Group_by columns
   group_base <- c("fiscal_year", "agency", "indicator", "operatingunit")
-  group_base_cntry <- c(group_base, "countryname")
+  group_base_cntry <- c(group_base, "country_name")
   group_base_agency <- group_base[1:3]
   
   # Create the base treatment table for TX_CURR
@@ -51,7 +51,7 @@ make_mdb_tx_df <- function(df, resolve_issues = "TRUE") {
   
   df_usaid_tx <- df %>% 
     dplyr::filter(operatingunit != "South Africa") %>% 
-    dplyr::mutate(operatingunit = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES")) %>% 
+    dplyr::mutate(operatingunit = ifelse(funding_agency == "USAID", "USAID", "ALL OTHER AGENCIES")) %>% 
     collapse_base_tbl(indic_list = indic, group_base_agency) %>% 
     label_aggregation(type = "Agency")
   
@@ -71,7 +71,7 @@ make_mdb_tx_df <- function(df, resolve_issues = "TRUE") {
     label_aggregation(type = "Regional")
   
   vlc_usaid <- df %>% 
-    dplyr::mutate(operatingunit = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES")) %>% 
+    dplyr::mutate(operatingunit = ifelse(funding_agency == "USAID", "USAID", "ALL OTHER AGENCIES")) %>% 
     collapse_vlc_tbl(group_base_agency) %>% 
     label_aggregation(type = "Agency")
   

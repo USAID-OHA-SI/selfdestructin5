@@ -63,9 +63,9 @@
         df %>% 
         filter(indicator %in% c("TX_CURR"),
                standardizeddisaggregate %in% c("Total Numerator"),
-               fundingagency != "Dedup") %>% 
+               funding_agency != "Dedup") %>% 
         clean_agency() %>% 
-        mutate(agency = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES"),
+        mutate(agency = ifelse(funding_agency == "USAID", "USAID", "ALL OTHER AGENCIES"),
         group_by(fiscal_year, agency, indicator) %>% 
         summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop")
       )
@@ -98,12 +98,12 @@
         filter(indicator %in% c("TX_CURR", "TX_PVLS"),
                disaggregate %in%  c("Age/Sex/ARVDispense/HIVStatus", "Total Numerator", "Total Denominator") |
                  otherdisaggregate %in% c("ARV Dispensing Quantity - 6 or more months", "ARV Dispensing Quantity - 3 to 5 months"),
-               fundingagency != "Dedup",
+               funding_agency != "Dedup",
                {{country_col}} %in% ou) %>%
         clean_agency() %>%
-        mutate(agency = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES"),
+        mutate(agency = ifelse(funding_agency == "USAID", "USAID", "ALL OTHER AGENCIES"),
                # Lump factors at 3 then apply long agency order b/c of varying nature
-               # mutate(agency = fct_lump(fundingagency, n = 2, other_level = "ALL OTHER AGENCIES"),
+               # mutate(agency = fct_lump(funding_agency, n = 2, other_level = "ALL OTHER AGENCIES"),
                agency = fct_relevel(agency, agency_order_shrt), 
                indicator = ifelse(numeratordenom == "D", paste0(indicator, "_D"), indicator),
                indicator = case_when(
@@ -331,7 +331,7 @@
     }  
     
   # Test it all
-    get_md_vls_table(ou_im_vlc, countryname, "Malawi")
+    get_md_vls_table(ou_im_vlc, country_name, "Malawi")
 
   # Get just the dataframes for each place and write to a csv
     write_md_vls_df <- function(df, country_col, ou) {
@@ -366,41 +366,41 @@
   asia_cntry_list <- 
     ou_im_vlc %>% 
     filter(str_detect(operatingunit, "Asia Region")) %>% 
-    filter(!countryname %in% c("China", "Philippines")) %>% 
-    distinct(countryname) %>% 
+    filter(!country_name %in% c("China", "Philippines")) %>% 
+    distinct(country_name) %>% 
     pull()
   
-  map(asia_cntry_list, ~get_md_vls_table(ou_im_vlc, countryname, .x) %>% 
+  map(asia_cntry_list, ~get_md_vls_table(ou_im_vlc, country_name, .x) %>% 
         gtsave(file.path("Images/Regional/Asia", paste0(.x, "_FY21Q2_MMD_VL_MD.png"))))
   
-  map(asia_cntry_list, ~write_md_vls_df(ou_im_vlc, countryname, .x))
+  map(asia_cntry_list, ~write_md_vls_df(ou_im_vlc, country_name, .x))
   
   # West Africa
   westafr_cntry_list <- 
     ou_im_vlc %>% 
     filter(str_detect(operatingunit, "Africa Region")) %>% 
-    filter(!countryname %in% c("Sierra Leone")) %>% 
-    distinct(countryname) %>% 
+    filter(!country_name %in% c("Sierra Leone")) %>% 
+    distinct(country_name) %>% 
     pull()
   
-  map(westafr_cntry_list, ~get_md_vls_table(ou_im_vlc, countryname, .x) %>% 
+  map(westafr_cntry_list, ~get_md_vls_table(ou_im_vlc, country_name, .x) %>% 
         gtsave(file.path("Images/Regional/WAR", paste0(.x, "_FY21Q2_MMD_VL_MD.png"))))
   
-  map(westafr_cntry_list, ~write_md_vls_df(ou_im_vlc, countryname, .x))
+  map(westafr_cntry_list, ~write_md_vls_df(ou_im_vlc, country_name, .x))
   
   # Western Hemisphere
   # Omitting Guyana and Barbados due to no reporting in FY21
   wh_cntry_list <- 
     ou_im_vlc %>% 
     filter(str_detect(operatingunit, "Western")) %>% 
-    filter(!countryname %in% c("Guyana", "Barbados", "Nicaragua", "Suriname")) %>% 
-    distinct(countryname) %>% 
+    filter(!country_name %in% c("Guyana", "Barbados", "Nicaragua", "Suriname")) %>% 
+    distinct(country_name) %>% 
     pull()
   
-  map(wh_cntry_list, ~get_md_vls_table(ou_im_vlc, countryname, .x) %>% 
+  map(wh_cntry_list, ~get_md_vls_table(ou_im_vlc, country_name, .x) %>% 
         gtsave(file.path("Images/Regional/WesternHemi", paste0(.x, "_FY21Q2_MMD_VL_MD.png"))))
 
-  map(wh_cntry_list, ~write_md_vls_df(ou_im_vlc, countryname, .x))
+  map(wh_cntry_list, ~write_md_vls_df(ou_im_vlc, country_name, .x))
   
 
 #  GENERATE GLOBAL TABLE -- SOUTH AFRICA FLAG -----------------------------
@@ -438,9 +438,9 @@
       filter(indicator %in% c("TX_CURR", "TX_PVLS"),
              disaggregate %in%  c("Age/Sex/ARVDispense/HIVStatus", "Total Numerator", "Total Denominator") |
                otherdisaggregate %in% c("ARV Dispensing Quantity - 6 or more months", "ARV Dispensing Quantity - 3 to 5 months"),
-             fundingagency != "Dedup") %>%
+             funding_agency != "Dedup") %>%
       clean_agency() %>%
-      mutate(agency = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES"),
+      mutate(agency = ifelse(funding_agency == "USAID", "USAID", "ALL OTHER AGENCIES"),
              agency = fct_relevel(agency, agency_order_shrt), 
              indicator = ifelse(numeratordenom == "D", paste0(indicator, "_D"), indicator),
              indicator = case_when(

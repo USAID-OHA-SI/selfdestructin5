@@ -18,7 +18,7 @@
     df %>% 
       filter(indicator %in% c(indics, "PrEP_CURR"),
              standardizeddisaggregate %in% c("Total Numerator"),
-             fundingagency == "USAID") %>% 
+             funding_agency == "USAID") %>% 
       group_by(fiscal_year, operatingunit, indicator) %>% 
       summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop")
   }  
