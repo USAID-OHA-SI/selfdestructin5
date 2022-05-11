@@ -112,11 +112,11 @@
   # Test it all together
   # Grab Data for all Central American OUs - El Salvador, Guatemala, Honduras, Nicaragua, Panama
 
-  els <- shape_md_tbl(df = ou_im, country_col = countryname, ou = "El Salvador") %>% mutate(country = "El Salvador")
-  gta <- shape_md_tbl(df = ou_im, country_col = countryname, ou = "Guatemala") %>% mutate(country = "Guatemala")
-  hnd <- shape_md_tbl(df = ou_im, country_col = countryname, ou = "Honduras") %>% mutate(country = "Honduras")
-  nic <- shape_md_tbl(df = ou_im, country_col = countryname, ou = "Nicaragua") %>% mutate(country = "Nicaragua")
-  pan <- shape_md_tbl(df = ou_im, country_col = countryname, ou = "Panama") %>% mutate(country = "Panama")
+  els <- shape_md_tbl(df = ou_im, country_col = country_name, ou = "El Salvador") %>% mutate(country = "El Salvador")
+  gta <- shape_md_tbl(df = ou_im, country_col = country_name, ou = "Guatemala") %>% mutate(country = "Guatemala")
+  hnd <- shape_md_tbl(df = ou_im, country_col = country_name, ou = "Honduras") %>% mutate(country = "Honduras")
+  nic <- shape_md_tbl(df = ou_im, country_col = country_name, ou = "Nicaragua") %>% mutate(country = "Nicaragua")
+  pan <- shape_md_tbl(df = ou_im, country_col = country_name, ou = "Panama") %>% mutate(country = "Panama")
   
   caribb <- bind_rows(els, gta, hnd, nic, pan) %>% 
     unite(agency, c(country, agency), sep = ": ") %>% 

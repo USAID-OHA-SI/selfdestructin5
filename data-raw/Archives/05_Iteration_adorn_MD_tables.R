@@ -62,10 +62,10 @@
       df %>% 
         filter(indicator %in% indics,
                standardizeddisaggregate %in% c("Total Numerator"),
-               fundingagency != "Dedup") %>% 
+               funding_agency != "Dedup") %>% 
         clean_agency() %>% 
         # Lump factors at 3 then apply long agency order b/c of varying nature
-        mutate(agency = fct_lump(fundingagency, n = 2, other_level = "OTHER"),
+        mutate(agency = fct_lump(funding_agency, n = 2, other_level = "OTHER"),
                agency = fct_relevel(agency, agency_order_long)) %>% 
         group_by(fiscal_year, agency, indicator) %>% 
         summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop")
@@ -188,13 +188,13 @@
     ungroup() %>% 
     select(agency, spark_color, indicator, period, results_cumulative, APR, indicator) %>% 
     filter(period == "FY21Q2") %>%
-    mutate(fundingagency = agency, 
+    mutate(funding_agency = agency, 
            indicator2 = indicator,
            apr = APR) %>% 
     arrange(agency, indicator) %>% 
-    # nest(spark_nest = c(period, results_cumulative, fundingagency, indicator, spark_color)) %>% 
+    # nest(spark_nest = c(period, results_cumulative, funding_agency, indicator, spark_color)) %>% 
     # mutate(plot = map(spark_nest, spark_plot))
-    nest(spark_nest = c(apr, fundingagency, indicator2, spark_color)) %>% 
+    nest(spark_nest = c(apr, funding_agency, indicator2, spark_color)) %>% 
     mutate(plot = map(spark_nest, spark_plot2))
   
 

@@ -54,12 +54,12 @@ cntry_ou <-  si_path() %>%
 
 briefer <- cntry_ou %>%
   filter(fiscal_year %in% c(2021, 2020, 2019),
-         #countryname == "Tanzania",
+         #country_name == "Tanzania",
          indicator %in% c("HTS_TST", "HTS_TST_POS", "PrEP_NEW", "TX_CURR", "TX_NEW", "VMMC_CIRC"),
          standardizeddisaggregate %in% c("Total Numerator"),
          !fundingagency %in% c("Dedup")) %>%
   glamr::clean_agency() %>%
-  group_by(fiscal_year, countryname, indicator, fundingagency) %>%
+  group_by(fiscal_year, country_name, indicator, fundingagency) %>%
   summarise_at(vars(targets:cumulative),sum,na.rm=TRUE) %>%
   ungroup() %>%
   select(-c(qtr1:qtr4)) %>%
@@ -89,7 +89,7 @@ briefer <- briefer %>%
 
   #reordering
  briefer <- briefer %>% 
-      select(countryname, indicator, fundingagency, ends_with("Achievement"),
+      select(country_name, indicator, fundingagency, ends_with("Achievement"),
              ends_with("Results"), everything())
 
  
@@ -168,7 +168,7 @@ briefer <- briefer %>%
 # 
 # 
   table_data <- test %>%
-    filter(countryname == cntry_sel)
+    filter(country_name == cntry_sel)
   
   
 #TO DO Table
@@ -183,21 +183,21 @@ briefer <- briefer %>%
       
       print(ou)
       
-      df_brief <- df_brief %>% filter(countryname == ou)
+      df_brief <- df_brief %>% filter(country_name == ou)
       
       # cntry_sel <- ou
       # 
       # df_brief %>%
       # filter(ou == cntry_sel)
       
-      #countryname = ou
+      #country_name = ou
       
       gt_tbl <- df_brief %>% #combined dfs
         gt(groupname_col = "fundingagency") %>% 
         row_group_order(
           groups = c("USAID", "CDC", "DOD")
         ) %>%
-        cols_hide(vars(countryname)) %>% 
+        cols_hide(vars(country_name)) %>% 
         tab_spanner(label = md("**Achievement**"), 
                     columns = matches("Achievement")) %>%  
         tab_spanner(label = md("**Results**"), 
@@ -269,9 +269,9 @@ briefer <- briefer %>%
       
 test2 %>%
         filter(
-          #!str_detect(countryname, " Region$"),
+          #!str_detect(country_name, " Region$"),
                !is.na(`FY19 Achievement`)) %>%
-        distinct(countryname) %>%
+        distinct(country_name) %>%
         pull() %>%
         nth(21) %>%
         map(.x, .f = ~gt_table(df_brief = test2, ou = .x))

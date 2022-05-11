@@ -101,11 +101,11 @@
       suppressWarnings(df %>% 
         filter(indicator %in% indics,
                standardizeddisaggregate %in% c("Total Numerator"),
-               fundingagency != "Dedup") %>% 
+               funding_agency != "Dedup") %>% 
         clean_agency() %>% 
-        mutate(agency = ifelse(fundingagency == "USAID", "USAID", "ALL OTHER AGENCIES"),
+        mutate(agency = ifelse(funding_agency == "USAID", "USAID", "ALL OTHER AGENCIES"),
         # Lump factors at 3 then apply long agency order b/c of varying nature
-        # mutate(agency = fct_lump(fundingagency, n = 2, other_level = "ALL OTHER AGENCIES"),
+        # mutate(agency = fct_lump(funding_agency, n = 2, other_level = "ALL OTHER AGENCIES"),
                agency = fct_relevel(agency, agency_order_shrt)) %>% 
         group_by(fiscal_year, agency, indicator) %>% 
         summarise(across(where(is.double), sum, na.rm = TRUE), .groups = "drop")
@@ -118,8 +118,8 @@
     # Shape the base dataframe from which the table is derived
     #@description shape the msd to wide with key indicators  
     #@param df - base msd from which all manipulations are done
-    #@param country_col either countryname or operating unit, depending on table desired
-    #@param ou countryname or operating unit
+    #@param country_col either country_name or operating unit, depending on table desired
+    #@param ou country_name or operating unit
     
     shape_md_tbl <- function(df, country_col, ou) {
       
@@ -326,7 +326,7 @@
     }  
 
   # Test for a single OU  
-    get_md_table(ou_im, country_col = countryname, "Cameroon")
+    get_md_table(ou_im, country_col = country_name, "Cameroon")
     get_md_table(ou_im, country_col = operatingunit, "Kenya")
 
 # BATCH GENERATE TABLES ------------------------------------------------
@@ -356,27 +356,27 @@
     asia_cntry_list <- 
       ou_im %>% 
       filter(str_detect(operatingunit, "Asia Region")) %>% 
-      distinct(countryname) %>% 
+      distinct(country_name) %>% 
       pull()
     
-    map(asia_cntry_list, ~get_md_table(ou_im, countryname, .x) %>% 
+    map(asia_cntry_list, ~get_md_table(ou_im, country_name, .x) %>% 
           gtsave(file.path("Images/Regional/Asia", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
     
 
-    map(asia_cntry_list, ~shape_md_tbl(ou_im, countryname, .x) %>% 
+    map(asia_cntry_list, ~shape_md_tbl(ou_im, country_name, .x) %>% 
           write_csv(file.path("Dataout/", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD_RAW.csv"))))
 
   # West Africa
     westafr_cntry_list <- 
       ou_im %>% 
       filter(str_detect(operatingunit, "Africa Region")) %>% 
-      distinct(countryname) %>% 
+      distinct(country_name) %>% 
       pull()
     
-    map(westafr_cntry_list, ~get_md_table(ou_im, countryname, .x) %>% 
+    map(westafr_cntry_list, ~get_md_table(ou_im, country_name, .x) %>% 
           gtsave(file.path("Images/Regional/WAR", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
     
-    map(westafr_cntry_list, ~shape_md_tbl(ou_im, countryname, .x) %>% 
+    map(westafr_cntry_list, ~shape_md_tbl(ou_im, country_name, .x) %>% 
           write_csv(file.path("Dataout/", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD_RAW.csv"))))
   
   # Western Hemisphere
@@ -384,14 +384,14 @@
     wh_cntry_list <- 
       ou_im %>% 
       filter(str_detect(operatingunit, "Western")) %>% 
-      filter(!countryname %in% c("Guyana", "Barbados")) %>% 
-      distinct(countryname) %>% 
+      filter(!country_name %in% c("Guyana", "Barbados")) %>% 
+      distinct(country_name) %>% 
       pull()
     
-    map(wh_cntry_list, ~get_md_table(ou_im, countryname, .x) %>% 
+    map(wh_cntry_list, ~get_md_table(ou_im, country_name, .x) %>% 
           gtsave(file.path("Images/Regional/WesternHemi", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD.png"))))
     
-    map(wh_cntry_list, ~shape_md_tbl(ou_im, countryname, .x) %>% 
+    map(wh_cntry_list, ~shape_md_tbl(ou_im, country_name, .x) %>% 
           write_csv(file.path("Dataout/", paste0(.x, "_FY21Q2_KEY_INDICATORS_MD_RAW.csv"))))
   
   
