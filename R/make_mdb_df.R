@@ -36,7 +36,7 @@ make_mdb_df <- function(df, resolve_issues = T) {
 
   # Group by columns
   group_base <- c("fiscal_year", "agency", "indicator", "operatingunit")
-  group_base_cntry <- c(group_base, "country_name")
+  group_base_cntry <- c(group_base, "country")
   
   # Create three dataframes for ou, regional-country, agency
   df_ou <- df %>% 

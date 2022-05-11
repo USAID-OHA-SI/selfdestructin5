@@ -26,8 +26,8 @@ label_aggregation <- function(df, type = "OU") {
   } else if (type == "Regional") {
     df %>% 
       dplyr::mutate(agg_type = "Region-Country",
-                    operatingunit = paste(operatingunit, country_name, sep = "-")) %>% 
-      dplyr::select(-country_name)
+                    operatingunit = paste(operatingunit, country, sep = "-")) %>% 
+      dplyr::select(-country)
   } else {
     df %>% dplyr::mutate(agg_type = "OU")
   }

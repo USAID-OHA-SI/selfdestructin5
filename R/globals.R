@@ -2,7 +2,7 @@
 utils::globalVariables(c("standardizeddisaggregate", "funding_agency",
                          "disaggregate", "otherdisaggregate", "numeratordenom",
                          "frequency", "operatingunit", "ou_list",
-                         "fiscal_year", "agency", "country_name", "indicator_plain",
+                         "fiscal_year", "agency", "country", "indicator_plain",
                          "tx_mmd_group", "agg_type", "present_targets_achievement",
                          "present_tint_achv", "past_targets_achievement", "indicator2",
                          "period", "results_cumulative", "achv_color", "achievement",

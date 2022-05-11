@@ -34,7 +34,7 @@ make_mdb_tx_df <- function(df, resolve_issues = "TRUE") {
   
   # Group_by columns
   group_base <- c("fiscal_year", "agency", "indicator", "operatingunit")
-  group_base_cntry <- c(group_base, "country_name")
+  group_base_cntry <- c(group_base, "country")
   group_base_agency <- group_base[1:3]
   
   # Create the base treatment table for TX_CURR
