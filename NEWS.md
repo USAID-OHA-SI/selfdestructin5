@@ -1,3 +1,5 @@
+# selfdestructin5 0.2.0
+
 # selfdestructin5 0.1.0
 * MDB production process can be done with a single OU MSD or Genie file
 * Q1 - Q3 legend pointers incorporated to generate legends at the top of tables
