@@ -25,7 +25,7 @@
 make_mdb_df <- function(df, resolve_issues = T) {
   
   if (resolve_issues == TRUE) {
-    df <- glamr::resolve_knownissues(df)
+    df <- gophr::resolve_knownissues(df)
   } 
   
   # Get the indicator info you need 

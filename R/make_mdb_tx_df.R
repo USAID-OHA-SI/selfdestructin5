@@ -27,7 +27,7 @@
 make_mdb_tx_df <- function(df, resolve_issues = "TRUE") {
   
   if (resolve_issues == TRUE) {
-    df <- glamr::resolve_knownissues(df)
+    df <- gophr::resolve_knownissues(df)
   } 
   
   indic <- "TX_CURR"
