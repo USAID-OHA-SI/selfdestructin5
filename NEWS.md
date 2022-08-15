@@ -1,3 +1,8 @@
+# selfdestructin5 0.2.1
+
+# selfdestructin5 0.3.0
+* Update `fmt_missing()` to `sub_missing()`
+
 # selfdestructin5 0.2.0
 * Update indicator names to reflect new naming conventions as of FY22Q2 (2022-05-11)
 

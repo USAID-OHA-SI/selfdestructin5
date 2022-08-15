@@ -10,7 +10,7 @@ utils::globalVariables(c("standardizeddisaggregate", "funding_agency",
                          "z_change", "z_direction", "tint_achv", "z_aresults", "order_col",
                          "targets", "targets_achievement", "present_z_direction", "TX_CURR_VLC",
                          "TX_MMD3+", "TX_CURR", "TX_PVLS", "TX_PVLS_D", "VLC", "change_dir", "value",
-                         "period_type", "where"))
+                         "period_type", "where", "indicator"))
 
   
 
