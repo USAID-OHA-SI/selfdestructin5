@@ -47,7 +47,7 @@ make_mdb_tx_df <- function(df, resolve_issues = "TRUE") {
     dplyr::filter(stringr::str_detect(operatingunit, "Region")) %>% 
     collapse_base_tbl(indic_list = indic, group_base_cntry) %>% 
     label_aggregation(type = "Regional") %>% 
-    mutate(agency = as.character(agency)) # in case there is no region, coerce agency to a character
+    dplyr::mutate(agency = as.character(agency)) # in case there is no region, coerce agency to a character
   
   df_usaid_tx <- df %>% 
     dplyr::filter(operatingunit != "South Africa") %>% 

@@ -37,7 +37,7 @@ mdb_treatment_theme <- function(df, pd, msd_source, ...){
     gt::cols_hide(
       columns = c("operatingunit", "agg_type", "indicator")
     ) %>% 
-    gt::fmt_missing(
+    gt::sub_missing(
       columns = tidyselect::everything(),
       missing_text = "-"
     ) %>% 

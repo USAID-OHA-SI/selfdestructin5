@@ -59,20 +59,20 @@ create_mdb <- function(df, ou, type = "main", pd = pd, msd_source = msd_source, 
   if(type == "main"){
   
    mdb_gt <-  df %>% 
-      filter(operatingunit %in% c({{ou}})) %>% 
-      gt(groupname_col = "agency") %>% 
+      dplyr::filter(operatingunit %in% c({{ou}})) %>% 
+      gt::gt(groupname_col = "agency") %>% 
       mdb_main_theme(pd, msd_source) %>% 
-      tab_header(
+      gt::tab_header(
         title = glue::glue("{cntry} PERFORMANCE SUMMARY"),
         subtitle = legend
       )
   } else {
     
    mdb_gt <-  df %>% 
-      filter(operatingunit %in% c({{ou}})) %>% 
-      gt(groupname_col = "agency") %>% 
+      dplyr::filter(operatingunit %in% c({{ou}})) %>% 
+      gt::gt(groupname_col = "agency") %>% 
       mdb_treatment_theme(pd, msd_source) %>% 
-      tab_header(
+      gt::tab_header(
         title = glue::glue("{cntry} PERFORMANCE SUMMARY"),
         subtitle = legend
       )
