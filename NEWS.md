@@ -1,3 +1,5 @@
+# selfdestructin5 0.2.1
+
 # selfdestructin5 0.3.0
 * Update `fmt_missing()` to `sub_missing()`
 
