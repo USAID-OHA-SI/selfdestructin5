@@ -43,7 +43,7 @@ mdb_treatment_theme <- function(df, pd, msd_source, ...){
     ) %>% 
     gt::fmt_number(
       columns = where(is.numeric),
-      rows = stringr::str_detect(indicator2, "(TX_CURR|TX_MMD3+|TX_MMD6)"),
+      rows = stringr::str_detect(indicator2, "(TX_CURR|TX_MMD3\\+|TX_MMD6)"),
       decimal = 0
     ) %>% 
     gt::fmt_percent(
