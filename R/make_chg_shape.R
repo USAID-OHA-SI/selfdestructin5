@@ -30,9 +30,9 @@ make_chg_shape <- function(change_dir){
     logo_out <- fontawesome::fa("circle", fill = glitr::trolley_grey_light, fill_opacity = alpha, height = "2em")
   } else {
     if (change_dir == "increase") {
-      logo_out <- fontawesome::fa("arrow-circle-up", fill = glitr::genoa_light, fill_opacity = alpha, height = "2em")
+      logo_out <- fontawesome::fa("circle-arrow_up", fill = glitr::genoa_light, fill_opacity = alpha, height = "2em")
     } else if (change_dir == "decrease"){
-      logo_out <- fontawesome::fa("arrow-circle-down", fill = glitr::old_rose_light, fill_opacity = alpha, height = "2em")
+      logo_out <- fontawesome::fa("circle-arrow-down", fill = glitr::old_rose_light, fill_opacity = alpha, height = "2em")
     } else if (change_dir == "not applicable" | is.na(change_dir)) {
       logo_out <- fontawesome::fa("circle", fill = glitr::trolley_grey_light, fill_opacity = alpha, height = "2em")
     } 
