@@ -200,4 +200,32 @@ bold_column <- function(gt_obj, col, wt = 700){
 }
 
 
+#' Embiggen parts of mdb table
+#' A noble spirit embiggens the smallest man
+#' 
+#'
+#' @param gt_obj gt object to be embiggened
+#' @param tbl_size font size for the core table
+#' @param ftnote_size font size for the footnotes
+#' @param source_size font size for the source notes
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # embiggen
+#' mtcars %>% gt(groupname_col = "cyl") %>% embiggen(tbl_size = 15)
+#' 
+#' # de-embiggen
+#' mtcars %>% gt(groupname_col = "cyl") %>% embiggen(tbl_size = 8)
+#' }
+embiggen <- function(gt_obj, tbl_size = 15, ftnote_size = 10, source_size = 10){
+  gt_obj %>% 
+    gt::tab_options(
+      source_notes.font.size = source_size,
+      table.font.size = tbl_size,
+      footnotes.font.size = ftnote_size)
+}
+
 
