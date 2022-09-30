@@ -16,6 +16,11 @@ bold_rowgroup(gt_obj, wt = 700)
 Make all text larger
 Bold Agency names - used to increase stroke on row group label
 }
+\examples{
+\dontrun{
+ mtcars \%>\% gt(groupname_col = "cyl") \%>\% bold_rowgroup(wt = 500)
+ }
+}
 \seealso{
 Other gt helpers: 
 \code{\link{authors_footnote}()},
