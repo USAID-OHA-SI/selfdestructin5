@@ -17,6 +17,7 @@ Create author footnote for gt theme
 }
 \seealso{
 Other gt helpers: 
+\code{\link{bold_rowgroup}()},
 \code{\link{caveats_footnote}()},
 \code{\link{change_footnote}()},
 \code{\link{create_pd}()},

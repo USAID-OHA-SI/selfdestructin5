@@ -2,6 +2,7 @@
 
 export("%>%")
 export(authors_footnote)
+export(bold_rowgroup)
 export(collapse_base_tbl)
 export(collapse_vlc_tbl)
 export(create_mdb)

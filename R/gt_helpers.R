@@ -145,4 +145,27 @@ legend_q1 <- 'https://github.com/USAID-OHA-SI/selfdestructin5/blob/main/man/figu
 
 
 
+#' Make all text larger
+#' Bold Agency names - used to increase stroke on row group label
+#' @param gt_obj gt object pass through 
+#' @param wt size (0-1000) of embiggening
+#'
+#' @return
+#' @export
+#' @family gt helpers
+#'
+#' @examples
+bold_rowgroup <- function(gt_obj, wt = 700){
+  gt_obj %>% 
+    gt::tab_style(
+      style = list(
+        gt::cell_text(weight = wt)
+      ),
+      locations = cells_row_groups(groups = everything())
+    )
+}
+
+
+
+
 
