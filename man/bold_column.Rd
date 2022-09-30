@@ -14,6 +14,9 @@ bold_column(gt_obj, col, wt = 700)
 
 \item{wt}{weight of boldness can be lighter, normal, bold, or bolder or 0-1000}
 }
+\value{
+a modified gt object
+}
 \description{
 Bold columns inside gt objects
 Helper function to quickly make columns within table bold

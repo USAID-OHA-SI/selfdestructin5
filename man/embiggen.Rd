@@ -16,6 +16,9 @@ embiggen(gt_obj, tbl_size = 15, ftnote_size = 10, source_size = 10)
 
 \item{source_size}{font size for the source notes}
 }
+\value{
+a modified gt object
+}
 \description{
 Embiggen parts of mdb table
 A noble spirit embiggens the smallest man

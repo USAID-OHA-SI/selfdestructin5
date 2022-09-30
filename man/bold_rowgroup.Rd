@@ -12,6 +12,9 @@ bold_rowgroup(gt_obj, wt = 700)
 
 \item{wt}{size (0-1000) of embiggening}
 }
+\value{
+a modified gt object
+}
 \description{
 Make all text larger
 Bold Agency names - used to increase stroke on row group label

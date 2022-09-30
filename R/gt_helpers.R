@@ -150,7 +150,7 @@ legend_q1 <- 'https://github.com/USAID-OHA-SI/selfdestructin5/blob/main/man/figu
 #' @param gt_obj gt object pass through 
 #' @param wt size (0-1000) of embiggening
 #'
-#' @return
+#' @return a modified gt object
 #' @export
 #' @family gt helpers
 #'
@@ -164,7 +164,7 @@ bold_rowgroup <- function(gt_obj, wt = 700){
       style = list(
         gt::cell_text(weight = wt)
       ),
-      locations = cells_row_groups(groups = everything())
+      locations = gt::cells_row_groups(groups = tidyselect::everything())
     )
 }
 
@@ -177,7 +177,7 @@ bold_rowgroup <- function(gt_obj, wt = 700){
 #' @param col column or columns to be bolded
 #' @param wt weight of boldness can be lighter, normal, bold, or bolder or 0-1000
 #'
-#' @return
+#' @return a modified gt object
 #' @export
 #'
 #' @examples
@@ -193,7 +193,7 @@ bold_column <- function(gt_obj, col, wt = 700){
         gt::cell_fill(color = "#e6e7e8", alpha = 0.5),
         gt::cell_text(weight = wt)
       ),
-      locations = cells_body(
+      locations = gt::cells_body(
         columns = {{col}},
       )
     )
@@ -209,7 +209,7 @@ bold_column <- function(gt_obj, col, wt = 700){
 #' @param ftnote_size font size for the footnotes
 #' @param source_size font size for the source notes
 #'
-#' @return
+#' @return a modified gt object
 #' @export
 #'
 #' @examples
