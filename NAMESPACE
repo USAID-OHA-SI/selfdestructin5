@@ -2,10 +2,13 @@
 
 export("%>%")
 export(authors_footnote)
+export(bold_column)
+export(bold_rowgroup)
 export(collapse_base_tbl)
 export(collapse_vlc_tbl)
 export(create_mdb)
 export(create_pd)
+export(embiggen)
 export(fetch_indicators)
 export(format_indicator)
 export(label_aggregation)

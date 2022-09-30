@@ -1,3 +1,9 @@
+# selfdestructin5 0.3.0
+* Add in helper formatting functions commonly used for table production
+* `embiggen()` to grow or shrink table font
+* `bold_column()` to make columns bolder
+* `bold_rowgroup()` to make row grouping titles bolder
+
 # selfdestructin5 0.2.1
 * Update `fmt_missing()` to `sub_missing()`
 

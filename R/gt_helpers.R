@@ -145,4 +145,87 @@ legend_q1 <- 'https://github.com/USAID-OHA-SI/selfdestructin5/blob/main/man/figu
 
 
 
+#' Make all text larger
+#' Bold Agency names - used to increase stroke on row group label
+#' @param gt_obj gt object pass through 
+#' @param wt size (0-1000) of embiggening
+#'
+#' @return a modified gt object
+#' @export
+#' @family gt helpers
+#'
+#' @examples
+#' \dontrun{
+#'  mtcars %>% gt(groupname_col = "cyl") %>% bold_rowgroup(wt = 500)
+#'  }
+bold_rowgroup <- function(gt_obj, wt = 700){
+  gt_obj %>% 
+    gt::tab_style(
+      style = list(
+        gt::cell_text(weight = wt)
+      ),
+      locations = gt::cells_row_groups(groups = tidyselect::everything())
+    )
+}
+
+
+#' Bold columns inside gt objects
+#' Helper function to quickly make columns within table bold
+#' 
+#'
+#' @param gt_obj gt object to be bolded
+#' @param col column or columns to be bolded
+#' @param wt weight of boldness can be lighter, normal, bold, or bolder or 0-1000
+#'
+#' @return a modified gt object
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'  mtcars %>% 
+#'  gt(groupname_col  = "cyl") %>% 
+#'  bold_column(c(mpg, hp, drat, carb), wt = "bolder")
+#'  }
+bold_column <- function(gt_obj, col, wt = 700){
+  gt_obj %>% 
+    gt::tab_style(
+      style = list(
+        gt::cell_fill(color = "#e6e7e8", alpha = 0.5),
+        gt::cell_text(weight = wt)
+      ),
+      locations = gt::cells_body(
+        columns = {{col}},
+      )
+    )
+}
+
+
+#' Embiggen parts of mdb table
+#' A noble spirit embiggens the smallest man
+#' 
+#'
+#' @param gt_obj gt object to be embiggened
+#' @param tbl_size font size for the core table
+#' @param ftnote_size font size for the footnotes
+#' @param source_size font size for the source notes
+#'
+#' @return a modified gt object
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # embiggen
+#' mtcars %>% gt(groupname_col = "cyl") %>% embiggen(tbl_size = 15)
+#' 
+#' # de-embiggen
+#' mtcars %>% gt(groupname_col = "cyl") %>% embiggen(tbl_size = 8)
+#' }
+embiggen <- function(gt_obj, tbl_size = 15, ftnote_size = 10, source_size = 10){
+  gt_obj %>% 
+    gt::tab_options(
+      source_notes.font.size = source_size,
+      table.font.size = tbl_size,
+      footnotes.font.size = ftnote_size)
+}
+
 

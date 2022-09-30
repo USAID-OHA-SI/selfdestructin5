@@ -18,6 +18,7 @@ This can then be inserted into the subtitle as an image.
 \seealso{
 Other gt helpers: 
 \code{\link{authors_footnote}()},
+\code{\link{bold_rowgroup}()},
 \code{\link{caveats_footnote}()},
 \code{\link{change_footnote}()},
 \code{\link{create_pd}()},

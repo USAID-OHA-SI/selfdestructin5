@@ -1,123 +1,132 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>/404.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/404.html</loc>
   </url>
   <url>
-    <loc>/articles/create-mdb-tables.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/articles/create-mdb-tables.html</loc>
   </url>
   <url>
-    <loc>/articles/index.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/articles/index.html</loc>
   </url>
   <url>
-    <loc>/authors.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/authors.html</loc>
   </url>
   <url>
-    <loc>/index.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/index.html</loc>
   </url>
   <url>
-    <loc>/LICENSE-text.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>/news/index.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/authors_footnote.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/authors_footnote.html</loc>
   </url>
   <url>
-    <loc>/reference/calc_growth.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/bold_column.html</loc>
   </url>
   <url>
-    <loc>/reference/caveats_footnote.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/bold_rowgroup.html</loc>
   </url>
   <url>
-    <loc>/reference/change_footnote.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/calc_growth.html</loc>
   </url>
   <url>
-    <loc>/reference/collapse_base_tbl.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/caveats_footnote.html</loc>
   </url>
   <url>
-    <loc>/reference/collapse_vlc_tbl.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/change_footnote.html</loc>
   </url>
   <url>
-    <loc>/reference/create_mdb.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/collapse_base_tbl.html</loc>
   </url>
   <url>
-    <loc>/reference/create_pd.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/collapse_vlc_tbl.html</loc>
   </url>
   <url>
-    <loc>/reference/dedup_footnote.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/create_mdb.html</loc>
   </url>
   <url>
-    <loc>/reference/delta_footnote.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/create_pd.html</loc>
   </url>
   <url>
-    <loc>/reference/extract_num_colnames.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/dedup_footnote.html</loc>
   </url>
   <url>
-    <loc>/reference/fetch_indicators.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/delta_footnote.html</loc>
   </url>
   <url>
-    <loc>/reference/format_indicator.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/embiggen.html</loc>
   </url>
   <url>
-    <loc>/reference/index.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/extract_num_colnames.html</loc>
   </url>
   <url>
-    <loc>/reference/label_aggregation.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/fetch_indicators.html</loc>
   </url>
   <url>
-    <loc>/reference/legend_q1.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/format_indicator.html</loc>
   </url>
   <url>
-    <loc>/reference/legend_q2.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/legend_q3.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/label_aggregation.html</loc>
   </url>
   <url>
-    <loc>/reference/legend_snapshot.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/legend_q1.html</loc>
   </url>
   <url>
-    <loc>/reference/make_achv_shape.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/legend_q2.html</loc>
   </url>
   <url>
-    <loc>/reference/make_chg_shape.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/legend_q3.html</loc>
   </url>
   <url>
-    <loc>/reference/make_mdb_df.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/legend_snapshot.html</loc>
   </url>
   <url>
-    <loc>/reference/make_mdb_tx_df.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/make_achv_shape.html</loc>
   </url>
   <url>
-    <loc>/reference/mdb_main_theme.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/make_chg_shape.html</loc>
   </url>
   <url>
-    <loc>/reference/mdb_treatment_theme.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/make_mdb_df.html</loc>
   </url>
   <url>
-    <loc>/reference/msd_period.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/make_mdb_tx_df.html</loc>
   </url>
   <url>
-    <loc>/reference/past_fy.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/mdb_main_theme.html</loc>
   </url>
   <url>
-    <loc>/reference/pipe.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/mdb_treatment_theme.html</loc>
   </url>
   <url>
-    <loc>/reference/present_fy.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/msd_period.html</loc>
   </url>
   <url>
-    <loc>/reference/present_qtr.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/past_fy.html</loc>
   </url>
   <url>
-    <loc>/reference/reshape_mdb_df.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/pipe.html</loc>
   </url>
   <url>
-    <loc>/reference/reshape_mdb_tx_df.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/present_fy.html</loc>
   </url>
   <url>
-    <loc>/reference/vlc_footnote.html</loc>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/present_qtr.html</loc>
+  </url>
+  <url>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/reshape_mdb_df.html</loc>
+  </url>
+  <url>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/reshape_mdb_tx_df.html</loc>
+  </url>
+  <url>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/vlc_footnote.html</loc>
   </url>
 </urlset>

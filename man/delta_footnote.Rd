@@ -12,6 +12,7 @@ Create delta note for gt theme
 \seealso{
 Other gt helpers: 
 \code{\link{authors_footnote}()},
+\code{\link{bold_rowgroup}()},
 \code{\link{caveats_footnote}()},
 \code{\link{change_footnote}()},
 \code{\link{create_pd}()},

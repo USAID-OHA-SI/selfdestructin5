@@ -19,6 +19,7 @@ It is used multiple times for formatting columns and column spanners.
 \seealso{
 Other gt helpers: 
 \code{\link{authors_footnote}()},
+\code{\link{bold_rowgroup}()},
 \code{\link{caveats_footnote}()},
 \code{\link{change_footnote}()},
 \code{\link{dedup_footnote}()},
