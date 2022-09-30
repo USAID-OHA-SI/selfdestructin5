@@ -1,3 +1,4 @@
+url: https://usaid-oha-si.github.io/selfdestructin5/
 template:
   bootstrap: 5
 
@@ -49,8 +50,11 @@ reference:
 
 - title: Helper functions
   contents:
+  - bold_column
+  - bold_rowgroup
   - calc_growth
   - create_pd
+  - embiggen
   - fetch_indicators
   - format_indicator
   - label_aggregation
