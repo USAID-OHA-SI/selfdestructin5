@@ -27,14 +27,14 @@ make_chg_shape <- function(change_dir){
   alpha = 0.75
   # Extra if statement to catch NA cells
   if(is.na(change_dir)){
-    logo_out <- fontawesome::fa("circle", fill = glitr::trolley_grey_light, fill_opacity = alpha, height = "2em", prefer_type = "regular")
+    logo_out <- fontawesome::fa("circle", fill = glitr::trolley_grey_light, fill_opacity = alpha, height = "2em", prefer_type = "solid")
   } else {
     if (change_dir == "increase") {
       logo_out <- fontawesome::fa("circle-arrow-up", fill = glitr::genoa_light, fill_opacity = alpha, height = "2em")
     } else if (change_dir == "decrease"){
       logo_out <- fontawesome::fa("circle-arrow-down", fill = glitr::old_rose_light, fill_opacity = alpha, height = "2em")
     } else if (change_dir == "not applicable" | is.na(change_dir)) {
-      logo_out <- fontawesome::fa("circle", fill = glitr::trolley_grey_light, fill_opacity = alpha, height = "2em", prefer_type = "regular")
+      logo_out <- fontawesome::fa("circle", fill = glitr::trolley_grey_light, fill_opacity = alpha, height = "2em", prefer_type = "solid")
     } 
   }
   logo_out %>% as.character() %>% gt::html()
