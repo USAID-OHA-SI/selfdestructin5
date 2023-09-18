@@ -1,3 +1,7 @@
+# selfdestructin5 0.3.1
+* Resolve error caused by modification of MSD structure
+* Update vignette to reflect use of `get_metadata()`
+
 # selfdestructin5 0.3.0
 * Add in helper formatting functions commonly used for table production
 * `embiggen()` to grow or shrink table font
