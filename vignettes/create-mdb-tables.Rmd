@@ -47,7 +47,7 @@ Load helper functions/paths from other SI packages.
     ou_im <- read_psd(msd_path)
 
 # Get the metadata from the MSD dataset; This is used to set the period and source.
-    get_metadata()
+    get_metadata(msd_path)
 ```
 
 With our data loaded and time objects created, we are ready to munge the data. Let's start with the main table.
