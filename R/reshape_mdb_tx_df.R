@@ -60,7 +60,7 @@ reshape_mdb_tx_df <- function(df, pd){
                   VLS = TX_PVLS / TX_PVLS_D,
                   VLC = dplyr::case_when(
                     operatingunit == "Global" ~ TX_PVLS_D / dplyr::lag(TX_CURR_VLC, n = 2), 
-                    TRUE ~ TX_PVLS_D / lag(TX_CURR, n = 2)
+                    TRUE ~ TX_PVLS_D / dplyr::lag(TX_CURR, n = 2)
                   )
     ) %>% 
     dplyr::arrange(agency, operatingunit, period) %>%

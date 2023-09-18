@@ -1,6 +1,6 @@
 
 utils::globalVariables(c("standardizeddisaggregate", "funding_agency",
-                         "disaggregate", "otherdisaggregate", "numeratordenom",
+                         "otherdisaggregate", "numeratordenom",
                          "frequency", "operatingunit", "ou_list",
                          "fiscal_year", "agency", "country", "indicator_plain",
                          "tx_mmd_group", "agg_type", "present_targets_achievement",
