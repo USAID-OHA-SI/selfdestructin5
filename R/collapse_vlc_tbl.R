@@ -23,7 +23,7 @@ collapse_vlc_tbl  <- function(df, ...) {
   
   vlc_df <-  df %>% 
     dplyr::filter(indicator %in% vlc_indics,
-                  disaggregate %in%  c("Age/Sex/ARVDispense/HIVStatus", "Total Numerator", "Total Denominator") |
+                  standardizeddisaggregate %in%  c("Age/Sex/ARVDispense/HIVStatus", "Total Numerator", "Total Denominator") |
                     otherdisaggregate %in% c("ARV Dispensing Quantity - 6 or more months", "ARV Dispensing Quantity - 3 to 5 months"),
                   funding_agency != "Dedup") %>% 
     dplyr::mutate(agency = ifelse(funding_agency == "USAID", "USAID", "ALL OTHER AGENCIES") %>% as.character(),

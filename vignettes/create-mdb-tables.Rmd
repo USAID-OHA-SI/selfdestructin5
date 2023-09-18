@@ -21,19 +21,16 @@ knitr::opts_chunk$set(
 
 The Mission Director Briefer (MDB) Tables are an SI product that is created on a quarterly basis using the latest OU_IM MER Structured dataset (MSD). Two tables are produced, one which summarizes the current achievement for a set of core (main) indicators, and another which summarizes TX_MMD, VLS, and VLC. 
 
-Starting in FY21 Q2, the SI team migrated the production of the tables from Tableau to R. Eventually, the SI team created a package to automate much of the data munging required for the tables. The `selfdestructin5` package is the result of these efforts. 
+Starting in FY21 Q2, the SI team migrated the production of the tables from Tableau to R. Eventually, the SI team created a package to automate much of the data munging required for the tables. The `selfdestructin5` package is the result of these efforts. Even with the winding down of the MDB Tables, the SI team continues to maintain the package due to its value to the team and overseas staff.
 
 Below we review the process for creating the main and treatment tables.
 
 ```{r setup, eval=F, echo=T, include = T}
 # Load libraries needed for table creation (glitr, glamr and gophr are OHA-SI packages not on CRAN)
-  library(glitr)
-  library(glamr)
+  library(gagglr)
   library(tidyverse)
-  library(gophr)
   library(gt)
   library(selfdestructin5)
-  library(fontawesome)
 ```
 
 Load helper functions/paths from other SI packages.
@@ -43,20 +40,14 @@ Load helper functions/paths from other SI packages.
 # Set up paths 
     mdb_out <- "../../Sandbox/" #Alter this path to where you'd like saved tables to go
     merdata <- si_path("path_msd")
+    msd_path <- return_latest(folderpath = merdata, pattern = "OU_IM")
     load_secrets()
     
-# Load OU_IM table - using FY21 Q2 data from Panorama
-    ou_im <- 
-      si_path() %>% 
-      return_latest("OU_IM_FY19-21_20210618_v2_1") %>%
-      read_msd() 
-```
+# Load OU_IM table - using FY23 Q3 data from Panorama
+    ou_im <- read_psd(msd_path)
 
-Create the time metadata objects used in the data munging and table creation
-```{r create metadata objects, eval=F, echo=T}
-  # Time metadata needed  
-    pd <- create_pd(ou_im)
-    msd_source <- pd %>% msd_period(period = .)
+# Get the metadata from the MSD dataset; This is used to set the period and source.
+    get_metadata(msd_path)
 ```
 
 With our data loaded and time objects created, we are ready to munge the data. Let's start with the main table.
@@ -67,7 +58,7 @@ With our data loaded and time objects created, we are ready to munge the data. L
       mdb_df   <- make_mdb_df(ou_im)
     
    # Create the reshaped df that is gt() ready
-      mdb_tbl  <- reshape_mdb_df(mdb_df, pd)
+      mdb_tbl  <- reshape_mdb_df(mdb_df, metadata$curr_pd)
     
    # the `agg_type` column flags the operatingunit as either OU, Region-Country or Agency
       mdb_tbl %>% distinct(agg_type, operatingunit) %>% slice(1:15)
@@ -78,13 +69,13 @@ The `mdb_tbl` data frame is a wide-shaped data frame that contains embedded svg 
 ```{r create main table, eval=F, echo=T}
 
 # Generate base table for global results
-    create_mdb(mdb_tbl, ou = "Global", type = "main", pd, msd_source)
+    create_mdb(mdb_tbl, ou = "Global", type = "main", metadata$curr_pd, metadata$source)
 
 # Try a specific country now
-    create_mdb(mdb_tbl, ou = "Zambia", type = "main", pd, msd_source)
+    create_mdb(mdb_tbl, ou = "Zambia", type = "main", metadata$curr_pd, metadata$source)
     
 # Or a regional program
-    create_mdb(mdb_tbl, ou = "Asia Region-Indonesia", type = "main", pd, msd_source)
+    create_mdb(mdb_tbl, ou = "Asia Region-Indonesia", type = "main", metadata$curr_pd, metadata$source)
 
 ```
 
@@ -93,9 +84,9 @@ The steps are similar for creating the treatment table.
 
 # Create the treatment data frame needed for derived indicators
     mdb_df_tx    <- make_mdb_tx_df(ou_im, resolve_issues = F)
-    mdb_tbl_tx   <- reshape_mdb_tx_df(mdb_df_tx, pd)
+    mdb_tbl_tx   <- reshape_mdb_tx_df(mdb_df_tx, metadata$curr_pd)
     
-    create_mdb(mdb_tbl_tx, ou = "Global", type = "treatment", pd, msd_source)
+    create_mdb(mdb_tbl_tx, ou = "Global", type = "treatment", metadata$curr_pd, metadata$source)
 ```
 
 # Batching Tables
@@ -118,25 +109,25 @@ The reshape functions for the main and treatment indicators return a single data
   rgl <- distinct_agg_type(mdb_tbl, "Region-Country")
   
   # Use purr to map across the list and create tables for all entries in each object
-  purrr::map(ous, ~create_mdb(mdb_tbl, ou = .x, type = "main", pd, msd_source) %>% 
-        gtsave(., path = mdb_out, filename = glue::glue("{.x}_{pd}_mdb_main.png")))
+  purrr::map(ous, ~create_mdb(mdb_tbl, ou = .x, type = "main", metadata$curr_pd, metadata$source) %>% 
+        gtsave(., path = mdb_out, filename = glue::glue("{.x}_{metadata$curr_pd}_mdb_main.png")))
   
   
   # TREATMENT
   ous_tx <- distinct_agg_type(mdb_tbl_tx, "OU")
   
-  map(ous, ~create_mdb(mdb_tbl_tx, ou = .x, type = "treatment", pd, msd_source) %>% 
-        gtsave(., path = mdb_out, filename = glue::glue("{.x}_{pd}_mdb_treatment.png")))
+  map(ous, ~create_mdb(mdb_tbl_tx, ou = .x, type = "treatment", metadata$curr_pd, metadata$source) %>% 
+        gtsave(., path = mdb_out, filename = glue::glue("{.x}_{metadata$curr_pd}_mdb_treatment.png")))
 ```
 
-# Creating semi-custom tables
+# Creating bespoke tables
 If there is a core indicator on which you'd like to focus across a list of operating units, it is possible to use the main or treatment data frames to create a custom table of OUs by indicator. For example, say we would like to compare Zambia, Malawi, Mozambique, Tanzania, and Zimbabwes's HTS_TST_POS performance. We can filter the `mdb_tbl` data frame by a given indicator.
 
 ```{r custom table, eval=F, echo=T}
 
 # Filter existing wide data frame to desired indicator and OUs
   mdb_tbl_hts_tst <- mdb_tbl %>% 
-    filter(indicator == "HTS_TST_POS") %>% 
+    filter(indicator == "HTS_TST_POS", agency == "USAID") %>% 
     filter(operatingunit %in% c("Malawi", "Zambia", "Tanzania", "Mozambique", "Zimbabwe"))
 
 
@@ -145,7 +136,7 @@ If there is a core indicator on which you'd like to focus across a list of opera
     mutate(operatingunit = fct_reorder(operatingunit, present_targets_achievement, .desc = T)) %>%  
     arrange(agency, operatingunit) %>% 
     gt(groupname_col = "agency") %>% 
-    mdb_main_theme(pd, msd_source) %>% 
+    mdb_main_theme(metadata$curr_pd, metadata$curr_pd) %>% 
     cols_unhide("operatingunit") %>% 
     cols_align(
       align = "left",
@@ -170,7 +161,7 @@ You can also create a comparison table of OU achievement by core indicators. Wit
                 names_sort = TRUE) %>% 
     arrange(desc(TX_CURR)) %>% 
     gt() %>% 
-    fmt_missing(columns = -c("operatingunit"), missing_text = "-") %>% 
+    sub_missing(columns = -c("operatingunit"), missing_text = "-") %>% 
     fmt_percent(columns = -c("operatingunit"), decimals = 0) %>% 
     cols_label(operatingunit = "") %>% 
     tab_options(
@@ -178,6 +169,39 @@ You can also create a comparison table of OU achievement by core indicators. Wit
       table.font.size = 13, 
       data_row.padding = gt::px(5)
     ) %>% 
-    tab_header(title = glue::glue("USAID OU PERFORMANCE SUMMARY FOR {pd}"))
+    tab_header(title = glue::glue("USAID OU PERFORMANCE SUMMARY FOR {metadata$curr_pd}"))
+```
+
+If you wish the create tables by implementing partner, you could do something as below.
+```{r Partner tables, eval=F, echo=T}
+# Create a custom function to pull IP tables
+# Filter the MSD to the partner of focus before passing the data to the reshape_msd_df()
+  mk_ptr_tbl <- function(df, mech_id)  {
+    
+    ip_mdb <- 
+      df %>% 
+      filter(mech_code == mech_id) %>% 
+      make_mdb_df() %>% 
+      reshape_mdb_df(., metadata$curr_pd) 
+    
+    mech_name <-  
+      df %>% 
+      filter(mech_code == mech_id) %>%
+      distinct(mech_name) %>% 
+      pull(mech_name)
+    
+    ip_mdb %>%   
+      create_mdb(ou = "Minoria", type = "main", metadata$curr_pd, metadata$source) %>% 
+      tab_header(
+        title = glue::glue("{mech_name} PERFORMANCE SUMMARY")
+      ) %>% 
+      gtsave(path = "Images", filename = glue::glue("{mech_name}_mdb_main.png"))
+  }
+
+
+# Loop over function and create tables for each of the main C&T mechs
+  mech_list <- c(123456, 789101, 654321)
+  map(mech_list, ~mk_ptr_tbl(df_genie, .x))
+
 ```
 
