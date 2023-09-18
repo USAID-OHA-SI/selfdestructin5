@@ -25,8 +25,8 @@ If you do not have `remotes` installed, you will have to run the `install.packag
   #load the package
     library(selfdestructin5)
   
-## List the functions contained in the package
-  ls('package:selfdestructin5')
+  #List the functions contained in the package
+    ls('package:selfdestructin5')
   
 ```
 
