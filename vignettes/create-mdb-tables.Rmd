@@ -201,7 +201,7 @@ If you wish the create tables by implementing partner, you could do something as
 
 # Loop over function and create tables for each of the main C&T mechs
   mech_list <- c(123456, 789101, 654321)
-  map(mech_list, ~mk_ptr_tbl(df_genie, .x))
+  map(mech_list, ~mk_ptr_tbl(df_msd, .x))
 
 ```
 
