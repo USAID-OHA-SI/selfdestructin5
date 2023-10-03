@@ -28,6 +28,7 @@ Other gt helpers:
 \code{\link{legend_q1}},
 \code{\link{legend_q2}},
 \code{\link{legend_q3}},
+\code{\link{legend}},
 \code{\link{past_fy}()},
 \code{\link{present_fy}()},
 \code{\link{present_qtr}()},
