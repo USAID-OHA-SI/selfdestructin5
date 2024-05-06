@@ -21,7 +21,9 @@ fetch_indicators <- function(df, tab = "main") {
   pd <- df %>% 
     gophr::identifypd() %>% 
     stringr::str_extract(".{2}$")
-  cat("Fetching ", crayon::yellow(pd), " indicators\n")
+  
+  #cat("Fetching ", crayon::yellow(pd), " indicators\n")
+  cli::cli_inform(glue::glue("Fetching {crayon::yellow(pd)} indicators\n"))
   
   if(!tab %in% c("main", "treatment")) {
     stop("Please select the indicator crosswalk you would like to use: main or treatment")
@@ -41,7 +43,10 @@ fetch_indicators <- function(df, tab = "main") {
   } else {
     indics <- indic_list 
   }
-  cat(crayon::yellow(pd), " indicators fetched ", crayon::yellow(indics$indicator), "\n")
+ 
+  #concatenate indicator list into a chracter for return message
+  lst <- paste(indics$indicator, collapse = ", ")
+  cli::cli_inform(glue::glue("{crayon::yellow(pd)} indicators fetched {crayon::yellow(lst)} \n"))
   
   return(indics)
 }
