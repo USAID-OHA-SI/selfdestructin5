@@ -1,6 +1,6 @@
 Package: selfdestructin5
 Title: Creates SI OHA Mission Director Briefers
-Version: 0.3.1
+Version: 0.3.2
 Authors@R: c(
     person("Tim", "Essam", ,"tessam@usaid.gov", c("aut", "cre")),
     person("Aaron", "Chafetz", ,"achafetz@usaid.gov", c("aut"))

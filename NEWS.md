@@ -1,3 +1,6 @@
+# selfdestructin5 0.3.2
+* Adjust printed text in `fetch_indicators()` to use `cli_inform()` instead of `cat()` so text is recognized as a `message`.
+
 # selfdestructin5 0.3.1
 * Resolve error caused by modification of MSD structure
 * Update vignette to reflect use of `get_metadata()`
