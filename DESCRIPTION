@@ -44,3 +44,5 @@ Remotes:
     USAID-OHA-SI/gagglr
 BuildVignettes: true
 VignetteBuilder: knitr
+Depends: 
+    R (>= 2.10)
