@@ -4,14 +4,12 @@
 \alias{mdb_treatment_theme}
 \title{GT theme for main MDB tables}
 \usage{
-mdb_treatment_theme(df, pd, msd_source, ...)
+mdb_treatment_theme(df, pd = meta, ...)
 }
 \arguments{
 \item{df}{a dataframe from \code{\link[=reshape_mdb_tx_df]{reshape_mdb_tx_df()}} output}
 
-\item{pd}{character object of the style FY@Q@ that is returned from \code{\link[gophr:identifypd]{gophr::identifypd()}}}
-
-\item{msd_source}{source of the data used to generate tables}
+\item{pd}{character object of the style FY@Q@ that is returned from \code{\link[gophr:get_metadata]{gophr::get_metadata()}}}
 
 \item{...}{dot-dot-dot option to pass additional formatting to gt object}
 }

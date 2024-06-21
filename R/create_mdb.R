@@ -8,7 +8,6 @@
 #' @param ou operating unit for which table is to be returned
 #' @param type type of table to be created, main or treatment
 #' @param pd period from which data are from
-#' @param msd_source source of the msd
 #' @param legend can pass a legend to subtitle if desired, default is NULL
 #' 
 #' @export
@@ -36,32 +35,28 @@
 #' 
 #' 
 
-create_mdb <- function(df, ou, type = "main", pd = pd, msd_source = msd_source, legend = NULL){
+create_mdb <- function(df, ou, type = "main", pd = meta, legend = NULL){
   
   #TODO: Write checks for the df to ensure they have created the wide version required
   
   cntry <- stringr::str_to_upper(ou)
   
-  if(!type %in% c("main", "treatment")) {
+  if (!type %in% c("main", "treatment")) {
     stop("Please select the type of table you would like to create:", crayon::green(" main (default) or treatment"))
   }
   
   # Check that pd and msd_source have been created
   if (!exists('pd')) {
-    stop("Please ensure that the pd objects have been created.")
+    stop("Please ensure that the meta objects have been created.")
   }
   
-  # Check that pd and msd_source have been created
-  if (!exists('msd_source')) {
-    stop("Please ensure that the msd_source objects have been created.")
-  }
   
-  if(type == "main"){
+  if (type == "main"){
   
    mdb_gt <-  df %>% 
       dplyr::filter(operatingunit %in% c({{ou}})) %>% 
       gt::gt(groupname_col = "agency") %>% 
-      mdb_main_theme(pd, msd_source) %>% 
+      mdb_main_theme(pd) %>% 
       gt::tab_header(
         title = glue::glue("{cntry} PERFORMANCE SUMMARY"),
         subtitle = legend
@@ -71,7 +66,7 @@ create_mdb <- function(df, ou, type = "main", pd = pd, msd_source = msd_source, 
    mdb_gt <-  df %>% 
       dplyr::filter(operatingunit %in% c({{ou}})) %>% 
       gt::gt(groupname_col = "agency") %>% 
-      mdb_treatment_theme(pd, msd_source) %>% 
+      mdb_treatment_theme(pd) %>% 
       gt::tab_header(
         title = glue::glue("{cntry} PERFORMANCE SUMMARY"),
         subtitle = legend

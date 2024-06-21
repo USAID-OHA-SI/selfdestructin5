@@ -25,7 +25,7 @@ fetch_indicators <- function(pd = meta, tab = "main") {
   indics <- switch(
     tab,
     main = {
-      if (pd$curr_pd %in% c(1, 3)) {
+      if (pd$curr_qtr %in% c(1, 3)) {
         mdb_tbl %>% filter(mdb_table == "main", frequency == "quarterly")
       } else {
         mdb_tbl %>% filter(mdb_table == "main")
@@ -34,11 +34,11 @@ fetch_indicators <- function(pd = meta, tab = "main") {
     treatment = mdb_tbl %>% filter(mdb_table == "treatment"),
     stop("Invalid tab specified")
   )
-  # 
-  # # Pull in indicator list from stored data set mdb_tbl
-  # if (tab == "main" & pd$curr_pd %in% c(1, 3)) {
+
+  # Pull in indicator list from stored data set mdb_tbl
+  # if (tab == "main" & pd$curr_qtr %in% c(1, 3)) {
   #   indics <- mdb_tbl %>% filter(mdb_table == "main", frequency == "quarterly")
-  # } else if (tab == "main" & pd$curr_pd %in% c(2, 4)) {
+  # } else if (tab == "main" & pd$curr_qtr %in% c(2, 4)) {
   #   indics <- mdb_tbl %>% filter(mdb_table == "main")
   # } else {
   #   indics <- mdb_tbl %>% filter(mdb_table == "treatment")

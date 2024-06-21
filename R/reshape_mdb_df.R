@@ -25,16 +25,16 @@
 #'  }
 #'  
 #
-reshape_mdb_df <- function(df, pd = pd) {
+reshape_mdb_df <- function(df, pd = meta) {
   
   # Need to know the fiscal year and quarters to filter
   if(!exists("pd")){
-    stop("Please create the pd variable using the the following: pd <- gophr::identifypd(ou_im)")
+    stop("Please create the meta variable using get_metadata(). The pd argument takes this value.")
   }
   
-  fy_end <- pd %>% substr(3, 4) %>% as.numeric() + 2000
+  fy_end <- pd$curr_pd %>% substr(3, 4) %>% as.numeric() + 2000
   fy_beg <- fy_end - 1 
-  max_pd <- pd
+  max_pd <- pd$curr_pd
   min_pd <- paste0("FY", substr(fy_beg, 3, 4), "Q4")
   
   # Filter out years and quarters not needed
@@ -66,7 +66,7 @@ reshape_mdb_df <- function(df, pd = pd) {
                   targets_achievement = achievement, 
                   z_aresults = results) %>% 
     dplyr::select(-c(fiscal_year, cumulative, achievement_qtrly, achv_label)) %>%
-    dplyr::mutate(dplyr::across(c(z_change, z_direction, tint_achv, z_aresults), ~ dplyr::case_when(period == pd ~ .x))) %>%
+    dplyr::mutate(dplyr::across(c(z_change, z_direction, tint_achv, z_aresults), ~ dplyr::case_when(period == pd$curr_pd ~ .x))) %>%
     dplyr::mutate(order_col = ifelse(stringr::str_detect(period, max_pd), "present", "past"),
                   period = stringr::str_sub(period, 1, 4),
     ) %>%

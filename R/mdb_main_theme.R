@@ -9,8 +9,7 @@
 #' 
 #' 
 #' @param df [reshape_mdb_df()] output
-#' @param pd character object of the style FY@@Q@ that is returned from [gophr::identifypd()]
-#' @param msd_source source of the data used to generate tables
+#' @param pd character object of the style FY@@Q@ that is returned from [gophr::get_metadata()]
 #' @param ... dot-dot-dot option to pass additional formatting to gt object
 #' 
 #' @return formatted gt object
@@ -27,10 +26,10 @@
 #'  }
 
 
-mdb_main_theme <- function(df, pd, msd_source, ...){
+mdb_main_theme <- function(df, pd = meta, ...){
   
   if(!exists("pd")){
-    stop("Please create the pd variable to ensure columns can be labelled dynamically.")
+    stop("Please create the meta list object to ensure columns can be labelled dynamically with pd = meta.")
   }
   
   df %>% 
@@ -62,7 +61,7 @@ mdb_main_theme <- function(df, pd, msd_source, ...){
       columns = tidyselect::contains("present")
     ) %>% 
     gt::tab_spanner(
-      label = glue::glue("{pd}"),
+      label = glue::glue("{pd$curr_pd}"),
       columns = tidyselect::contains("_z_")
     ) %>% 
     gt::tab_style(
@@ -100,7 +99,7 @@ mdb_main_theme <- function(df, pd, msd_source, ...){
     #   source_note = gt::md(glue::glue("**Notes**: {dedup_footnote()} | {caveats_footnote()}"))
     # ) %>% 
     gt::tab_source_note(
-      source_note = gt::md(glue::glue("**Source**: {authors_footnote(msd_source)} | si.coreanalytics@usaid.gov"))
+      source_note = gt::md(glue::glue("**Source**: {authors_footnote(pd)} | si.coreanalytics@usaid.gov"))
     ) %>%
  
     gt::tab_style(

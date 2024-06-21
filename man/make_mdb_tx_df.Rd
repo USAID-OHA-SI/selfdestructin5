@@ -4,7 +4,7 @@
 \alias{make_mdb_tx_df}
 \title{Creates the base table for the treatment / VLS MDB tables}
 \usage{
-make_mdb_tx_df(df, resolve_issues = "TRUE")
+make_mdb_tx_df(df, resolve_issues = "TRUE", tx_indic = "TX_CURR")
 }
 \arguments{
 \item{df}{usually and ou_im data frame}
