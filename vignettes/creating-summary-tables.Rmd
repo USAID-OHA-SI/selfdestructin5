@@ -4,7 +4,7 @@ output: rmarkdown::html_vignette
 description: |
   Basics of create Mission Director Briefer Tables
 vignette: >
-  %\VignetteIndexEntry{Create MDB Tables}
+  %\VignetteIndexEntry{Creating Summary Tables}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

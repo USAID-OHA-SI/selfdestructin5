@@ -28,12 +28,12 @@ navbar:
     articles:
       text: Articles
       menu:
-      - text: Create MDB Tables
+      - text: Creating Summary Tables
         href: articles/create-mdb-tables.html
 
 
 reference:
-- title: MDB Munging
+- title: Summary Table Munging
   contents:
   - collapse_base_tbl
   - collapse_vlc_tbl
@@ -58,10 +58,12 @@ reference:
   - fetch_indicators
   - format_indicator
   - label_aggregation
+  - mdb_tbl
   - make_achv_shape
   - make_chg_shape
   - msd_period
   - extract_num_colnames
+  - legend
   - legend_q1
   - legend_q2
   - legend_q3
