@@ -9,6 +9,7 @@
 #' @param type type of table to be created, main or treatment
 #' @param pd period from which data are from
 #' @param legend can pass a legend to subtitle if desired, default is NULL
+#' @param legend_height adjusts the height of the preset legend
 #' 
 #' @export
 #' @return mdb_gt a gt object formatted as the main or treatment table
@@ -35,9 +36,13 @@
 #' 
 #' 
 
-create_mdb <- function(df, ou, type = "main", pd = meta, legend = NULL){
+create_mdb <- function(df, ou, type = "main", pd = meta, legend = NULL, legend_height = 20){
   
   #TODO: Write checks for the df to ensure they have created the wide version required
+  
+  if (!is.null(legend)){
+    legend <- gt::md(glue::glue("<img src= '{legend}' style='height:{legend_height}px;'> "))
+  }
   
   cntry <- stringr::str_to_upper(ou)
   
