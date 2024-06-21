@@ -26,12 +26,12 @@ fetch_indicators <- function(pd = meta, tab = "main") {
     tab,
     main = {
       if (pd$curr_qtr %in% c(1, 3)) {
-        mdb_tbl %>% filter(mdb_table == "main", frequency == "quarterly")
+        mdb_tbl %>% dplyr::filter(mdb_table == "main", frequency == "quarterly")
       } else {
-        mdb_tbl %>% filter(mdb_table == "main")
+        mdb_tbl %>% dplyr::filter(mdb_table == "main")
       }
     },
-    treatment = mdb_tbl %>% filter(mdb_table == "treatment"),
+    treatment = mdb_tbl %>% dplyr::filter(mdb_table == "treatment"),
     stop("Invalid tab specified")
   )
 
@@ -45,7 +45,6 @@ fetch_indicators <- function(pd = meta, tab = "main") {
   # }
   lst <- paste(indics$indicator, collapse = ", ")
   cli::cli_inform(glue::glue("Quarter:{crayon::yellow(pd$curr_pd)} indicators fetched {crayon::yellow(lst)} \n"))
-
 
   return(indics)
 }

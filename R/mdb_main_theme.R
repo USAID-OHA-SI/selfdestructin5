@@ -28,7 +28,7 @@
 
 mdb_main_theme <- function(df, pd = meta, ...){
   
-  if(!exists("pd")){
+  if (!exists("pd")){
     stop("Please create the meta list object to ensure columns can be labelled dynamically with pd = meta.")
   }
   
