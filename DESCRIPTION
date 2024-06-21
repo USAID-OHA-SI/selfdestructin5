@@ -3,10 +3,11 @@ Title: Creates SI OHA Mission Director Briefers
 Version: 0.3.1
 Authors@R: c(
     person("Tim", "Essam", ,"tessam@usaid.gov", c("aut", "cre")),
-    person("Aaron", "Chafetz", ,"achafetz@usaid.gov", c("aut"))
+    person("Aaron", "Chafetz", ,"achafetz@usaid.gov", c("aut")),
+    person("Karishma", "Srinkanth", ,"ksrikanth@usaid.gov", c("aut"))
     )
 Description: Creates a series of data frames that can be passed to a gt() to create the OHA SI Mission Director Briefers.
-License: MIT + file LICENSE
+License: MIT + file LICENSE 
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/USAID-OHA-SI/selfdestructin5

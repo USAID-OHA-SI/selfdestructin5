@@ -13,7 +13,7 @@
 #' 
 #' @param df usually and ou_im data frame
 #' @param resolve_issues logical indicating whether or not known issues are removed
-#' @tx_indic TX_CURR is only valid value
+#' @param tx_indic TX_CURR is only valid value
 #' @return data frame of the combined TX and VLS/VLC indicator
 #' @export
 #' 
