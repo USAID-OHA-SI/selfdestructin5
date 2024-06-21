@@ -13,7 +13,7 @@
 #' 
 #' @param df usually and ou_im data frame
 #' @param resolve_issues logical indicating whether or not known issues are removed
-#' 
+#' @tx_indic TX_CURR is only logical value, moved as parameter to avoid hard coding
 #' @return data frame of the combined TX and VLS/VLC indicator
 #' @export
 #' 
@@ -24,13 +24,11 @@
 #' 
 #' 
 # 
-make_mdb_tx_df <- function(df, resolve_issues = "TRUE") {
+make_mdb_tx_df <- function(df, resolve_issues = "TRUE", tx_indic = "TX_CURR") {
   
   if (resolve_issues == TRUE) {
     df <- gophr::resolve_knownissues(df)
   } 
-  
-  indic <- "TX_CURR"
   
   # Group_by columns
   group_base <- c("fiscal_year", "agency", "indicator", "operatingunit")
@@ -40,19 +38,19 @@ make_mdb_tx_df <- function(df, resolve_issues = "TRUE") {
   # Create the base treatment table for TX_CURR
   df_ou_tx <- df %>%
     dplyr::filter(operatingunit %in% unique(glamr::pepfar_country_list$operatingunit)) %>% 
-    collapse_base_tbl(indic_list = indic, group_base) %>% 
+    collapse_base_tbl(indic_list = tx_indic, group_base) %>% 
     label_aggregation(type = "OU")
   
   df_reg_tx <- df %>% 
     dplyr::filter(stringr::str_detect(operatingunit, "Region")) %>% 
-    collapse_base_tbl(indic_list = indic, group_base_cntry) %>% 
+    collapse_base_tbl(indic_list = tx_indic, group_base_cntry) %>% 
     label_aggregation(type = "Regional") %>% 
     dplyr::mutate(agency = as.character(agency)) # in case there is no region, coerce agency to a character
   
   df_usaid_tx <- df %>% 
     dplyr::filter(operatingunit != "South Africa") %>% 
     dplyr::mutate(operatingunit = ifelse(funding_agency == "USAID", "USAID", "ALL OTHER AGENCIES")) %>% 
-    collapse_base_tbl(indic_list = indic, group_base_agency) %>% 
+    collapse_base_tbl(indic_list = tx_indic, group_base_agency) %>% 
     label_aggregation(type = "Agency")
   
   # Create the base disagg tables
