@@ -32,7 +32,7 @@ reshape_mdb_tx_df <- function(df, pd = meta){
     stop("Please create the meta object using get_metadata().")
   }
   
-  indicators <- fetch_indicators(df, tab = "treatment")
+  indicators <- suppressMessages(fetch_indicators(tab = "treatment"))
   indicator_fltr <- indicators %>% dplyr::distinct(indicator) %>% dplyr::pull()
   
   fy_end <- pd$curr_pd %>% substr(3, 4) %>% as.numeric() + 2000
