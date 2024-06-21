@@ -15,7 +15,6 @@
 #'  fetch_indicators(ou_im, tab = "treatment")}
 #'   
 #'   
-<<<<<<< HEAD
 fetch_indicators <- function(pd = meta, tab = "main") {
 
   if (!tab %in% c("main", "treatment")) {
@@ -47,40 +46,6 @@ fetch_indicators <- function(pd = meta, tab = "main") {
   lst <- paste(indics$indicator, collapse = ", ")
   cli::cli_inform(glue::glue("Quarter:{crayon::yellow(pd$curr_pd)} indicators fetched {crayon::yellow(lst)} \n"))
 
-=======
-fetch_indicators <- function(df, tab = "main") {
-  
-  # Determine what quarter you are fetching data from
-  pd <- df %>% 
-    gophr::identifypd() %>% 
-    stringr::str_extract(".{2}$")
-  
-  #cat("Fetching ", crayon::yellow(pd), " indicators\n")
-  cli::cli_inform(glue::glue("Fetching {crayon::yellow(pd)} indicators\n"))
-  
-  if(!tab %in% c("main", "treatment")) {
-    stop("Please select the indicator crosswalk you would like to use: main or treatment")
-  }
-  
-  # Pull in indicator list from google drive
-  if (tab == "treatment") {
-    indic_list <- googlesheets4::read_sheet("1Xv9QQp6AkDdKxSYGRQ8UYJidBE8LzMnEzjIlYEur83A", sheet = "indicator_tx")
-  } else  {
-    indic_list <- googlesheets4::read_sheet("1Xv9QQp6AkDdKxSYGRQ8UYJidBE8LzMnEzjIlYEur83A", sheet = "indicator_cw")
-  } 
-  
-  # Extract the correct vector of indicators for the tables
-  if (pd %in% c("Q1", "Q3")) {
-    indics <- indic_list %>% 
-      dplyr::filter(frequency != "semi-annual") 
-  } else {
-    indics <- indic_list 
-  }
- 
-  #concatenate indicator list into a chracter for return message
-  lst <- paste(indics$indicator, collapse = ", ")
-  cli::cli_inform(glue::glue("{crayon::yellow(pd)} indicators fetched {crayon::yellow(lst)} \n"))
-  
->>>>>>> origin/main
+
   return(indics)
 }
