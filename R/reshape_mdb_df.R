@@ -55,7 +55,8 @@ reshape_mdb_df <- function(df, pd = meta) {
     dplyr::mutate(qtr = substr(period, 5, 6)) %>% 
     dplyr::filter(period %in% c(max_pd, min_pd)) %>% 
     gophr::calc_achievement() %>% 
-    gophr::adorn_achievement()
+    gophr::adorn_achievement() %>% 
+    dplyr::select(-achv_desc)
   
   
   # Now, rename so results are output in order after pivoting
