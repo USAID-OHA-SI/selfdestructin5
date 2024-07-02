@@ -4,12 +4,14 @@
 \alias{make_mdb_tx_df}
 \title{Creates the base table for the treatment / VLS MDB tables}
 \usage{
-make_mdb_tx_df(df, resolve_issues = "TRUE")
+make_mdb_tx_df(df, resolve_issues = "TRUE", tx_indic = "TX_CURR")
 }
 \arguments{
 \item{df}{usually and ou_im data frame}
 
 \item{resolve_issues}{logical indicating whether or not known issues are removed}
+
+\item{tx_indic}{TX_CURR is only valid value}
 }
 \value{
 data frame of the combined TX and VLS/VLC indicator

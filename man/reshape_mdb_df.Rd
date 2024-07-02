@@ -4,7 +4,7 @@
 \alias{reshape_mdb_df}
 \title{Prepare filtered data frame for MSD briefer formatting}
 \usage{
-reshape_mdb_df(df, pd = pd)
+reshape_mdb_df(df, pd = meta)
 }
 \arguments{
 \item{df}{takes the \code{\link[=make_mdb_df]{make_mdb_df()}} results as an input}

@@ -1,0 +1,23 @@
+#' mdb_tbl: Example Data Set
+#'
+#' This dataset contains information about various indicators related to prevention, testing, and treatment of HIV/AIDS. 
+#' The dataset includes information on the indicator category, specific indicators, their plain text descriptions, frequency, 
+#' type, and the table they belong to.
+#'
+#' @format A data frame with 16 rows and 7 variables:
+#' \describe{
+#'   \item{indic_category}{Indicator category, such as prevention, testing, or treatment.}
+#'   \item{indicator}{Short code for the indicator.}
+#'   \item{indicator_plain}{Plain text description of the indicator.}
+#'   \item{frequency}{Frequency of data collection, either quarterly or semi-annual.}
+#'   \item{type}{Type of data collected, such as cumulative, snapshot, or derived.}
+#'   \item{mdb_table}{Table the indicator belongs to, either main or treatment.}
+#' }
+#' @source \url{http://example.com}
+#' @examples
+#' \dontrun{
+#' # Example of accessing the dataset
+#' data(mdb_tbl)
+#' head(mdb_tbl)
+#' }
+"mdb_tbl"

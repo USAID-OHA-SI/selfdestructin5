@@ -4,14 +4,7 @@
 \alias{create_mdb}
 \title{Wrapper function to create a MDB table}
 \usage{
-create_mdb(
-  df,
-  ou,
-  type = "main",
-  pd = pd,
-  msd_source = msd_source,
-  legend = NULL
-)
+create_mdb(df, ou, type = "main", pd = meta, legend = NULL, legend_height = 20)
 }
 \arguments{
 \item{df}{data frame resulting from running \code{\link[=reshape_mdb_df]{reshape_mdb_df()}} or \code{\link[=reshape_mdb_tx_df]{reshape_mdb_tx_df()}}}
@@ -22,9 +15,9 @@ create_mdb(
 
 \item{pd}{period from which data are from}
 
-\item{msd_source}{source of the msd}
-
 \item{legend}{can pass a legend to subtitle if desired, default is NULL}
+
+\item{legend_height}{adjusts the height of the preset legend}
 }
 \value{
 mdb_gt a gt object formatted as the main or treatment table
