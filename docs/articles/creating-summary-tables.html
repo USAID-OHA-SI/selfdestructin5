@@ -35,7 +35,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">selfdestructin5</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -128,18 +128,19 @@ tables.</p>
 <span><span class="co"># Load OU_IM table - using FY23 Q3 data from Panorama</span></span>
 <span>    <span class="va">ou_im</span> <span class="op">&lt;-</span> <span class="fu">read_psd</span><span class="op">(</span><span class="va">msd_path</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Get the metadata from the MSD dataset; This is used to set the period and source.</span></span>
-<span>    <span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu">get_metadata</span><span class="op">(</span><span class="va">msd_path</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># With the new updates, you only need to set the meta data one time using the set_metadata() function</span></span>
+<span><span class="co"># This new approach stores the metadata in a package environment</span></span>
+<span>    <span class="fu"><a href="../reference/set_metadata.html">set_metadata</a></span><span class="op">(</span><span class="fu">gophr</span><span class="fu">::</span><span class="fu"><a href="https://usaid-oha-si.github.io/gophr/reference/get_metadata.html" class="external-link">get_metadata</a></span><span class="op">(</span><span class="va">msd_path</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>With our data loaded and time objects created, we are ready to munge
 the data. Let’s start with the main table.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="co"># Main Table</span></span>
 <span>   <span class="co"># Create the long mdb_df of the main summary indicators </span></span>
 <span>   <span class="co"># This will remove mechs with known issues by default. If you want to keep all mechs set `resolve_issues == FALSE`</span></span>
-<span>      <span class="va">summary_df</span>   <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_mdb_df.html">make_mdb_df</a></span><span class="op">(</span><span class="va">ou_im</span>, pd <span class="op">=</span> <span class="va">meta</span><span class="op">)</span></span>
+<span>      <span class="va">summary_df</span>   <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_mdb_df.html">make_mdb_df</a></span><span class="op">(</span><span class="va">ou_im</span><span class="op">)</span></span>
 <span>    </span>
 <span>   <span class="co"># Create the reshaped df that is gt() ready</span></span>
-<span>      <span class="va">summary_tbl</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reshape_mdb_df.html">reshape_mdb_df</a></span><span class="op">(</span><span class="va">summary_df</span>, pd <span class="op">=</span> <span class="va">meta</span><span class="op">)</span></span>
+<span>      <span class="va">summary_tbl</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reshape_mdb_df.html">reshape_mdb_df</a></span><span class="op">(</span><span class="va">summary_df</span><span class="op">)</span></span>
 <span>    </span>
 <span>   <span class="co"># the `agg_type` column flags the operatingunit as either OU, Region-Country or Agency</span></span>
 <span>      <span class="va">summary_tbl</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">agg_type</span>, <span class="va">operatingunit</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">)</span></span></code></pre></div>
@@ -150,21 +151,21 @@ for a desired operating unit.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Generate base table for global results</span></span>
-<span>    <span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">summary_tbl</span>, ou <span class="op">=</span> <span class="st">"Global"</span>, type <span class="op">=</span> <span class="st">"main"</span>, pd <span class="op">=</span> <span class="va">meta</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">summary_tbl</span>, ou <span class="op">=</span> <span class="st">"Global"</span>, type <span class="op">=</span> <span class="st">"main"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Try a specific country now</span></span>
-<span>    <span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">summary_tbl</span>, ou <span class="op">=</span> <span class="st">"Zambia"</span>, type <span class="op">=</span> <span class="st">"main"</span>, pd <span class="op">=</span> <span class="va">meta</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">summary_tbl</span>, ou <span class="op">=</span> <span class="st">"Zambia"</span>, type <span class="op">=</span> <span class="st">"main"</span><span class="op">)</span></span>
 <span>    </span>
 <span><span class="co"># Or a regional program</span></span>
-<span>    <span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">summary_tbl</span>, ou <span class="op">=</span> <span class="st">"Asia Region-Indonesia"</span>, type <span class="op">=</span> <span class="st">"main"</span>, pd <span class="op">=</span> <span class="va">meta</span><span class="op">)</span></span></code></pre></div>
+<span>    <span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">summary_tbl</span>, ou <span class="op">=</span> <span class="st">"Asia Region-Indonesia"</span>, type <span class="op">=</span> <span class="st">"main"</span><span class="op">)</span></span></code></pre></div>
 <p>The steps are similar for creating the treatment table.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Create the treatment data frame needed for derived indicators</span></span>
 <span>    <span class="va">summary_df_tx</span>    <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_mdb_tx_df.html">make_mdb_tx_df</a></span><span class="op">(</span><span class="va">ou_im</span>, resolve_issues <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
-<span>    <span class="va">summary_tbl_tx</span>   <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reshape_mdb_tx_df.html">reshape_mdb_tx_df</a></span><span class="op">(</span><span class="va">summary_df_tx</span>, pd <span class="op">=</span> <span class="va">meta</span><span class="op">)</span></span>
+<span>    <span class="va">summary_tbl_tx</span>   <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reshape_mdb_tx_df.html">reshape_mdb_tx_df</a></span><span class="op">(</span><span class="va">summary_df_tx</span><span class="op">)</span></span>
 <span>    </span>
-<span>    <span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">summary_tbl_tx</span>, ou <span class="op">=</span> <span class="st">"Global"</span>, type <span class="op">=</span> <span class="st">"treatment"</span>, pd <span class="op">=</span> <span class="va">meta</span><span class="op">)</span></span></code></pre></div>
+<span>    <span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">summary_tbl_tx</span>, ou <span class="op">=</span> <span class="st">"Global"</span>, type <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="batching-tables">Batching Tables<a class="anchor" aria-label="anchor" href="#batching-tables"></a>
@@ -191,15 +192,15 @@ tables.</p>
 <span>  <span class="va">rgl</span> <span class="op">&lt;-</span> <span class="fu">distinct_agg_type</span><span class="op">(</span><span class="va">summary_tbl</span>, <span class="st">"Region-Country"</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="co"># Use purr to map across the list and create tables for all entries in each object</span></span>
-<span>  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">ous</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, <span class="op">~</span><span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">summary_tbl</span>, ou <span class="op">=</span> <span class="va">.x</span>, type <span class="op">=</span> <span class="st">"main"</span>, pd <span class="op">=</span> <span class="va">meta</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>        <span class="fu"><a href="https://gt.rstudio.com/reference/gtsave.html" class="external-link">gtsave</a></span><span class="op">(</span><span class="va">.</span>, path <span class="op">=</span> <span class="va">mdb_out</span>, filename <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"{.x}_{meta$curr_pd}_mdb_main.png"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">ous</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, <span class="op">~</span><span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">summary_tbl</span>, ou <span class="op">=</span> <span class="va">.x</span>, type <span class="op">=</span> <span class="st">"main"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>        <span class="fu"><a href="https://gt.rstudio.com/reference/gtsave.html" class="external-link">gtsave</a></span><span class="op">(</span><span class="va">.</span>, path <span class="op">=</span> <span class="va">mdb_out</span>, filename <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"{.x}_{pkg_env$meta$curr_pd}_mdb_main.png"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>  </span>
 <span>  </span>
 <span>  <span class="co"># TREATMENT</span></span>
 <span>  <span class="va">ous_tx</span> <span class="op">&lt;-</span> <span class="fu">distinct_agg_type</span><span class="op">(</span><span class="va">summary_tbl_tx</span>, <span class="st">"OU"</span><span class="op">)</span></span>
 <span>  </span>
-<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">ous</span><span class="op">[</span><span class="fl">10</span><span class="op">:</span><span class="fl">12</span><span class="op">]</span>, <span class="op">~</span><span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">summary_tbl_tx</span>, ou <span class="op">=</span> <span class="va">.x</span>, type <span class="op">=</span> <span class="st">"treatment"</span>, pd <span class="op">=</span> <span class="va">meta</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>        <span class="fu"><a href="https://gt.rstudio.com/reference/gtsave.html" class="external-link">gtsave</a></span><span class="op">(</span><span class="va">.</span>, path <span class="op">=</span> <span class="va">mdb_out</span>, filename <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"{.x}_{meta$curr_pd}_mdb_treatment.png"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">ous</span><span class="op">[</span><span class="fl">10</span><span class="op">:</span><span class="fl">12</span><span class="op">]</span>, <span class="op">~</span><span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span><span class="va">summary_tbl_tx</span>, ou <span class="op">=</span> <span class="va">.x</span>, type <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>        <span class="fu"><a href="https://gt.rstudio.com/reference/gtsave.html" class="external-link">gtsave</a></span><span class="op">(</span><span class="va">.</span>, path <span class="op">=</span> <span class="va">mdb_out</span>, filename <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"{.x}_{pkg_env$meta$curr_pd}_mdb_treatment.png"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="creating-bespoke-tables">Creating bespoke tables<a class="anchor" aria-label="anchor" href="#creating-bespoke-tables"></a>
@@ -214,7 +215,7 @@ Zimbabwes’s HTS_TST_POS performance. We can filter the
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Filter existing wide data frame to desired indicator and OUs</span></span>
 <span>  <span class="va">mdb_tbl_hts_tst</span> <span class="op">&lt;-</span> <span class="va">summary_tbl</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">indicator</span> <span class="op">==</span> <span class="st">"HTA_TST_POS"</span>, <span class="va">agency</span> <span class="op">==</span> <span class="st">"USAID"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">indicator</span> <span class="op">==</span> <span class="st">"TX_CURR"</span>, <span class="va">agency</span> <span class="op">==</span> <span class="st">"USAID"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">operatingunit</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Malawi"</span>, <span class="st">"Zambia"</span>, <span class="st">"Tanzania"</span>, <span class="st">"Mozambique"</span>, <span class="st">"Zimbabwe"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span></span>
@@ -223,7 +224,7 @@ Zimbabwes’s HTS_TST_POS performance. We can filter the
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>operatingunit <span class="op">=</span> <span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_reorder.html" class="external-link">fct_reorder</a></span><span class="op">(</span><span class="va">operatingunit</span>, <span class="va">present_targets_achievement</span>, .desc <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>  </span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">agency</span>, <span class="va">operatingunit</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>    <span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span>groupname_col <span class="op">=</span> <span class="st">"agency"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>    <span class="fu"><a href="../reference/mdb_main_theme.html">mdb_main_theme</a></span><span class="op">(</span>pd <span class="op">=</span> <span class="va">meta</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="../reference/mdb_main_theme.html">mdb_main_theme</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>    <span class="fu"><a href="https://gt.rstudio.com/reference/cols_unhide.html" class="external-link">cols_unhide</a></span><span class="op">(</span><span class="st">"operatingunit"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>    <span class="fu"><a href="https://gt.rstudio.com/reference/cols_align.html" class="external-link">cols_align</a></span><span class="op">(</span></span>
 <span>      align <span class="op">=</span> <span class="st">"left"</span>,</span>
@@ -254,7 +255,7 @@ table organized in descending order by TX_CURR.</p>
 <span>      table.font.size <span class="op">=</span> <span class="fl">13</span>, </span>
 <span>      data_row.padding <span class="op">=</span> <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/px.html" class="external-link">px</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
 <span>    <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>    <span class="fu"><a href="https://gt.rstudio.com/reference/tab_header.html" class="external-link">tab_header</a></span><span class="op">(</span>title <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"USAID OU PERFORMANCE SUMMARY FOR {meta$curr_pd}"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>    <span class="fu"><a href="https://gt.rstudio.com/reference/tab_header.html" class="external-link">tab_header</a></span><span class="op">(</span>title <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"USAID OU PERFORMANCE SUMMARY FOR {pkg_env$meta$curr_pd}"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>If you wish the create tables by implementing partner, you could do
 something as below.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -265,8 +266,8 @@ something as below.</p>
 <span>    <span class="va">ip_mdb</span> <span class="op">&lt;-</span> </span>
 <span>      <span class="va">df</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">mech_code</span> <span class="op">==</span> <span class="va">mech_id</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>      <span class="fu"><a href="../reference/make_mdb_df.html">make_mdb_df</a></span><span class="op">(</span>pd <span class="op">=</span> <span class="va">meta</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>      <span class="fu"><a href="../reference/reshape_mdb_df.html">reshape_mdb_df</a></span><span class="op">(</span><span class="va">.</span>, pd <span class="op">=</span> <span class="va">meta</span><span class="op">)</span> </span>
+<span>      <span class="fu"><a href="../reference/make_mdb_df.html">make_mdb_df</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>      <span class="fu"><a href="../reference/reshape_mdb_df.html">reshape_mdb_df</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span> </span>
 <span>    </span>
 <span>    <span class="va">mech_name</span> <span class="op">&lt;-</span>  </span>
 <span>      <span class="va">df</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
@@ -275,7 +276,7 @@ something as below.</p>
 <span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">mech_name</span><span class="op">)</span></span>
 <span>    </span>
 <span>    <span class="va">ip_mdb</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>   </span>
-<span>      <span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span>ou <span class="op">=</span> <span class="st">"Minoria"</span>, type <span class="op">=</span> <span class="st">"main"</span>, pd <span class="op">=</span> <span class="va">meta</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>      <span class="fu"><a href="../reference/create_mdb.html">create_mdb</a></span><span class="op">(</span>ou <span class="op">=</span> <span class="st">"Minoria"</span>, type <span class="op">=</span> <span class="st">"main"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>      <span class="fu"><a href="https://gt.rstudio.com/reference/tab_header.html" class="external-link">tab_header</a></span><span class="op">(</span></span>
 <span>        title <span class="op">=</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"{mech_name} PERFORMANCE SUMMARY"</span><span class="op">)</span></span>
 <span>      <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
@@ -285,7 +286,7 @@ something as below.</p>
 <span></span>
 <span><span class="co"># Loop over function and create tables for each of the main C&amp;T mechs</span></span>
 <span>  <span class="va">mech_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">123456</span>, <span class="fl">789101</span>, <span class="fl">654321</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">mech_list</span>, <span class="op">~</span><span class="fu">mk_ptr_tbl</span><span class="op">(</span><span class="va">df_msd</span>, <span class="va">.x</span>, pd <span class="op">=</span> <span class="va">meta</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">mech_list</span>, <span class="op">~</span><span class="fu">mk_ptr_tbl</span><span class="op">(</span><span class="va">ou_im</span>, <span class="va">.x</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

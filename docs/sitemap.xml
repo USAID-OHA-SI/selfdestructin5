@@ -4,9 +4,6 @@
     <loc>https://usaid-oha-si.github.io/selfdestructin5/404.html</loc>
   </url>
   <url>
-    <loc>https://usaid-oha-si.github.io/selfdestructin5/articles/create-mdb-tables.html</loc>
-  </url>
-  <url>
     <loc>https://usaid-oha-si.github.io/selfdestructin5/articles/creating-summary-tables.html</loc>
   </url>
   <url>
@@ -68,6 +65,9 @@
   </url>
   <url>
     <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/fetch_indicators.html</loc>
+  </url>
+  <url>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/fetch_metadata.html</loc>
   </url>
   <url>
     <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/format_indicator.html</loc>
@@ -134,6 +134,9 @@
   </url>
   <url>
     <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/reshape_mdb_tx_df.html</loc>
+  </url>
+  <url>
+    <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/set_metadata.html</loc>
   </url>
   <url>
     <loc>https://usaid-oha-si.github.io/selfdestructin5/reference/vlc_footnote.html</loc>

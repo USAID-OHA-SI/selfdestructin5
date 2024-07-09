@@ -57,18 +57,20 @@ reference:
   - create_pd
   - embiggen
   - fetch_indicators
+  - fetch_metadata
   - format_indicator
   - label_aggregation
-  - mdb_tbl
-  - make_achv_shape
-  - make_chg_shape
-  - msd_period
-  - extract_num_colnames
   - legend
   - legend_q1
   - legend_q2
   - legend_q3
   - legend_snapshot
+  - mdb_tbl
+  - make_achv_shape
+  - make_chg_shape
+  - msd_period
+  - extract_num_colnames
+  - set_metadata
   
 
 
