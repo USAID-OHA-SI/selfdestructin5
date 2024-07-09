@@ -14,6 +14,7 @@ Sets the metadata for the package, which can be used across various functions.
 }
 \examples{
 \dontrun{
- set_metadata(gophr::get_metadata(file_path)))
+ metadata <- gophr::get_metadata(file_path)
+ set_metadata(metadata)
 }
 }

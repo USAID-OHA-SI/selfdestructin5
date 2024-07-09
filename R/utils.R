@@ -14,7 +14,8 @@ pkg_env <- new.env()
 #' 
 #' @examples
 #' \dontrun{
-#'  set_metadata(gophr::get_metadata(file_path)))
+#'  metadata <- gophr::get_metadata(file_path)
+#'  set_metadata(metadata)
 #' }
 set_metadata <- function(meta) {
   if (!is.list(meta)) {

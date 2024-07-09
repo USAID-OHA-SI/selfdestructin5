@@ -30,7 +30,7 @@ navbar:
       text: Articles
       menu:
       - text: Creating Summary Tables
-        href: articles/create-mdb-tables.html
+        href: articles/creating-summary-tables.html
 
 
 reference:
