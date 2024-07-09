@@ -15,7 +15,6 @@ Other gt helpers:
 \code{\link{bold_rowgroup}()},
 \code{\link{caveats_footnote}()},
 \code{\link{change_footnote}()},
-\code{\link{create_pd}()},
 \code{\link{dedup_footnote}()},
 \code{\link{delta_footnote}()},
 \code{\link{extract_num_colnames}()},

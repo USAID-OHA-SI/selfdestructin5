@@ -4,10 +4,10 @@
 \alias{authors_footnote}
 \title{Create author footnote for gt theme}
 \usage{
-authors_footnote()
+authors_footnote(pd)
 }
 \arguments{
-\item{pd}{source metadata recovered from \code{\link[gophr:get_metadata]{gophr::get_metadata()}}}
+\item{pd}{source metadata recovered from from \code{\link[=fetch_metadata]{fetch_metadata()}}}
 }
 \value{
 a string
@@ -20,7 +20,6 @@ Other gt helpers:
 \code{\link{bold_rowgroup}()},
 \code{\link{caveats_footnote}()},
 \code{\link{change_footnote}()},
-\code{\link{create_pd}()},
 \code{\link{dedup_footnote}()},
 \code{\link{delta_footnote}()},
 \code{\link{extract_num_colnames}()},

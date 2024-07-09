@@ -6,7 +6,7 @@ Authors@R: c(
     person("Aaron", "Chafetz", ,"achafetz@usaid.gov", c("aut")),
     person("Karishma", "Srinkanth", ,"ksrikanth@usaid.gov", c("aut"))
     )
-Description: Creates a series of data frames that can be passed to a gt() to create the OHA SI Mission Director Briefers.
+Description: Creates a series of data frames that can be passed to a gt() to create the PEPFAR summary tables.
 License: MIT + file LICENSE 
 Encoding: UTF-8
 LazyData: true

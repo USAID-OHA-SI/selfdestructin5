@@ -10,7 +10,6 @@
 #' 
 #' Create a wide formatted and sorted table for treatment indicators
 #' @param df dataframe that is the result of running make_mdb_tx_df()
-#' @param pd metadata from the MSD used to create time variables
 #' 
 #' @export
 #' @return data frame that is pivoted wide for passing to gt() call
@@ -28,6 +27,7 @@
 #' 
 reshape_mdb_tx_df <- function(df){
   
+  # Fetches pkg env metadata entered by user at beginning of session.
   pd <- fetch_metadata()
   
   indicators <- suppressMessages(fetch_indicators(tab = "treatment"))

@@ -4,10 +4,10 @@
 \alias{present_fy}
 \title{Create present fy object for gt theme}
 \usage{
-present_fy()
+present_fy(pd)
 }
 \arguments{
-\item{pd}{of the format FYXXQX that is returned from \code{\link[gophr:get_metadata]{gophr::get_metadata()}}}
+\item{pd}{of the format FYXXQX that is returned from \code{\link[=fetch_metadata]{fetch_metadata()}}}
 }
 \value{
 a string
@@ -21,7 +21,6 @@ Other gt helpers:
 \code{\link{bold_rowgroup}()},
 \code{\link{caveats_footnote}()},
 \code{\link{change_footnote}()},
-\code{\link{create_pd}()},
 \code{\link{dedup_footnote}()},
 \code{\link{delta_footnote}()},
 \code{\link{extract_num_colnames}()},

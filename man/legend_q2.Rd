@@ -11,9 +11,7 @@ An object of class \code{character} of length 1.
 legend_q2
 }
 \description{
-This helper object returns the location of the q2_cumulative legend.
-The object is passed to a legend_chunk f() that creates md for the legend.
-This can then be inserted into the subtitle as an image.
+Use legend instead as quarterly legends are no longer necessary
 }
 \seealso{
 Other gt helpers: 
@@ -21,7 +19,6 @@ Other gt helpers:
 \code{\link{bold_rowgroup}()},
 \code{\link{caveats_footnote}()},
 \code{\link{change_footnote}()},
-\code{\link{create_pd}()},
 \code{\link{dedup_footnote}()},
 \code{\link{delta_footnote}()},
 \code{\link{extract_num_colnames}()},

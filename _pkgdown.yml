@@ -1,6 +1,7 @@
 url: https://usaid-oha-si.github.io/selfdestructin5/
 template:
   bootstrap: 5
+  light-switch: true
 
 navbar:
   structure:

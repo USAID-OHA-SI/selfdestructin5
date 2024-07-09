@@ -6,33 +6,14 @@
 \usage{
 create_pd(df)
 }
-\arguments{
-\item{df}{MSD or Genie extract}
-}
 \value{
-object of the format FYXXQX
+a string
 }
 \description{
-The derived pd object is used throughout the generation of the tables.
-It is used multiple times for formatting columns and column spanners.
+This function is depracated and has been replaced by \code{\link[=fetch_metadata]{fetch_metadata()}}
+
+param df MSD or Genie extract
+return object of the format FYXXQX
+family gt helpers
 }
-\seealso{
-Other gt helpers: 
-\code{\link{authors_footnote}()},
-\code{\link{bold_rowgroup}()},
-\code{\link{caveats_footnote}()},
-\code{\link{change_footnote}()},
-\code{\link{dedup_footnote}()},
-\code{\link{delta_footnote}()},
-\code{\link{extract_num_colnames}()},
-\code{\link{legend}},
-\code{\link{legend_q1}},
-\code{\link{legend_q2}},
-\code{\link{legend_q3}},
-\code{\link{legend_snapshot}},
-\code{\link{past_fy}()},
-\code{\link{present_fy}()},
-\code{\link{present_qtr}()},
-\code{\link{vlc_footnote}()}
-}
-\concept{gt helpers}
+\keyword{internal}
