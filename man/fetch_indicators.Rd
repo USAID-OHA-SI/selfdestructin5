@@ -4,11 +4,9 @@
 \alias{fetch_indicators}
 \title{Fetches indicators used to make tables, accounting for quarter of MSD and semi-annual indicators}
 \usage{
-fetch_indicators(pd = meta, tab = "main")
+fetch_indicators(tab = "main")
 }
 \arguments{
-\item{pd}{period used to pull quarterly or quaterly plus semi-annual indicators}
-
 \item{tab}{which table is being created, main or treatment}
 }
 \value{

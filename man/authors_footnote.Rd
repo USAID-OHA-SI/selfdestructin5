@@ -4,7 +4,7 @@
 \alias{authors_footnote}
 \title{Create author footnote for gt theme}
 \usage{
-authors_footnote(pd)
+authors_footnote()
 }
 \arguments{
 \item{pd}{source metadata recovered from \code{\link[gophr:get_metadata]{gophr::get_metadata()}}}

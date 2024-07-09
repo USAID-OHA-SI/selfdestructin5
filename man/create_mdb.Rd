@@ -4,7 +4,7 @@
 \alias{create_mdb}
 \title{Wrapper function to create a MDB table}
 \usage{
-create_mdb(df, ou, type = "main", pd = meta, legend = NULL, legend_height = 20)
+create_mdb(df, ou, type = "main", legend = NULL, legend_height = 20)
 }
 \arguments{
 \item{df}{data frame resulting from running \code{\link[=reshape_mdb_df]{reshape_mdb_df()}} or \code{\link[=reshape_mdb_tx_df]{reshape_mdb_tx_df()}}}
@@ -12,8 +12,6 @@ create_mdb(df, ou, type = "main", pd = meta, legend = NULL, legend_height = 20)
 \item{ou}{operating unit for which table is to be returned}
 
 \item{type}{type of table to be created, main or treatment}
-
-\item{pd}{period from which data are from}
 
 \item{legend}{can pass a legend to subtitle if desired, default is NULL}
 

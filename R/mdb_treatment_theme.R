@@ -9,7 +9,6 @@
 #' 
 #' 
 #' @param df a dataframe from [reshape_mdb_tx_df()] output
-#' @param pd character object of the style FY@@Q@ that is returned from [gophr::get_metadata()]
 #' @param ... dot-dot-dot option to pass additional formatting to gt object
 #' 
 #' @return formatted gt object
@@ -29,7 +28,9 @@
 #'  }
 
 
-mdb_treatment_theme <- function(df, pd = meta, ...){
+mdb_treatment_theme <- function(df, ...){
+  
+  pd <- fetch_metadata()
   
   df %>% 
     # These columns are not needed so they are hidden
@@ -73,7 +74,7 @@ mdb_treatment_theme <- function(df, pd = meta, ...){
         )
       )
     ) %>% 
-    gt:: tab_style(
+    gt::tab_style(
       style = list("font-variant: small-caps;"),
       locations = gt::cells_column_labels(columns = tidyselect::everything()
       )
@@ -95,7 +96,7 @@ mdb_treatment_theme <- function(df, pd = meta, ...){
     #   source_note = gt::md(glue::glue("**Notes**: {dedup_footnote()} | {caveats_footnote()}"))
     # ) %>% 
     gt::tab_source_note(
-      source_note = gt::md(glue::glue("**Source**: {authors_footnote(pd)} | si.coreanalytics@usaid.gov"))
+      source_note = gt::md(glue::glue("**Source**: {authors_footnote()} | si.coreanalytics@usaid.gov"))
     ) %>% 
     gt::tab_style(
       style = list(

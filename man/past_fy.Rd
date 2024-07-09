@@ -4,7 +4,7 @@
 \alias{past_fy}
 \title{Create past_fy object for gt theme}
 \usage{
-past_fy(pd)
+past_fy()
 }
 \arguments{
 \item{pd}{of the format FYXXQX that is returned from \code{\link[gophr:get_metadata]{gophr::get_metadata()}}}

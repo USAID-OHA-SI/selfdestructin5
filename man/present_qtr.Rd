@@ -4,7 +4,7 @@
 \alias{present_qtr}
 \title{Create present quarter object for gt theme}
 \usage{
-present_qtr(pd)
+present_qtr()
 }
 \arguments{
 \item{pd}{of the format FYXXQX that is returned from \code{\link[gophr:get_metadata]{gophr::get_metadata()}}}

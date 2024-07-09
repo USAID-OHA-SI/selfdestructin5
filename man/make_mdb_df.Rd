@@ -4,12 +4,10 @@
 \alias{make_mdb_df}
 \title{Create a base table of MDB indicators stacked long}
 \usage{
-make_mdb_df(df, pd = meta, resolve_issues = T)
+make_mdb_df(df, resolve_issues = T)
 }
 \arguments{
 \item{df}{data frame from which MDB tables will be constructed for core indicators}
-
-\item{pd}{list object that includes information stored in the \code{get_metadata()} function}
 
 \item{resolve_issues}{logical that fetches troublesome mechs and omits them from df}
 }

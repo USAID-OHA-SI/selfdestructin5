@@ -4,7 +4,7 @@
 \alias{reshape_mdb_tx_df}
 \title{Prepare filtered data frame of treatment indicators for MDB formatting}
 \usage{
-reshape_mdb_tx_df(df, pd = meta)
+reshape_mdb_tx_df(df)
 }
 \arguments{
 \item{df}{dataframe that is the result of running make_mdb_tx_df()}

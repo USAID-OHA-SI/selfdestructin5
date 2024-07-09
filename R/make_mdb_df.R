@@ -6,7 +6,6 @@
 #' Output from this function feeds into [reshape_mdb_df()]
 #' 
 #' @param df data frame from which MDB tables will be constructed for core indicators
-#' @param pd list object that includes information stored in the `get_metadata()` function
 #' @param resolve_issues logical that fetches troublesome mechs and omits them from df
 #' 
 #' @return data frame 
@@ -23,19 +22,23 @@
 #'  
 #'  
 
-make_mdb_df <- function(df, pd = meta, resolve_issues = T) {
+make_mdb_df <- function(df, resolve_issues = T) {
+  
+  pd <- fetch_metadata()
   
   # Check if pd exists and is a list
   if (missing(pd) || !is.list(pd)) {
-    stop(glue::glue("The 'pd' parameter is missing. Use get_metadata() to create it."))
+    stop(glue::glue("The 'pd' parameter is missing. Use set_metadata() to create it."))
   }
   
   if (resolve_issues == TRUE) {
     df <- gophr::resolve_knownissues(df)
   } 
   
+ 
+  
   # Get the indicator info you need 
-  indicators <- fetch_indicators(pd)
+  indicators <- fetch_indicators()
   indicator_fltr <- indicators %>% 
     dplyr::distinct(indicator) %>% 
     dplyr::pull()

@@ -9,7 +9,6 @@
 #' 
 #' 
 #' @param df [reshape_mdb_df()] output
-#' @param pd character object of the style FY@@Q@ that is returned from [gophr::get_metadata()]
 #' @param ... dot-dot-dot option to pass additional formatting to gt object
 #' 
 #' @return formatted gt object
@@ -26,11 +25,9 @@
 #'  }
 
 
-mdb_main_theme <- function(df, pd = meta, ...){
+mdb_main_theme <- function(df, ...){
   
-  if (!exists("pd")){
-    stop("Please create the meta list object to ensure columns can be labelled dynamically with pd = meta.")
-  }
+  pd <- fetch_metadata()
   
   df %>% 
     # These columns are not needed so they are hidden

@@ -34,7 +34,7 @@ vlc_footnote <- function() {"Viral Load Covererage = TX_PVLS_D / TX_CURR_2_perio
 #' @return a string
 #' @family gt helpers
 #' 
-past_fy <- function(pd) {paste0("FY", pd$curr_pd %>% substr(3, 4) %>% as.numeric() - 1, " Results") %>% glue::as_glue()}
+past_fy <- function() {paste0("FY", pd$curr_pd %>% substr(3, 4) %>% as.numeric() - 1, " Results") %>% glue::as_glue()}
 
 #' Create present fy object for gt theme
 #' 
@@ -44,7 +44,7 @@ past_fy <- function(pd) {paste0("FY", pd$curr_pd %>% substr(3, 4) %>% as.numeric
 #' @return a string
 #' @family gt helpers
 #'  
-present_fy <- function(pd) {paste(pd$curr_pd %>% substr(1, 4), "Cumulative") %>% glue::as_glue()}
+present_fy <- function() {paste(pd$curr_pd %>% substr(1, 4), "Cumulative") %>% glue::as_glue()}
 
 #' Create present quarter object for gt theme
 #' 
@@ -54,7 +54,7 @@ present_fy <- function(pd) {paste(pd$curr_pd %>% substr(1, 4), "Cumulative") %>%
 #' @return a string 
 #' @family gt helpers
 #'  
-present_qtr <- function(pd) {paste(pd$curr_pd, "Results") %>% glue::as_glue()}
+present_qtr <- function() {paste(pd$curr_pd, "Results") %>% glue::as_glue()}
 
 #' Create author footnote for gt theme
 #' @keywords internal
@@ -63,7 +63,7 @@ present_qtr <- function(pd) {paste(pd$curr_pd, "Results") %>% glue::as_glue()}
 #' @return  a string
 #' @family gt helpers
 #' 
-authors_footnote <- function(pd){glue::glue("Created by Core Analytics Cluster on {Sys.Date()} using {pd$source}")}
+authors_footnote <- function(){glue::glue("Created by Core Analytics Cluster on {Sys.Date()} using {pd$source}")}
 
 #' Return msd metadata for pd object
 #' 
@@ -72,7 +72,6 @@ authors_footnote <- function(pd){glue::glue("Created by Core Analytics Cluster o
 #' It is used multiple times for formatting columns and column spanners.
 #' 
 #' @param df MSD or Genie extract
-#' @export
 #' @return object of the format FYXXQX
 #' @family gt helpers
 #' 

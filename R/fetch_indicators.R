@@ -3,7 +3,6 @@
 #' MDB indicators are stored on google drive. This helper function fetches a desired tab.
 #' Used to create filters, sort factor levels, and apply plain labels to indicators.
 #' 
-#' @param pd period used to pull quarterly or quaterly plus semi-annual indicators
 #' @param tab which table is being created, main or treatment
 #' @return dataframe of indicators 
 #'  
@@ -15,11 +14,13 @@
 #'  fetch_indicators(ou_im, tab = "treatment")}
 #'   
 #'   
-fetch_indicators <- function(pd = meta, tab = "main") {
+fetch_indicators <- function(tab = "main") {
 
   if (!tab %in% c("main", "treatment")) {
     stop("Please select the indicator crosswalk you would like to use: main or treatment")
   }
+  
+  pd <- fetch_metadata()
 
   # Determine the appropriate filter based on `tab` and `pd$curr_pd`
   indics <- switch(

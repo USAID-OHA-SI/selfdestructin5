@@ -7,7 +7,6 @@
 #' @param df data frame resulting from running [reshape_mdb_df()] or [reshape_mdb_tx_df()]
 #' @param ou operating unit for which table is to be returned
 #' @param type type of table to be created, main or treatment
-#' @param pd period from which data are from
 #' @param legend can pass a legend to subtitle if desired, default is NULL
 #' @param legend_height adjusts the height of the preset legend
 #' 
@@ -36,11 +35,11 @@
 #' 
 #' 
 
-create_mdb <- function(df, ou, type = "main", pd = meta, legend = NULL, legend_height = 20){
+create_mdb <- function(df, ou, type = "main", legend = NULL, legend_height = 20){
   
   #TODO: Write checks for the df to ensure they have created the wide version required
   
-  if (!is.null(legend)){
+  if (!is.null(legend)) {
     legend <- gt::md(glue::glue("<img src= '{legend}' style='height:{legend_height}px;'> "))
   }
   
@@ -51,17 +50,15 @@ create_mdb <- function(df, ou, type = "main", pd = meta, legend = NULL, legend_h
   }
   
   # Check that pd and msd_source have been created
-  if (!exists('pd')) {
-    stop("Please ensure that the meta objects have been created.")
-  }
+  pd <- fetch_metadata()
   
   
-  if (type == "main"){
+  if (type == "main") {
   
    mdb_gt <-  df %>% 
       dplyr::filter(operatingunit %in% c({{ou}})) %>% 
       gt::gt(groupname_col = "agency") %>% 
-      mdb_main_theme(pd) %>% 
+      mdb_main_theme() %>% 
       gt::tab_header(
         title = glue::glue("{cntry} PERFORMANCE SUMMARY"),
         subtitle = legend
@@ -71,7 +68,7 @@ create_mdb <- function(df, ou, type = "main", pd = meta, legend = NULL, legend_h
    mdb_gt <-  df %>% 
       dplyr::filter(operatingunit %in% c({{ou}})) %>% 
       gt::gt(groupname_col = "agency") %>% 
-      mdb_treatment_theme(pd) %>% 
+      mdb_treatment_theme() %>% 
       gt::tab_header(
         title = glue::glue("{cntry} PERFORMANCE SUMMARY"),
         subtitle = legend

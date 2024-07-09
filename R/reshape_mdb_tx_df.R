@@ -26,11 +26,9 @@
 #' 
 #' 
 #' 
-reshape_mdb_tx_df <- function(df, pd = meta){
+reshape_mdb_tx_df <- function(df){
   
-  if(!exists("pd")){
-    stop("Please create the meta object using get_metadata().")
-  }
+  pd <- fetch_metadata()
   
   indicators <- suppressMessages(fetch_indicators(tab = "treatment"))
   indicator_fltr <- indicators %>% dplyr::distinct(indicator) %>% dplyr::pull()

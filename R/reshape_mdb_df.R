@@ -6,7 +6,6 @@
 #' Helper functions format certain columns as svgs to be rendered in the gt call.
 #' 
 #' @param df takes the [make_mdb_df()] results as an input 
-#' @param pd metadata from the MSD used to create time variables
 #' @return returns a wide formatted data frame (table) of all OUs, countries and USAID
 #' 
 #' 
@@ -25,12 +24,11 @@
 #'  }
 #'  
 #
-reshape_mdb_df <- function(df, pd = meta) {
+reshape_mdb_df <- function(df) {
   
   # Need to know the fiscal year and quarters to filter
-  if(!exists("pd")){
-    stop("Please create the meta variable using get_metadata(). The pd argument takes this value.")
-  }
+  # pulling the metadata from the package environment
+  pd <- fetch_metadata()
   
   fy_end <- pd$curr_pd %>% substr(3, 4) %>% as.numeric() + 2000
   fy_beg <- fy_end - 1 
