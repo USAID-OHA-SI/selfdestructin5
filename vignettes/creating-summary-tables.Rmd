@@ -1,10 +1,10 @@
 ---
-title: "Create MDB Tables"
+title: "Creating Summary Tables"
 output: rmarkdown::html_vignette
 description: |
   Basics of create Mission Director Briefer Tables
 vignette: >
-  %\VignetteIndexEntry{Create MDB Tables}
+  %\VignetteIndexEntry{Creating Summary Tables}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,11 +17,11 @@ knitr::opts_chunk$set(
 ```
 
 
-# Mission Director Briefer Tables
+# GHSD MSD Summary Tables
 
-The Mission Director Briefer (MDB) Tables are an SI product that is created on a quarterly basis using the latest OU_IM MER Structured dataset (MSD). Two tables are produced, one which summarizes the current achievement for a set of core (main) indicators, and another which summarizes TX_MMD, VLS, and VLC. 
+The MSD Summary Tables are an SI product created on a quarterly basis using the latest OU_IM or PSNU_IM MER Structured dataset (MSD). Two tables are produced, one which summarizes the current achievement for a set of core (main) indicators, and another which summarizes TX_MMD, VLS, and VLC (treatment). 
 
-Starting in FY21 Q2, the SI team migrated the production of the tables from Tableau to R. Eventually, the SI team created a package to automate much of the data munging required for the tables. The `selfdestructin5` package is the result of these efforts. Even with the winding down of the MDB Tables, the SI team continues to maintain the package due to its value to the team and overseas staff.
+Starting in FY21 Q2, the SI team migrated the production of the tables from Tableau to R to reduce the manual burden of creating and copy and pasting the tables into over 50 briefers. The SI team created a package to automate the data munging required for the tables. The `selfdestructin5` package is the result of these efforts. 
 
 Below we review the process for creating the main and treatment tables.
 
@@ -46,8 +46,9 @@ Load helper functions/paths from other SI packages.
 # Load OU_IM table - using FY23 Q3 data from Panorama
     ou_im <- read_psd(msd_path)
 
-# Get the metadata from the MSD dataset; This is used to set the period and source.
-    get_metadata(msd_path)
+# With the new updates, you only need to set the meta data one time using the set_metadata() function
+# This new approach stores the metadata in a package environment
+    set_metadata(gophr::get_metadata(msd_path))
 ```
 
 With our data loaded and time objects created, we are ready to munge the data. Let's start with the main table.
@@ -55,13 +56,13 @@ With our data loaded and time objects created, we are ready to munge the data. L
   # Main Table
    # Create the long mdb_df of the main summary indicators 
    # This will remove mechs with known issues by default. If you want to keep all mechs set `resolve_issues == FALSE`
-      mdb_df   <- make_mdb_df(ou_im)
+      summary_df   <- make_mdb_df(ou_im)
     
    # Create the reshaped df that is gt() ready
-      mdb_tbl  <- reshape_mdb_df(mdb_df, metadata$curr_pd)
+      summary_tbl  <- reshape_mdb_df(summary_df)
     
    # the `agg_type` column flags the operatingunit as either OU, Region-Country or Agency
-      mdb_tbl %>% distinct(agg_type, operatingunit) %>% slice(1:15)
+      summary_tbl %>% distinct(agg_type, operatingunit) %>% slice(1:15)
 ```
 
 The `mdb_tbl` data frame is a wide-shaped data frame that contains embedded svg icons from the `fontawesome` package. We can pass this to the `create_mdb` function to make a table for a desired operating unit.
@@ -69,13 +70,13 @@ The `mdb_tbl` data frame is a wide-shaped data frame that contains embedded svg 
 ```{r create main table, eval=F, echo=T}
 
 # Generate base table for global results
-    create_mdb(mdb_tbl, ou = "Global", type = "main", metadata$curr_pd, metadata$source)
+    create_mdb(summary_tbl, ou = "Global", type = "main")
 
 # Try a specific country now
-    create_mdb(mdb_tbl, ou = "Zambia", type = "main", metadata$curr_pd, metadata$source)
+    create_mdb(summary_tbl, ou = "Zambia", type = "main")
     
 # Or a regional program
-    create_mdb(mdb_tbl, ou = "Asia Region-Indonesia", type = "main", metadata$curr_pd, metadata$source)
+    create_mdb(summary_tbl, ou = "Asia Region-Indonesia", type = "main")
 
 ```
 
@@ -83,10 +84,10 @@ The steps are similar for creating the treatment table.
 ```{r create treatment table, eval=F, echo=T}
 
 # Create the treatment data frame needed for derived indicators
-    mdb_df_tx    <- make_mdb_tx_df(ou_im, resolve_issues = F)
-    mdb_tbl_tx   <- reshape_mdb_tx_df(mdb_df_tx, metadata$curr_pd)
+    summary_df_tx    <- make_mdb_tx_df(ou_im, resolve_issues = F)
+    summary_tbl_tx   <- reshape_mdb_tx_df(summary_df_tx)
     
-    create_mdb(mdb_tbl_tx, ou = "Global", type = "treatment", metadata$curr_pd, metadata$source)
+    create_mdb(summary_tbl_tx, ou = "Global", type = "treatment")
 ```
 
 # Batching Tables
@@ -104,20 +105,20 @@ The reshape functions for the main and treatment indicators return a single data
   }
   
   # Write the different types to character objects
-  ous <- distinct_agg_type(mdb_tbl, "OU")
-  glb <- distinct_agg_type(mdb_tbl, "Agency")
-  rgl <- distinct_agg_type(mdb_tbl, "Region-Country")
+  ous <- distinct_agg_type(summary_tbl, "OU")
+  glb <- distinct_agg_type(summary_tbl, "Agency")
+  rgl <- distinct_agg_type(summary_tbl, "Region-Country")
   
   # Use purr to map across the list and create tables for all entries in each object
-  purrr::map(ous, ~create_mdb(mdb_tbl, ou = .x, type = "main", metadata$curr_pd, metadata$source) %>% 
-        gtsave(., path = mdb_out, filename = glue::glue("{.x}_{metadata$curr_pd}_mdb_main.png")))
+  purrr::map(ous[2:3], ~create_mdb(summary_tbl, ou = .x, type = "main") %>% 
+        gtsave(., path = mdb_out, filename = glue::glue("{.x}_{pkg_env$meta$curr_pd}_mdb_main.png")))
   
   
   # TREATMENT
-  ous_tx <- distinct_agg_type(mdb_tbl_tx, "OU")
+  ous_tx <- distinct_agg_type(summary_tbl_tx, "OU")
   
-  map(ous, ~create_mdb(mdb_tbl_tx, ou = .x, type = "treatment", metadata$curr_pd, metadata$source) %>% 
-        gtsave(., path = mdb_out, filename = glue::glue("{.x}_{metadata$curr_pd}_mdb_treatment.png")))
+  map(ous[10:12], ~create_mdb(summary_tbl_tx, ou = .x, type = "treatment") %>% 
+        gtsave(., path = mdb_out, filename = glue::glue("{.x}_{pkg_env$meta$curr_pd}_mdb_treatment.png")))
 ```
 
 # Creating bespoke tables
@@ -126,8 +127,8 @@ If there is a core indicator on which you'd like to focus across a list of opera
 ```{r custom table, eval=F, echo=T}
 
 # Filter existing wide data frame to desired indicator and OUs
-  mdb_tbl_hts_tst <- mdb_tbl %>% 
-    filter(indicator == "HTS_TST_POS", agency == "USAID") %>% 
+  mdb_tbl_hts_tst <- summary_tbl %>% 
+    filter(indicator == "TX_CURR", agency == "USAID") %>% 
     filter(operatingunit %in% c("Malawi", "Zambia", "Tanzania", "Mozambique", "Zimbabwe"))
 
 
@@ -136,7 +137,7 @@ If there is a core indicator on which you'd like to focus across a list of opera
     mutate(operatingunit = fct_reorder(operatingunit, present_targets_achievement, .desc = T)) %>%  
     arrange(agency, operatingunit) %>% 
     gt(groupname_col = "agency") %>% 
-    mdb_main_theme(metadata$curr_pd, metadata$curr_pd) %>% 
+    mdb_main_theme() %>% 
     cols_unhide("operatingunit") %>% 
     cols_align(
       align = "left",
@@ -153,7 +154,7 @@ You can also create a comparison table of OU achievement by core indicators. Wit
 
 ```{r custom tables II, eval=F, echo=T}
 
-  mdb_tbl %>% 
+  summary_tbl %>% 
     filter(agency == "USAID", agg_type == "OU") %>% 
     select(operatingunit, present_targets_achievement, indicator) %>% 
     pivot_wider(names_from = indicator, 
@@ -169,7 +170,7 @@ You can also create a comparison table of OU achievement by core indicators. Wit
       table.font.size = 13, 
       data_row.padding = gt::px(5)
     ) %>% 
-    tab_header(title = glue::glue("USAID OU PERFORMANCE SUMMARY FOR {metadata$curr_pd}"))
+    tab_header(title = glue::glue("USAID OU PERFORMANCE SUMMARY FOR {pkg_env$meta$curr_pd}"))
 ```
 
 If you wish the create tables by implementing partner, you could do something as below.
@@ -182,7 +183,7 @@ If you wish the create tables by implementing partner, you could do something as
       df %>% 
       filter(mech_code == mech_id) %>% 
       make_mdb_df() %>% 
-      reshape_mdb_df(., metadata$curr_pd) 
+      reshape_mdb_df(.) 
     
     mech_name <-  
       df %>% 
@@ -191,7 +192,7 @@ If you wish the create tables by implementing partner, you could do something as
       pull(mech_name)
     
     ip_mdb %>%   
-      create_mdb(ou = "Minoria", type = "main", metadata$curr_pd, metadata$source) %>% 
+      create_mdb(ou = "Minoria", type = "main") %>% 
       tab_header(
         title = glue::glue("{mech_name} PERFORMANCE SUMMARY")
       ) %>% 
@@ -201,7 +202,7 @@ If you wish the create tables by implementing partner, you could do something as
 
 # Loop over function and create tables for each of the main C&T mechs
   mech_list <- c(123456, 789101, 654321)
-  map(mech_list, ~mk_ptr_tbl(df_msd, .x))
+  map(mech_list, ~mk_ptr_tbl(ou_im, .x))
 
 ```
 

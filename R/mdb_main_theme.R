@@ -9,8 +9,6 @@
 #' 
 #' 
 #' @param df [reshape_mdb_df()] output
-#' @param pd character object of the style FY@@Q@ that is returned from [gophr::identifypd()]
-#' @param msd_source source of the data used to generate tables
 #' @param ... dot-dot-dot option to pass additional formatting to gt object
 #' 
 #' @return formatted gt object
@@ -27,11 +25,9 @@
 #'  }
 
 
-mdb_main_theme <- function(df, pd, msd_source, ...){
+mdb_main_theme <- function(df, ...){
   
-  if(!exists("pd")){
-    stop("Please create the pd variable to ensure columns can be labelled dynamically.")
-  }
+  pd <- fetch_metadata()
   
   df %>% 
     # These columns are not needed so they are hidden
@@ -62,7 +58,7 @@ mdb_main_theme <- function(df, pd, msd_source, ...){
       columns = tidyselect::contains("present")
     ) %>% 
     gt::tab_spanner(
-      label = glue::glue("{pd}"),
+      label = glue::glue("{pd$curr_pd}"),
       columns = tidyselect::contains("_z_")
     ) %>% 
     gt::tab_style(
@@ -78,7 +74,7 @@ mdb_main_theme <- function(df, pd, msd_source, ...){
       present_results_cumulative = "results",
       present_targets = "targets", 
       present_targets_achievement = "achv",
-      present_tint_achv = " ",
+      present_tint_achv = "status",
       present_z_aresults = "results",
       present_z_change = "change*",
       present_z_direction = " "
@@ -100,7 +96,7 @@ mdb_main_theme <- function(df, pd, msd_source, ...){
     #   source_note = gt::md(glue::glue("**Notes**: {dedup_footnote()} | {caveats_footnote()}"))
     # ) %>% 
     gt::tab_source_note(
-      source_note = gt::md(glue::glue("**Source**: {authors_footnote(msd_source)} | si.coreanalytics@usaid.gov"))
+      source_note = gt::md(glue::glue("**Source**: {authors_footnote(pd)} | si.coreanalytics@usaid.gov"))
     ) %>%
  
     gt::tab_style(

@@ -1,31 +1,27 @@
 Package: selfdestructin5
 Title: Creates SI OHA Mission Director Briefers
-Version: 0.3.1
+Version: 0.4.0
 Authors@R: c(
     person("Tim", "Essam", ,"tessam@usaid.gov", c("aut", "cre")),
-    person("Aaron", "Chafetz", ,"achafetz@usaid.gov", c("aut"))
+    person("Aaron", "Chafetz", ,"achafetz@usaid.gov", c("aut")),
+    person("Karishma", "Srinkanth", ,"ksrikanth@usaid.gov", c("aut"))
     )
-Description: Creates a series of data frames that can be passed to a gt() to create the OHA SI Mission Director Briefers.
-License: MIT + file LICENSE
+Description: Creates a series of data frames that can be passed to a gt() to create the PEPFAR summary tables.
+License: MIT + file LICENSE 
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/USAID-OHA-SI/selfdestructin5
 BugReports: https://github.com/USAID-OHA-SI/selfdestructin5/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Imports: 
     crayon,
     dplyr,
     glue,
-    googledrive,
-    googlesheets4,
     magrittr,
     purrr,
     stringr,
-    tools,
     tidyr,
-    usethis,
-    utils,
     glitr,
     glamr,
     gophr,
@@ -44,3 +40,5 @@ Remotes:
     USAID-OHA-SI/gagglr
 BuildVignettes: true
 VignetteBuilder: knitr
+Depends: 
+    R (>= 2.10)

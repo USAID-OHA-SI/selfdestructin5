@@ -1,3 +1,10 @@
+# selfdestructin5 0.4.0
+* Update colors to include the new SI colors
+* Update internals to no longer rely on call to googledrive
+* Update final table by adding a status column above achievement circle
+* Update the legend to new SI colors
+* Update the metadata argument to be entered only once and captured as a pkg env object
+
 # selfdestructin5 0.3.1
 * Resolve error caused by modification of MSD structure
 * Update vignette to reflect use of `get_metadata()`

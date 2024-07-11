@@ -24,12 +24,21 @@
 
 make_mdb_df <- function(df, resolve_issues = T) {
   
+  pd <- fetch_metadata()
+  
+  # Check if pd exists and is a list
+  if (missing(pd) || !is.list(pd)) {
+    stop(glue::glue("The 'pd' parameter is missing. Use set_metadata() to create it."))
+  }
+  
   if (resolve_issues == TRUE) {
     df <- gophr::resolve_knownissues(df)
   } 
   
+ 
+  
   # Get the indicator info you need 
-  indicators <- fetch_indicators(df)
+  indicators <- fetch_indicators()
   indicator_fltr <- indicators %>% 
     dplyr::distinct(indicator) %>% 
     dplyr::pull()
@@ -38,18 +47,20 @@ make_mdb_df <- function(df, resolve_issues = T) {
   group_base <- c("fiscal_year", "agency", "indicator", "operatingunit")
   group_base_cntry <- c(group_base, "country")
   
-  # Create three dataframes for ou, regional-country, agency
+  # Create OU dataframe to be bound with regional and USAID only
   df_ou <- df %>% 
     dplyr::filter(operatingunit %in% unique(glamr::pepfar_country_list$operatingunit)) %>% 
     collapse_base_tbl(indicator_fltr, group_base) %>% 
     label_aggregation(type = "OU")
   
+  # Create regional
   df_reg <- df %>% 
     dplyr::filter(stringr::str_detect(operatingunit, "Region")) %>% 
     collapse_base_tbl(indicator_fltr, group_base_cntry) %>% 
     label_aggregation(type = "Regional") %>% 
     dplyr::mutate(agency = as.character(agency)) # in case there is no region, coerce agency to a character
   
+  # Create USAID dataframe
   df_usaid <- df %>% 
     dplyr::mutate(operatingunit = ifelse(funding_agency == "USAID", "USAID", "ALL OTHER AGENCIES")) %>% 
     collapse_base_tbl(indicator_fltr, group_base) %>% 

@@ -7,7 +7,7 @@
 present_fy(pd)
 }
 \arguments{
-\item{pd}{of the format FYXXQX that is returned from \code{\link[gophr:identifypd]{gophr::identifypd()}}}
+\item{pd}{of the format FYXXQX that is returned from \code{\link[=fetch_metadata]{fetch_metadata()}}}
 }
 \value{
 a string
@@ -21,15 +21,14 @@ Other gt helpers:
 \code{\link{bold_rowgroup}()},
 \code{\link{caveats_footnote}()},
 \code{\link{change_footnote}()},
-\code{\link{create_pd}()},
 \code{\link{dedup_footnote}()},
 \code{\link{delta_footnote}()},
 \code{\link{extract_num_colnames}()},
+\code{\link{legend}},
 \code{\link{legend_q1}},
 \code{\link{legend_q2}},
 \code{\link{legend_q3}},
 \code{\link{legend_snapshot}},
-\code{\link{legend}},
 \code{\link{past_fy}()},
 \code{\link{present_qtr}()},
 \code{\link{vlc_footnote}()}

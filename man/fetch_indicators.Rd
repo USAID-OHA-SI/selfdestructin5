@@ -4,12 +4,10 @@
 \alias{fetch_indicators}
 \title{Fetches indicators used to make tables, accounting for quarter of MSD and semi-annual indicators}
 \usage{
-fetch_indicators(df, tab = "main")
+fetch_indicators(tab = "main")
 }
 \arguments{
-\item{df}{data frame on which indicators are to be fetched}
-
-\item{tab}{which tab to fetch (main or treatment) from googlesheet}
+\item{tab}{which table is being created, main or treatment}
 }
 \value{
 dataframe of indicators

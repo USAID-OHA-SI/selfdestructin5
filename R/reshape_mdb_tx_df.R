@@ -10,7 +10,6 @@
 #' 
 #' Create a wide formatted and sorted table for treatment indicators
 #' @param df dataframe that is the result of running make_mdb_tx_df()
-#' @param pd metadata from the MSD used to create time variables
 #' 
 #' @export
 #' @return data frame that is pivoted wide for passing to gt() call
@@ -26,16 +25,15 @@
 #' 
 #' 
 #' 
-reshape_mdb_tx_df <- function(df, pd){
+reshape_mdb_tx_df <- function(df){
   
-  if(!exists("pd")){
-    stop("Please create the pd variable using the the following: pd <- gophr::identifypd(ou_im)")
-  }
+  # Fetches pkg env metadata entered by user at beginning of session.
+  pd <- fetch_metadata()
   
-  indicators <- fetch_indicators(df, tab = "treatment")
+  indicators <- suppressMessages(fetch_indicators(tab = "treatment"))
   indicator_fltr <- indicators %>% dplyr::distinct(indicator) %>% dplyr::pull()
   
-  fy_end <- pd %>% substr(3, 4) %>% as.numeric() + 2000
+  fy_end <- pd$curr_pd %>% substr(3, 4) %>% as.numeric() + 2000
   fy_beg <- fy_end - 1 
   min_pd <- paste0("FY", substr(fy_beg, 3, 4), "Q4")
   
@@ -90,7 +88,7 @@ reshape_mdb_tx_df <- function(df, pd){
                     `delta*` <= -0.005 ~ "decrease",
                     TRUE ~ "not applicable"
                   ),
-                  change_dir = purrr::map(change_dir, make_chg_shape))%>% 
+                  change_dir = purrr::map(change_dir, make_chg_shape)) %>% 
     dplyr::left_join(., indicators %>% dplyr::select(indicator, indicator_plain)) %>% 
     dplyr::mutate(indicator = forcats::fct_relevel(indicator, indicator_fltr)) %>% 
     dplyr::mutate(indicator2 = ifelse(agency == "USAID", paste(indicator, indicator_plain), paste(indicator)),

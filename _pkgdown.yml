@@ -1,6 +1,7 @@
 url: https://usaid-oha-si.github.io/selfdestructin5/
 template:
   bootstrap: 5
+  light-switch: true
 
 navbar:
   structure:
@@ -28,12 +29,12 @@ navbar:
     articles:
       text: Articles
       menu:
-      - text: Create MDB Tables
-        href: articles/create-mdb-tables.html
+      - text: Creating Summary Tables
+        href: articles/creating-summary-tables.html
 
 
 reference:
-- title: MDB Munging
+- title: Summary Table Munging
   contents:
   - collapse_base_tbl
   - collapse_vlc_tbl
@@ -56,16 +57,20 @@ reference:
   - create_pd
   - embiggen
   - fetch_indicators
+  - fetch_metadata
   - format_indicator
   - label_aggregation
-  - make_achv_shape
-  - make_chg_shape
-  - msd_period
-  - extract_num_colnames
+  - legend
   - legend_q1
   - legend_q2
   - legend_q3
   - legend_snapshot
+  - mdb_tbl
+  - make_achv_shape
+  - make_chg_shape
+  - msd_period
+  - extract_num_colnames
+  - set_metadata
   
 
 

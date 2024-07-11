@@ -4,12 +4,10 @@
 \alias{reshape_mdb_tx_df}
 \title{Prepare filtered data frame of treatment indicators for MDB formatting}
 \usage{
-reshape_mdb_tx_df(df, pd)
+reshape_mdb_tx_df(df)
 }
 \arguments{
 \item{df}{dataframe that is the result of running make_mdb_tx_df()}
-
-\item{pd}{metadata from the MSD used to create time variables}
 }
 \value{
 data frame that is pivoted wide for passing to gt() call
