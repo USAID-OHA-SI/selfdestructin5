@@ -51,7 +51,8 @@ make_mdb_tx_df <- function(df, resolve_issues = "TRUE", tx_indic = "TX_CURR") {
     dplyr::filter(operatingunit != "South Africa") %>% 
     dplyr::mutate(operatingunit = ifelse(funding_agency == "USAID", "USAID", "ALL OTHER AGENCIES")) %>% 
     collapse_base_tbl(indic_list = tx_indic, group_base_agency) %>% 
-    label_aggregation(type = "Agency")
+    label_aggregation(type = "Agency") %>% 
+    dplyr::mutate(agency = as.character(agency))
   
   # Create the base disagg tables
   tx_table <- dplyr::bind_rows(df_ou_tx, df_reg_tx, df_usaid_tx) 
