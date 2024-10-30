@@ -49,7 +49,7 @@ make_mdb_df <- function(df, resolve_issues = T) {
   
   # Create OU dataframe to be bound with regional and USAID only
   df_ou <- df %>% 
-    dplyr::filter(operatingunit %in% unique(glamr::pepfar_country_list$operatingunit)) %>% 
+    dplyr::filter(operatingunit %in% c(unique(glamr::pepfar_country_list$operatingunit), "Minoria")) %>% 
     collapse_base_tbl(indicator_fltr, group_base) %>% 
     label_aggregation(type = "OU")
   
