@@ -21,7 +21,8 @@ set_metadata <- function(meta) {
   if (!is.list(meta)) {
     stop("Metadata should be a list.")
   }
-  pkg_env$meta <- meta
+  # Store metadata in pgk env
+  pkg_env$meta <-  suppressMessages(suppressWarnings(meta))
   invisible(NULL)
 }
 
