@@ -37,7 +37,7 @@ make_mdb_tx_df <- function(df, resolve_issues = "TRUE", tx_indic = "TX_CURR") {
   
   # Create the base treatment table for TX_CURR
   df_ou_tx <- df %>%
-    dplyr::filter(operatingunit %in% unique(glamr::pepfar_country_list$operatingunit)) %>% 
+    dplyr::filter(operatingunit %in% c(unique(glamr::pepfar_country_list$operatingunit), "Minoria")) %>% 
     collapse_base_tbl(indic_list = tx_indic, group_base) %>% 
     label_aggregation(type = "OU")
   
